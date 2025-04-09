@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect()->route('home');
+    return redirect()->route('login');
 });
 
 // 1. Route Auth
@@ -39,11 +39,6 @@ Route::post('logout', [LoginController::class, 'destroy'])->name('login.destroy'
 Route::get('register', [LoginController::class, 'indexRegister'])->name('register');
 Route::post('register', [LoginController::class, 'storeRegister'])->name('register.store');
 Route::get('forgot-password', [LoginController::class, 'indexForgot'])->name('forgot-password');
-
-// 2. Route User
-Route::get('/', [UserController::class, 'index'])->name('home');
-Route::get('/dokter', [UserController::class, 'indexDokter'])->name('index-dokter');
-Route::get('/tentang-kami', [UserController::class, 'indexTentangKami'])->name('index-tentangKami');
 
 // 3. Route admin
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'role:admin'], function () {
