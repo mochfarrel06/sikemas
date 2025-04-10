@@ -24,6 +24,6 @@ Route::prefix('pasien')->group(function () {
     Route::get('/', [PatientController::class, 'index']);
     Route::post('/', [PatientController::class, 'store']);
     Route::get('/{id}', [PatientController::class, 'show']);
-    // Route::put('/{id}', [PatientController::class, 'update']);
-    // Route::delete('/{id}', [PatientController::class, 'destroy']);
+    Route::put('/{id}', [PatientController::class, 'update']);
+    Route::delete('/{id}', [PatientController::class, 'destroy']);
 });

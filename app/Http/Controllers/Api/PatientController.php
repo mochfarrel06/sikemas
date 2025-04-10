@@ -103,7 +103,7 @@ class PatientController extends Controller
 
             $patient->update($data);
 
-            return response()->json(['success' => true, 'data' => $patient]);
+            return response()->json(['success' => true]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
