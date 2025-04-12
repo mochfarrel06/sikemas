@@ -6,16 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class PatientController extends Controller
 {
     public function index()
     {
-        $patients = Patient::all();
+        $patients = DB::table('patients')
+            ->select('id', 'kode_pasien', 'nama_depan', 'nama_belakang', 'email', 'no_hp', 'tgl_lahir', 'jenis_kelamin', 'alamat', 'negara', 'provinsi', 'kota', 'kodepos')
+            ->get();
 
         return response()->json([
-            'message' => 'Data pasien di tampilkan',
             'data' => $patients,
         ], 200);
     }
@@ -87,8 +89,13 @@ class PatientController extends Controller
 
     public function show($id)
     {
-        $patient = Patient::findOrFail($id);
-        return response()->json($patient);
+        // $patient = Patient::findOrFail($id);
+        $patient = DB::selectOne("SELECT id, kode_pasien, nama_depan, nama_belakang, email, no_hp, tgl_lahir, jenis_kelamin, alamat, negara, provinsi, kota, kodepos FROM patients WHERE id = ? LIMIT 1", [$id]);
+        if (!$patient) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        return response()->json($patient, 200);
     }
 
     public function update(Request $request, $id)
@@ -103,7 +110,7 @@ class PatientController extends Controller
 
             $patient->update($data);
 
-            return response()->json(['success' => true]);
+            return response()->json(['message' => 'Data berhasil di perbarui']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -113,9 +120,16 @@ class PatientController extends Controller
     {
         try {
             $patient = Patient::findOrFail($id);
+
+            // Cari dan hapus user berdasarkan email pasien
+            $user = User::where('email', $patient->email)->first();
+            if ($user) {
+                $user->delete();
+            }
+
             $patient->delete();
 
-            return response()->json(['success' => true, 'message' => 'Data pasien berhasil dihapus.']);
+            return response()->json(['message' => 'Data pasien berhasil dihapus.']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
