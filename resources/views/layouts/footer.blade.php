@@ -1,3 +1,3 @@
 <footer class="main-footer">
-    <strong>Copyright &copy; 2024 DENTHIS.PLUS</strong> All rights reserved.
+    <strong>Copyright &copy; 2025 SIKEMAS</strong> All rights reserved.
 </footer>

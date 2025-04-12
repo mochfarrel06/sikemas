@@ -4098,7 +4098,7 @@ input[type="submit"].btn-block {
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     color: #fff;
-    background-color: #0288d1;
+    background-color: #ff38a6b1;
 }
 .nav-pills .nav-treeview .nav-link.active {
     color: #fff; /* Warna teks item aktif */
@@ -17221,7 +17221,7 @@ body.text-sm .control-sidebar {
     align-items: center !important;
 }
 .nav-pills .nav-link:not(.active):hover {
-    color: #007bff;
+    color: #ff38a6b1;
 }
 .nav-pills .nav-item.dropdown.show .nav-link:hover {
     color: #fff;

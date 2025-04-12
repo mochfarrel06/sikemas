@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title-page')
-    Spesialisasi
+    Poli
 @endsection
 
 @section('content')
@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Spesialisasi</h1>
+                    <h1 class="m-0">Poli</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Spesialisasi</li>
+                        <li class="breadcrumb-item active">Poli</li>
                     </ol>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                         <div class="card-header d-flex">
                             <div class="d-flex align-items-center">
                                 <i class="iconoir-table mr-2"></i>
-                                <h3 class="card-title">Tabel Spesialisasi</h3>
+                                <h3 class="card-title">Tabel Poli</h3>
                             </div>
 
                             <div class="ml-auto">
@@ -44,7 +44,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Spesialisasi</th>
+                                        <th>Poli</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>

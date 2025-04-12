@@ -2,11 +2,11 @@
 
 return [
     // 1. ADMIN
-    [
-        'text' => 'UTAMA',
-        'role' => ['admin', 'pasien', 'dokter'],
-        'is_header' => true,
-    ],
+    // [
+    //     'text' => 'UTAMA',
+    //     'role' => ['admin', 'pasien', 'dokter'],
+    //     'is_header' => true,
+    // ],
     [
         'text' => 'Dashboard',
         'url' => '/admin/dashboard',
@@ -25,7 +25,7 @@ return [
                 'role' => ['admin'],
             ],
             [
-                'text' => 'Spesialisasi',
+                'text' => 'Poli',
                 'url' => '/admin/specializations',
                 'role' => ['admin'],
             ],
@@ -66,11 +66,11 @@ return [
     ],
 
 
-    [
-        'text' => 'ANTREAN',
-        'role' => ['admin', 'pasien', 'dokter'],
-        'is_header' => true,
-    ],
+    // [
+    //     'text' => 'ANTREAN',
+    //     'role' => ['admin', 'pasien', 'dokter'],
+    //     'is_header' => true,
+    // ],
     [
         'text' => 'Antrean Pasien',
         'url' => '/data-patient/queue',
@@ -85,11 +85,11 @@ return [
         'icon' => 'iconoir-ease-curve-control-points',
     ],
 
-    [
-        'text' => 'Pengguna',
-        'role' => ['admin'],
-        'is_header' => true,
-    ],
+    // [
+    //     'text' => 'Pengguna',
+    //     'role' => ['admin'],
+    //     'is_header' => true,
+    // ],
     [
         'text' => 'Manajemen Pengguna',
         'url' => '/admin/user-management',

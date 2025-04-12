@@ -12,16 +12,33 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/izitoast/css/iziToast.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+
+    <style>
+        .btn-login {
+            background: #ff38a6b1;
+            color: #fff;
+            border-color: #ff38a6b1;
+            box-shadow: none;
+            transition: ease-in-out .3s all;
+        }
+
+        .btn-login:hover {
+            background: #ea2692b1;
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body class="hold-transition login-page">
     <div class="login-box">
-        <div class="login-logo">
-            <a><b>DENTHIS.PLUS</b></a>
-        </div>
         <div class="card">
             <div class="card-body login-card-body" style="padding-bottom: 30px">
-                <p class="login-box-msg">Login untuk memulai aplikasi</p>
+                <h2 class="d-flex align-items-center justify-content-center">
+                    <i class="iconoir-home-hospital mr-2"></i>
+                    <span>SIKEMAS</span>
+                </h2>
+                <p class="login-box-msg">Administrator</p>
 
                 <form action="{{ route('login.store') }}" method="post">
                     @csrf
@@ -55,28 +72,12 @@
                         @enderror
                     </div>
 
-                    <div class="row mt-4">
+                    <div class="row mt-5">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            <button type="submit" class="btn btn-login btn-block">Login</button>
                         </div>
                     </div>
                 </form>
-
-                {{-- <p class="mb-1 mt-2">
-                    <a href="{{ route('forgot-password') }}">Lupa Password?</a>
-                </p> --}}
-                <p class="mb-1 mt-1">
-                    <a href="{{ route('register') }}">Buat akun baru?</a>
-                </p>
-
-                {{-- <div class="mt-3 text-center">
-                    <button class="btn btn-secondary"
-                        onclick="fillLogin('admin@example.com', '123456789')">Admin</button>
-                    <button class="btn btn-secondary"
-                        onclick="fillLogin('pasien@example.com', 'password')">Pasien</button>
-                    <button class="btn btn-secondary"
-                        onclick="fillLogin('dokter@example.com', 'password')">Dokter</button>
-                </div> --}}
             </div>
         </div>
     </div>

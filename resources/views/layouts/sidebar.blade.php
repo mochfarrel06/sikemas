@@ -1,8 +1,8 @@
 <aside class="main-sidebar elevation-4">
     <!-- Brand Logo -->
     <a class="brand-link mb-3">
-        <i class="nav-icon iconoir-hospital" style="font-size: 2rem; color: #0288D1"></i>
-        <span class="brand-text font-weight-bold" style="color: #4A4A4A; font-weight: 800">DENTHIS PLUS</span>
+        <i class="nav-icon iconoir-hospital" style="font-size: 2rem; color: #ff38a6b1"></i>
+        <span class="brand-text font-weight-bold" style="color: #4A4A4A; font-weight: 800">SIKEMAS</span>
     </a>
 
     <!-- Sidebar -->
