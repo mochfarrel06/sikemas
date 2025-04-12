@@ -128,7 +128,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Spesialisasi</label>
+                                            <label>Poli</label>
                                             <input type="text" class="form-control"
                                                 value="{{ $doctor->specialization->name }}" disabled>
                                         </div>

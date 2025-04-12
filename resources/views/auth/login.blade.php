@@ -16,15 +16,15 @@
 
     <style>
         .btn-login {
-            background: #ff38a6b1;
+            background: #38A6B1;
             color: #fff;
-            border-color: #ff38a6b1;
+            border-color: #38A6B1;
             box-shadow: none;
             transition: ease-in-out .3s all;
         }
 
         .btn-login:hover {
-            background: #ea2692b1;
+            background: #298891;
             color: #fff;
         }
     </style>

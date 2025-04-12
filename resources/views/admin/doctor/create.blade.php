@@ -189,10 +189,10 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="specialization_id">Spesialisasi</label>
+                                            <label for="specialization_id">Poli</label>
                                             <select name="specialization_id" id="specialization_id"
                                                 class="form-control @error('specialization_id') is-invalid @enderror">
-                                                <option value="">-- Pilih Spesialisasi --</option>
+                                                <option value="">-- Pilih Poli --</option>
                                                 @foreach ($specializations as $specialization)
                                                     <option value="{{ $specialization->id }}">{{ $specialization->name }}</option>
                                                 @endforeach

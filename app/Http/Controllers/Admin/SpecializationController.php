@@ -40,10 +40,10 @@ class SpecializationController extends Controller
 
             $specialization->save();
 
-            session()->flash('success', 'Berhasil menambahkan data spesialisasi');
+            session()->flash('success', 'Berhasil menambahkan data poli');
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
-            session()->flash('error', 'Terdapat kesalahan pada proses data spesialisasi: ' . $e->getMessage());
+            session()->flash('error', 'Terdapat kesalahan pada proses data poli: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
@@ -83,14 +83,14 @@ class SpecializationController extends Controller
             if ($specialization->isDirty()) {
                 $specialization->save();
 
-                session()->flash('success', 'Berhasil melakukan perubahan spesialisasi');
+                session()->flash('success', 'Berhasil melakukan perubahan poli');
                 return response()->json(['success' => true], 200);
             } else {
-                session()->flash('info', 'Tidak melakukan perubahan spesialisasi');
+                session()->flash('info', 'Tidak melakukan perubahan poli');
                 return response()->json(['info' => true], 200);
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'Terdapat kesalahan pada proses spesialisasi: ' . $e->getMessage());
+            session()->flash('error', 'Terdapat kesalahan pada proses poli: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
@@ -105,7 +105,7 @@ class SpecializationController extends Controller
 
             $specialization->delete();
 
-            return response(['status' => 'success', 'message' => 'Berhasil menghapus data spesialisasi']);
+            return response(['status' => 'success', 'message' => 'Berhasil menghapus data poli']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }

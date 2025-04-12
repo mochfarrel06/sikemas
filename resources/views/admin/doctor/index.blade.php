@@ -45,7 +45,7 @@
                                         <th>No</th>
                                         <th>Kode Dokter</th>
                                         <th>Dokter</th>
-                                        <th>Spesialisasi</th>
+                                        <th>Poli</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
