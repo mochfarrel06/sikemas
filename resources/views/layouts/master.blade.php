@@ -43,6 +43,18 @@
             padding: 10px;
             justify-content: center;
         }
+
+        .btn-primary2 {
+            color: #fff;
+            background-color: #38A6B1;
+            border-color:
+            #38A6B1;
+            box-shadow: none;
+        }
+
+        .btn-primary2:hover {
+            color: #fff;
+        }
     </style>
 
 </head>

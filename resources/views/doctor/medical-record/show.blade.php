@@ -13,8 +13,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('doctor.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('doctor.medical-record.index') }}">Rekam Medis</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('doctor.dashboard') }}" style="color: #38A6B1">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('doctor.medical-record.index') }}" style="color: #38A6B1">Rekam Medis</a></li>
                         <li class="breadcrumb-item active">Detail</li>
                     </ol>
                 </div>

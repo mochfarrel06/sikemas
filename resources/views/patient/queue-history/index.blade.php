@@ -27,7 +27,7 @@
                             </div>
                             <div class="ml-auto">
                                 <a href="{{ route('history.pdf') }}"
-                                    class="btn btn-primary d-flex align-items-center" target="_blank"><i
+                                    class="btn btn-primary2 d-flex align-items-center" target="_blank"><i
                                         class="iconoir-download mr-2"></i> Export</a>
                             </div>
                         </div>

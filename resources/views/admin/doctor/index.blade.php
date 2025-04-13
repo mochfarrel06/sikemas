@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" style="color: #38A6B1">Dashboard</a></li>
                         <li class="breadcrumb-item active">Dokter</li>
                     </ol>
                 </div>
@@ -34,7 +34,7 @@
 
                             <div class="ml-auto">
                                 <a href="{{ route('admin.doctors.create') }}"
-                                    class="btn btn-primary d-flex align-items-center"><i
+                                    class="btn btn-primary2 d-flex align-items-center"><i
                                         class="iconoir-plus-circle mr-2"></i> Tambah</a>
                             </div>
                         </div>

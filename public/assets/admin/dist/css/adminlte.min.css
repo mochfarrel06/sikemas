@@ -3251,13 +3251,13 @@ input[type="submit"].btn-block {
 .dropdown-item:hover {
     color: #fff;
     text-decoration: none;
-    background-color: #0288d1;
+    background-color: #38A6B1;
 }
 .dropdown-item.active,
 .dropdown-item:active {
     color: #fff;
     text-decoration: none;
-    background-color: #007bff;
+    background-color: #38A6B1;
 }
 .dropdown-item.disabled,
 .dropdown-item:disabled {

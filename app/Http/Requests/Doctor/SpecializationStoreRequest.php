@@ -29,8 +29,8 @@ class SpecializationStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Spesialisasi tidak boleh kosong',
-            'name.unique' => 'Spesialisasi sudah di tambahkan'
+            'name.required' => 'Poli tidak boleh kosong',
+            'name.unique' => 'Poli sudah di tambahkan'
         ];
     }
 }

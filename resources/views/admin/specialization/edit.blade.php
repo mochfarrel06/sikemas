@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Edit Spesialisasi</h1>
+                    <h1 class="m-0">Edit Poli</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.specializations.index') }}">Spesialisasi</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" style="color: #38A6B1">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.specializations.index') }}" style="color: #38A6B1">Poli</a></li>
                         <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </div>
@@ -34,7 +34,7 @@
 
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="name">Spesialisasi</label>
+                                    <label for="name">Poli</label>
                                     <input type="text" id="name" name="name" class="form-control"
                                         @error('name') is-invalid @enderror"
                                         value="{{ old('name', $specialization->name) }}">
@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="card-footer">
-                                <button type="submit" id="submit-btn" class="btn btn-primary mr-2">Simpan</button>
+                                <button type="submit" id="submit-btn" class="btn btn-primary2 mr-2">Simpan</button>
                                 <a href="{{ route('admin.specializations.index') }}" class="btn btn-warning">Kembali</a>
                             </div>
                         </form>
@@ -74,13 +74,13 @@
                     if (response.success) {
                         // Flash message sukses
                         sessionStorage.setItem('success',
-                            'spesialisasi berhasil disubmit.');
+                            'Poli berhasil disubmit.');
                         window.location.href =
                             "{{ route('admin.specializations.index') }}"; // Redirect to index page
                     } else if (response.info) {
                         // Flash message info
                         sessionStorage.setItem('info',
-                            'Tidak melakukan perubahan data pada spesialisasi.');
+                            'Tidak melakukan perubahan data pada Poli.');
                         window.location.href =
                             "{{ route('admin.specializations.index') }}"; // Redirect to index page
                     } else {
@@ -100,7 +100,7 @@
                     }
 
                     const message = response.responseJSON.message ||
-                        'Terdapat kesalahan pada proses spesialisasi';
+                        'Terdapat kesalahan pada proses Poli';
                     $('#flash-messages').html('<div class="alert alert-danger">' + message +
                         '</div>');
                 },

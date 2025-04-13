@@ -29,13 +29,13 @@
                             @if (auth()->user() && auth()->user()->role == 'pasien')
                                 <div class="ml-auto">
                                     <a href="{{ route('data-patient.queue.create') }}"
-                                        class="btn btn-primary d-flex align-items-center"><i
+                                        class="btn btn-primary2 d-flex align-items-center"><i
                                             class="iconoir-plus-circle mr-2"></i> Tambah</a>
                                 </div>
                             @elseif (auth()->user() && auth()->user()->role == 'dokter')
                                 <div class="ml-auto">
                                     <a href="{{ route('data-patient.createAntreanKhusus') }}"
-                                        class="btn btn-primary d-flex align-items-center"><i
+                                        class="btn btn-primary2 d-flex align-items-center"><i
                                             class="iconoir-plus-circle mr-2"></i> Tambah</a>
                                 </div>
                             @endif
