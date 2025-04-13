@@ -4831,8 +4831,8 @@ input[type="submit"].btn-block {
 .page-item.active .page-link {
     z-index: 3;
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #38A6B1;
+    border-color: #38A6B1;
 }
 .page-item.disabled .page-link {
     color: #6c757d;
@@ -53459,8 +53459,8 @@ a.text-muted:hover {
 }
 .accent-primary .page-item.active .page-link,
 .accent-primary .page-item.active a {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #38A6B1;
+    border-color: #38A6B1;
     color: #fff;
 }
 .accent-primary .page-item.disabled .page-link,
