@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\QueueController;
+use App\Http\Controllers\Api\QueueHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,10 @@ Route::middleware('auth:sanctum')->prefix('pasien')->group(function () {
     Route::get('/{id}', [PatientController::class, 'show']);
     Route::put('/{id}', [PatientController::class, 'update']);
     Route::delete('/{id}', [PatientController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->prefix('history')->group(function () {
+    Route::get('/', [QueueHistoryController::class, 'index']);
 });
 
 Route::middleware('auth:sanctum')->prefix('queue')->group(function() {

@@ -25,6 +25,12 @@ class AuthController extends Controller
             ], 401); // Unauthorized
         }
 
+        if ($user->role !== 'pasien') {
+            return response()->json([
+                'message' => 'Hanya pasien yang dapat mengakses aplikasi ini.',
+            ], 403); // Forbidden
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([

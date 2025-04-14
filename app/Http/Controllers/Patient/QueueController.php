@@ -88,6 +88,7 @@ class QueueController extends Controller
 
     public function store(QueueStoreRequest $request)
     {
+        //dd($request->all());
         $userId = Auth::id();
 
         $userEmail = Auth::user()->email;
