@@ -38,11 +38,14 @@ Route::middleware('auth:sanctum')->prefix('pasien')->group(function () {
     Route::delete('/{id}', [PatientController::class, 'destroy']);
 });
 
-Route::middleware('auth:sanctum')->prefix('history')->group(function () {
-    Route::get('/', [QueueHistoryController::class, 'index']);
-});
-
 Route::middleware('auth:sanctum')->prefix('queue')->group(function() {
     Route::get('/', [QueueController::class, 'index']);
     Route::post('/', [QueueController::class, 'store']);
+    Route::get('/history', [QueueController::class, 'show_history']);
+});
+
+Route::middleware('auth:sanctum')->prefix('dokter')->group(function () {
+    Route::get('/', [QueueController::class, 'show_dokter']);
+    Route::get('/poli', [QueueController::class, 'show_poli']);
+    Route::get('/jadwal_dokter/{doctor_id}/{date}', [QueueController::class, 'getDoctorSchedule']);
 });
