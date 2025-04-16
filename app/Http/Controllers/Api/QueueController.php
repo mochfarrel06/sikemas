@@ -12,6 +12,7 @@ use App\Models\Specialization;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class QueueController extends Controller
 {
@@ -96,7 +97,9 @@ class QueueController extends Controller
 
     public function show_dokter()
     {
-        $doctors = Doctor::all();
+        $doctors = DB::table('doctors')
+            ->select('id', 'user_id', 'specialization_id', 'kode_dokter', 'nama_depan', 'nama_belakang', 'email', 'no_hp', 'tgl_lahir', 'pengalaman', 'jenis_kelamin', 'golongan_darah')
+            ->get();
 
         return response()->json([
             'data' => $doctors,
@@ -105,10 +108,24 @@ class QueueController extends Controller
 
     public function show_poli()
     {
-        $specializations = Specialization::all();
+        $specializations = DB::table('specializations')
+            ->select('id', 'name')
+            ->get();
 
         return response()->json([
             'data' => $specializations,
+        ], 200);
+    }
+
+    public function show_dokter_by_poli($id)
+    {
+        $doctors = DB::table('doctors')
+            ->where('specialization_id', $id)
+            ->select('id', 'user_id', 'specialization_id', 'kode_dokter', 'nama_depan', 'nama_belakang', 'email', 'no_hp', 'tgl_lahir', 'pengalaman', 'jenis_kelamin', 'golongan_darah')
+            ->get();
+
+        return response()->json([
+            'data' => $doctors,
         ], 200);
     }
 

@@ -47,5 +47,6 @@ Route::middleware('auth:sanctum')->prefix('queue')->group(function() {
 Route::middleware('auth:sanctum')->prefix('dokter')->group(function () {
     Route::get('/', [QueueController::class, 'show_dokter']);
     Route::get('/poli', [QueueController::class, 'show_poli']);
+    Route::get('/poli/{id}', [QueueController::class, 'show_dokter_by_poli']);
     Route::get('/jadwal_dokter/{doctor_id}/{date}', [QueueController::class, 'getDoctorSchedule']);
 });
