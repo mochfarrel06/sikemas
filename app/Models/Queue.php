@@ -35,4 +35,10 @@ class Queue extends Model
     {
         return $this->belongsTo(Patient::class);
     }
+
+    public function medicalRecord()
+    {
+    return $this->hasOne(MedicalRecord::class, 'queue_id');
+    }
+
 }
