@@ -81,14 +81,16 @@ class QueueController extends Controller
 
     public function show_history()
     {
-        $user = auth()->user();
-        $role = $user->role;
+        // $user = auth()->user();
+        // $role = $user->role;
 
-        if ($role === 'admin' || $role === 'dokter') {
-            $queueHistories = QueueHistory::all();
-        } else {
-            $queueHistories = QueueHistory::where('user_id', $user->id)->get();
-        }
+        // if ($role === 'admin' || $role === 'dokter') {
+
+        // } else {
+        //     $queueHistories = QueueHistory::where('user_id', $user->id)->get();
+        // }
+
+        $queueHistories = QueueHistory::all();
 
         return response()->json([
             'data' => $queueHistories,
