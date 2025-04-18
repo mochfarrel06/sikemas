@@ -97,7 +97,7 @@ class QueueController extends Controller
     //     ], 200);
     // }
     public function show_history(Request $request)
-{
+    {
     $request->validate([
         'queue_id' => 'required|exists:queues,id',
     ]);
@@ -113,16 +113,15 @@ class QueueController extends Controller
     if (!$queue || !$queue->medicalRecord) {
         return response()->json([
             'success' => false,
-            'message' => 'Medical record tidak ditemukan atau status antrian belum selesai.',
+            'message' => 'Medical record tidak ditemukan atau antrian belum selesai.',
         ], 404);
     }
 
     return response()->json([
         'success' => true,
-        'data' => $queue
+        'data' => $queue->medicalRecord
     ]);
-}
-
+    }
 
 
     public function show_dokter()
