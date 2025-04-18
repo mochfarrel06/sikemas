@@ -79,23 +79,42 @@ class QueueController extends Controller
         ], 201);
     }
 
-    public function show_history()
+    // public function show_history()
+    // {
+    //     // $user = auth()->user();
+    //     // $role = $user->role;
+
+    //     // if ($role === 'admin' || $role === 'dokter') {
+
+    //     // } else {
+    //     //     $queueHistories = QueueHistory::where('user_id', $user->id)->get();
+    //     // }
+
+    //     $queueHistories = QueueHistory::all();
+
+    //     return response()->json([
+    //         'data' => $queueHistories,
+    //     ], 200);
+    // }
+    public function show_history(Request $request)
     {
-        // $user = auth()->user();
-        // $role = $user->role;
+    $user = auth()->user();
 
-        // if ($role === 'admin' || $role === 'dokter') {
+    $queues = Queue::where('user_id', $user->id)
+        ->where('status', 'selesai')
+        ->with('medicalRecord')
+        ->get();
 
-        // } else {
-        //     $queueHistories = QueueHistory::where('user_id', $user->id)->get();
-        // }
+    $records = $queues->filter(function ($queue) {
+        return $queue->medicalRecord !== null;
+    })->values();
 
-        $queueHistories = QueueHistory::all();
-
-        return response()->json([
-            'data' => $queueHistories,
-        ], 200);
+    return response()->json([
+        'success' => true,
+        'data' => $records
+    ]);
     }
+
 
     public function show_dokter()
     {
