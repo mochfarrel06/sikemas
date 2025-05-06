@@ -303,4 +303,92 @@ class QueueController extends Controller
 
         return redirect()->route('data-patient.queue.index')->with('success', 'Antrean berhasil ditambahkan.');
     }
+
+    public function createAntreanAdmin(Request $request)
+    {
+        $doctors = Doctor::all();
+        $patients = Patient::all();
+
+        if ($request->has('doctor_id') && $request->has('date')) {
+            $doctorId = $request->input('doctor_id');
+            $date = $request->input('date');
+
+            $dayOfWeek = Carbon::parse($date)->format('l');
+            $doctorSchedules = DoctorSchedule::where('doctor_id', $doctorId)
+                ->where('hari', $dayOfWeek)
+                ->get();
+
+            $slots = [];
+            foreach ($doctorSchedules as $schedule) {
+                $start = Carbon::parse($schedule->jam_mulai);
+                $end = Carbon::parse($schedule->jam_selesai);
+
+                $waktuPeriksa = $schedule->waktu_periksa ?? 30;
+                $waktuJeda = $schedule->waktu_jeda ?? 10;
+
+                while ($start->copy()->addMinutes($waktuPeriksa)->lte($end)) {
+                    $slotStart = $start->format('H:i');
+                    $slotEnd = $start->copy()->addMinutes($waktuPeriksa)->format('H:i');
+
+                    $isBooked = Queue::where('doctor_id', $doctorId)
+                        ->where('tgl_periksa', $date)
+                        ->where('start_time', $slotStart)
+                        ->exists();
+
+                    $slots[] = [
+                        'start' => $slotStart,
+                        'end' => $slotEnd,
+                        'is_booked' => $isBooked
+                    ];
+
+                    $start->addMinutes($waktuPeriksa + $waktuJeda);
+                }
+            }
+
+            return response()->json($slots);
+        }
+
+        return view('patient.queue.createAntreanAdmin', compact('doctors', 'patients'));
+    }
+
+    public function storeAntreanAdmin(QueueStoreRequest $request)
+    {
+        //dd($request->all());
+        $request->validate([
+            'doctor_id' => 'required|exists:doctors,id',
+            'patient_id' => 'required|exists:patients,id',
+            'tgl_periksa' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        // Cek apakah slot waktu sudah dipesan
+        $existingQueue = Queue::where('doctor_id', $request->doctor_id)
+            ->where('tgl_periksa', $request->tgl_periksa)
+            ->where('start_time', $request->start_time)
+            ->exists();
+
+        if ($existingQueue) {
+            return redirect()->back()->withErrors(['error' => 'Slot waktu ini sudah dipesan.']);
+        }
+
+        $patient = Patient::findOrFail($request->patient_id);
+        $userId = $patient->user_id;
+
+        // Simpan data antrean
+        Queue::create([
+            'user_id' => $userId,
+            'doctor_id' => $request->doctor_id,
+            'patient_id' => $request->patient_id,
+            'tgl_periksa' => $request->tgl_periksa,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'keterangan' => $request->keterangan,
+            'status' => 'booking',
+            'is_booked' => true
+        ]);
+
+        return redirect()->route('data-patient.queue.index')->with('success', 'Antrean berhasil ditambahkan.');
+    }
 }

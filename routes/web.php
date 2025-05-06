@@ -88,6 +88,9 @@ Route::group([
 
     Route::get('create-antrean-khusus', [QueueController::class, 'createAntreanKhusus'])->name('createAntreanKhusus');
     Route::post('store-antrean-khusus', [QueueController::class, 'storeAntreanKhusus'])->name('storeAntreanKhusus');
+
+    Route::get('create-antrean-admin', [QueueController::class, 'createAntreanAdmin'])->name('createAntreanAdmin');
+    Route::post('store-antrean-admin', [QueueController::class, 'storeAntreanAdmin'])->name('storeAntreanAdmin');
 });
 
 // 6. Route history
