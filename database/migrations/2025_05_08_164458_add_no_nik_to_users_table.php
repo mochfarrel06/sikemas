@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('no_nik')->nullable()->after('email'); // atau ubah sesuai kebutuhan
-
+            $table->string('no_nik')->nullable();
+            $table->string('no_bpjs')->nullable();
         });
     }
 
