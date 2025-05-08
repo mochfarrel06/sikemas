@@ -98,23 +98,58 @@ class PatientController extends Controller
         return response()->json($patient, 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         try {
-            $patient = Patient::findOrFail($id);
-            $data = $request->except('password');
-
-            if ($request->filled('password')) {
-                $data['password'] = bcrypt($request->password);
+            $user = $request->user(); 
+            $patient = $user->patient; 
+    
+            if (!$patient) {
+                return response()->json(['error' => 'Data pasien tidak ditemukan.'], 404);
             }
-
-            $patient->update($data);
-
-            return response()->json(['message' => 'Data berhasil di perbarui']);
+    
+            $request->validate([
+                'nama_depan' => 'nullable|string|max:100',
+                'nama_belakang' => 'nullable|string|max:100',
+                'no_hp' => 'nullable|string|max:20',
+                'tgl_lahir' => 'nullable|date',
+                'jenis_kelamin' => 'nullable|string|in:L,P',
+                'alamat' => 'nullable|string|max:255',
+                'negara' => 'nullable|string|max:100',
+                'provinsi' => 'nullable|string|max:100',
+                'kota' => 'nullable|string|max:100',
+                'kodepos' => 'nullable|string|max:20',
+                'no_nik' => 'nullable|string|max:50|unique:users,no_nik,' . $user->id,
+                'no_bpjs' => 'nullable|string|max:50|unique:users,no_bpjs,' . $user->id,
+            ]);
+    
+            $data = $request->only([
+                'nama_depan',
+                'nama_belakang',
+                'no_hp',
+                'tgl_lahir',
+                'jenis_kelamin',
+                'alamat',
+                'negara',
+                'provinsi',
+                'kota',
+                'kodepos',
+                'no_nik',
+                'no_bpjs',
+            ]);
+    
+            $user->update($data);
+            $patient->update($data); 
+            return response()->json([
+                'message' => 'Data pengguna & pasien berhasil diperbarui.',
+                'user' => $user,
+                'patient' => $patient,
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+    
 
     public function destroy($id)
     {
