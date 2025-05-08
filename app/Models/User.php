@@ -21,7 +21,6 @@ class User extends Authenticatable
         'nama_depan',
         'nama_belakang',
         'email',
-        'no_nik',
         'password',
         'role',
         'foto',
@@ -32,7 +31,9 @@ class User extends Authenticatable
         'negara',
         'provinsi',
         'kota',
-        'kodepos'
+        'kodepos',
+        'no_nik',
+        'no_bpjs'
     ];
 
     /**
