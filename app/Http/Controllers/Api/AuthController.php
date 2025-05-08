@@ -103,8 +103,8 @@ class AuthController extends Controller
                 'provinsi' => $request->provinsi,
                 'kota' => $request->kota,
                 'kodepos' => $request->kodepos,
-                // 'no_nik' => $request->no_nik,
-                // 'no_bpjs' => $request->no_bpjs,
+                'no_nik' => $request->no_nik,
+                'no_bpjs' => $request->no_bpjs,
             ]);
 
             $patient->save();
