@@ -11,54 +11,51 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|string', 
-        'password' => 'required',
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    $user = User::where('email', $request->email)
-                ->orWhere('no_nik', $request->email)
-                ->first();
+        $user = User::where('email', $request->email)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Email atau password salah.',
+            ], 401);
+        }
+
+        if ($user->role !== 'pasien') {
+            return response()->json([
+                'message' => 'Hanya pasien yang dapat mengakses aplikasi ini.',
+            ], 403);
+        }
+
+        $token = $user->createToken('api-token')->plainTextToken;
+
         return response()->json([
-            'message' => 'Email / NIK atau password salah.',
-        ], 401);
+            'token' => $token,
+            'message' => 'Berhasil masuk aplikasi',
+            'user' => [
+                'id' => $user->id,
+                'nama_depan' => $user->nama_depan,
+                'nama_belakang' => $user->nama_belakang,
+                'email' => $user->email,
+                'role' => $user->role,
+                'foto' => $user->foto,
+                'no_hp' => $user->no_hp,
+                'tgl_lahir' => $user->tgl_lahir,
+                'jenis_kelamin' => $user->jenis_kelamin,
+                'alamat' => $user->alamat,
+                'negara' => $user->negara,
+                'provinsi' => $user->provinsi,
+                'kota' => $user->kota,
+                'kodepos' => $user->kodepos,
+                'no_nik' => $user->no_nik,
+                'no_bpjs' => $user->no_bpjs,
+            ]
+        ]);
     }
-
-    if ($user->role !== 'pasien') {
-        return response()->json([
-            'message' => 'Hanya pasien yang dapat mengakses aplikasi ini.',
-        ], 403);
-    }
-
-    $token = $user->createToken('api-token')->plainTextToken;
-
-    return response()->json([
-        'token' => $token,
-        'message' => 'Berhasil masuk aplikasi',
-        'user' => [
-            'id' => $user->id,
-            'nama_depan' => $user->nama_depan,
-            'nama_belakang' => $user->nama_belakang,
-            'email' => $user->email,
-            'role' => $user->role,
-            'foto' => $user->foto,
-            'no_hp' => $user->no_hp,
-            'tgl_lahir' => $user->tgl_lahir,
-            'jenis_kelamin' => $user->jenis_kelamin,
-            'alamat' => $user->alamat,
-            'negara' => $user->negara,
-            'provinsi' => $user->provinsi,
-            'kota' => $user->kota,
-            'kodepos' => $user->kodepos,
-            'no_nik' => $user->no_nik,
-            'no_bpjs' => $user->no_bpjs,
-        ]
-    ]);
-}
-
 
     public function logout(Request $request)
     {
