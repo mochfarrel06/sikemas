@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('provinsi')->nullable();
             $table->string('kota')->nullable();
             $table->string('kodepos')->nullable();
+            $table->string('no_nik')->nullable();
+            $table->string('no_bpjs')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

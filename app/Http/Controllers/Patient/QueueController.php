@@ -17,23 +17,22 @@ class QueueController extends Controller
 {
     public function index()
     {
-        // $queues = Queue::with('doctor')->get();
-        // $userQueue = Queue::where('user_id', auth()->id())->where('status', 'called')->first();
-        // return view('patient.queue.index', compact('queues', 'userQueue'));
-
-        // Ambil role pengguna yang sedang login
         $user = auth()->user();
-        $role = $user->role; // Pastikan ada kolom 'role' di tabel users
+        $role = $user->role;
 
-        // Jika user adalah admin atau dokter, tampilkan semua antrian
         if ($role === 'admin' || $role === 'dokter') {
-            $queues = Queue::with('doctor')->get();
+            $queues = Queue::with('doctor')
+                ->where('status', '!=', 'batal')
+                ->where('status', '!=', 'selesai')
+                ->get();
         } else {
-            // Jika user adalah pasien, hanya tampilkan antrian miliknya
-            $queues = Queue::with('doctor')->where('user_id', $user->id)->get();
+            $queues = Queue::with('doctor')
+                ->where('user_id', $user->id)
+                ->where('status', '!=', 'batal')
+                ->where('status', '!=', 'selesai')
+                ->get();
         }
 
-        // Ambil antrian pasien yang statusnya 'called' berdasarkan user_id
         $userQueue = Queue::where('user_id', $user->id)->where('status', 'called')->first();
 
         return view('patient.queue.index', compact('queues', 'userQueue'));
@@ -118,6 +117,8 @@ class QueueController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'keterangan' => $request->keterangan,
+            'waktu_mulai' => $request->start_time,
+            'waktu_selesai' => $request->end_time,
             // 'urutan' => $newUrutan,
             'status' => 'booking',
             'is_booked' => true
@@ -132,20 +133,26 @@ class QueueController extends Controller
             $queue = Queue::findOrFail($id);
             $userId = Auth::id();
 
-            QueueHistory::create([
-                'queue_id' => $queue->id,
-                'user_id' => $userId,
-                'doctor_id' => $queue->doctor_id,
-                'patient_id' => $queue->patient_id,
-                'tgl_periksa' => $queue->tgl_periksa,
-                'start_time' => $queue->start_time,
-                'end_time' => $queue->end_time,
-                'keterangan' => $queue->keterangan,
-                'status' => 'batal',
-                'is_booked' => $queue->is_booked,
-            ]);
+            // QueueHistory::create([
+            //     'queue_id' => $queue->id,
+            //     'user_id' => $userId,
+            //     'doctor_id' => $queue->doctor_id,
+            //     'patient_id' => $queue->patient_id,
+            //     'tgl_periksa' => $queue->tgl_periksa,
+            //     'start_time' => $queue->start_time,
+            //     'end_time' => $queue->end_time,
+            //     'keterangan' => $queue->keterangan,
+            //     'status' => 'batal',
+            //     'is_booked' => $queue->is_booked,
+            // ]);
 
-            $queue->delete();
+            // $queue->delete();
+
+            $queue->update([
+                'status' => 'batal',
+                'start_time' => null,
+                'end_time' => null,
+            ]);
 
             return response(['status' => 'success', 'message' => 'Berhasil menghapus data pasien']);
         } catch (\Exception $e) {

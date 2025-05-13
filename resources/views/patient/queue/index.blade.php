@@ -32,12 +32,6 @@
                                         class="btn btn-primary2 d-flex align-items-center"><i
                                             class="iconoir-plus-circle mr-2"></i> Tambah</a>
                                 </div>
-                            @elseif (auth()->user() && auth()->user()->role == 'dokter')
-                                <div class="ml-auto">
-                                    <a href="{{ route('data-patient.createAntreanKhusus') }}"
-                                        class="btn btn-primary2 d-flex align-items-center"><i
-                                            class="iconoir-plus-circle mr-2"></i> Tambah</a>
-                                </div>
                             @elseif (auth()->user() && auth()->user()->role == 'admin')
                                 <div class="ml-auto">
                                     <a href="{{ route('data-patient.createAntreanAdmin') }}"
@@ -104,7 +98,7 @@
                                                         @elseif ((auth()->user()->role == 'admin' && $queue->status == 'booking') || (auth()->user()->role == 'pasien' && $queue->status == 'booking'))
                                                             <li><a class="dropdown-item delete-item"
                                                                     href="{{ route('data-patient.queue.destroy', $queue->id) }}"><i
-                                                                        class="iconoir-trash-solid mr-2"></i> Hapus</a>
+                                                                        class="iconoir-trash-solid mr-2"></i> Batal</a>
                                                             </li>
                                                         @endif
                                                     </ul>

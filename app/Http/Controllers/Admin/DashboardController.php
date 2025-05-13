@@ -16,11 +16,16 @@ class DashboardController extends Controller
     {
         $jumlahDokter = Doctor::count();
         $jumlahPasien = Patient::count();
-        $jumlahAntrean = Queue::whereDate('tgl_periksa', Carbon::today())->count();
+        $jumlahAntrean = Queue::whereDate('tgl_periksa', Carbon::today())
+            ->whereIn('status', ['booking', 'periksa']) // Menambahkan filter status booking dan periksa
+            ->count();
         $jumlahPoli = Specialization::count();
 
         $antreanHariIni = Queue::whereDate('tgl_periksa', Carbon::today())
             ->orderBy('start_time', 'asc')
+            ->where('status', '!=', 'selesai')
+            ->where('status', '!=', 'batal')
+            ->whereIn('status', ['booking', 'periksa']) // Menambahkan filter status booking dan periksa
             ->get();
 
         return view('admin.dashboard', compact('jumlahDokter', 'jumlahPasien', 'jumlahAntrean', 'antreanHariIni', 'jumlahPoli'));

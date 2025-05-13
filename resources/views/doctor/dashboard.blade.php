@@ -62,9 +62,9 @@
                                             <td>{{ $queue->doctor->nama_depan }} {{ $queue->doctor->nama_belakang }}</td>
                                             <td>{{ $queue->patient->nama_depan }} {{ $queue->patient->nama_belakang }}
                                             </td>
-                                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->start_time)->format('H:i') }}
+                                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->start_time ?? $queue->waktu_mulai)->format('H:i') }}
                                                 -
-                                                {{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->end_time)->format('H:i') }}
+                                                {{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->end_time ?? $queue->waktu_selesai)->format('H:i') }}
                                             </td>
                                             <td>
                                                 @if ($queue->status == 'booking')

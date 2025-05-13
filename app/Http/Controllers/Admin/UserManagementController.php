@@ -64,6 +64,18 @@ class UserManagementController extends Controller
             if ($user->isDirty()) {
                 $user->save();
 
+                // Tambahkan ini untuk update nama di tabel doktors
+                if ($user->role === 'dokter') {
+                    // Pastikan ada relasi antara User dan Doktor, misalnya $user->doktor
+                    $doktor = $user->doctor; // Relasi harus sudah dibuat di model User
+                    if ($doktor) {
+                        $doktor->nama_depan = $request->nama_depan;
+                        $doktor->nama_belakang = $request->nama_belakang;
+                        $doktor->email = $request->email;
+                        $doktor->save();
+                    }
+                }
+
                 session()->flash('success', 'Berhasil melakukan perubahan data manajemen pengguna');
                 return response()->json(['success' => true], 200);
             } else {

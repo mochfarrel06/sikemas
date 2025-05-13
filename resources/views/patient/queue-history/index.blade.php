@@ -25,11 +25,11 @@
                                 <i class="iconoir-table mr-2"></i>
                                 <h3 class="card-title">Riwayat Antrean Pasien</h3>
                             </div>
-                            <div class="ml-auto">
+                            {{-- <div class="ml-auto">
                                 <a href="{{ route('history.pdf') }}"
                                     class="btn btn-primary2 d-flex align-items-center" target="_blank"><i
                                         class="iconoir-download mr-2"></i> Export</a>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
@@ -42,6 +42,7 @@
                                         <th>Dokter</th>
                                         <th>Keterangan</th>
                                         <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,18 +51,42 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $queue->patient->nama_depan }} {{ $queue->patient->nama_belakang }}</td>
                                             <td>{{ $queue->tgl_periksa }}</td>
-                                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->start_time)->format('H:i') }} - {{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->end_time)->format('H:i') }}</td>
+                                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->start_time ?? $queue->waktu_mulai)->format('H:i') }}
+                                                -
+                                                {{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->end_time ?? $queue->waktu_selesai)->format('H:i') }}
+                                            </td>
                                             <td>{{ $queue->doctor->nama_depan }} {{ $queue->doctor->nama_belakang }}</td>
                                             <td>{{ $queue->keterangan }}</td>
-                                            <td>@if ($queue->status == 'booking')
-                                                <a class="btn btn-warning btn-sm">Booking</a>
-                                            @elseif ($queue->status == 'periksa')
-                                                <a class="btn btn-info btn-sm">Periksa</a>
-                                            @elseif ($queue->status == 'selesai')
-                                                <a class="btn btn-success btn-sm">Selesai</a>
-                                            @elseif ($queue->status == 'batal')
-                                                <a class="btn btn-danger btn-sm">Batal</a>
-                                            @endif</td>
+                                            <td>
+                                                @if ($queue->status == 'booking')
+                                                    <a class="btn btn-warning btn-sm">Booking</a>
+                                                @elseif ($queue->status == 'periksa')
+                                                    <a class="btn btn-info btn-sm">Periksa</a>
+                                                @elseif ($queue->status == 'selesai')
+                                                    <a class="btn btn-success btn-sm">Selesai</a>
+                                                @elseif ($queue->status == 'batal')
+                                                    <a class="btn btn-danger btn-sm">Batal</a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a data-toggle="dropdown">
+                                                        <i class="iconoir-more-vert"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu dropdown-menu-right">
+                                                        <li><a class="dropdown-item" href="{{ route('history.queue-history.show', $queue->id) }}"><i
+                                                            class="iconoir-eye-solid mr-2"></i> Detail</a>
+                                                        </li>
+                                                        @if ($queue->status == 'selesai' && $queue->medical_id)
+                                                            <li><a class="dropdown-item"
+                                                                href="{{ route('history.history-medical.pdf', $queue->medical_id) }}"
+                                                                target="_blank"><i class="iconoir-download mr-2"></i>
+                                                                Download</a>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

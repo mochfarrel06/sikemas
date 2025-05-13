@@ -18,9 +18,12 @@ return new class extends Migration
             $table->foreignId('doctor_id')->constrained()->onDelete('cascade');
             $table->foreignId('patient_id')->nullable()->constrained()->onDelete('cascade');
 
+            $table->string('medical_id')->nullable();
             $table->date('tgl_periksa');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->time('waktu_mulai')->nullable();
+            $table->time('waktu_selesai')->nullable();
             $table->string('keterangan');
             $table->string('status');
             $table->boolean('is_booked');
