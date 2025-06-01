@@ -20,8 +20,14 @@ class QueueController extends Controller
         $user = auth()->user();
         $role = $user->role;
 
-        if ($role === 'admin' || $role === 'dokter') {
+        if ($role === 'admin') {
             $queues = Queue::with('doctor')
+                ->where('status', '!=', 'batal')
+                ->where('status', '!=', 'selesai')
+                ->get();
+        } elseif ($role === 'dokter') {
+            $queues = Queue::with('doctor')
+                ->where('doctor_id', $user->doctor->id)
                 ->where('status', '!=', 'batal')
                 ->where('status', '!=', 'selesai')
                 ->get();

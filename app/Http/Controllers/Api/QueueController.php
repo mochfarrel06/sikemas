@@ -49,14 +49,30 @@ class QueueController extends Controller
         // Cek apakah slot waktu sudah dipesan
         $existingQueue = Queue::where('doctor_id', $request->doctor_id)
             ->where('tgl_periksa', $request->tgl_periksa)
-            ->where('start_time', $request->start_time)
+            ->whereNotNull('start_time')
+            ->whereNotNull('end_time')
+            ->where('status', '!=', 'batal')
             ->exists();
 
         if ($existingQueue) {
             return response()->json([
                 'success' => false,
-                'message' => 'Slot waktu ini sudah dipesan.'
+                'message' => 'Antrean hanya dapat dilakukan sehari 1 kali saja'
             ], 409); // Conflict
+        }
+
+        if ($request->start_time && $request->end_time) {
+            $existingQueue = Queue::where('doctor_id', $request->doctor_id)
+                ->where('tgl_periksa', $request->tgl_periksa)
+                ->where('start_time', $request->start_time)
+                ->exists();
+
+            if ($existingQueue) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Slot waktu ini sudah dipesan.'
+                ], 409); // Conflict
+            }
         }
 
         // Simpan data antrean
@@ -98,29 +114,29 @@ class QueueController extends Controller
     // }
     public function show_history(Request $request)
     {
-    $request->validate([
-        'queue_id' => 'required|exists:queues,id',
-    ]);
+        $request->validate([
+            'queue_id' => 'required|exists:queues,id',
+        ]);
 
-    $user = auth()->user();
+        $user = auth()->user();
 
-    $queue = Queue::where('id', $request->queue_id)
-        ->where('user_id', $user->id)
-        ->where('status', 'selesai')
-        ->with('medicalRecord')
-        ->first();
+        $queue = Queue::where('id', $request->queue_id)
+            ->where('user_id', $user->id)
+            ->where('status', 'selesai')
+            ->with('medicalRecord')
+            ->first();
 
-    if (!$queue || !$queue->medicalRecord) {
+        if (!$queue || !$queue->medicalRecord) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Medical record tidak ditemukan atau antrian belum selesai.',
+            ], 404);
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'Medical record tidak ditemukan atau antrian belum selesai.',
-        ], 404);
-    }
-
-    return response()->json([
-        'success' => true,
-        'data' => $queue->medicalRecord
-    ]);
+            'success' => true,
+            'data' => $queue->medicalRecord
+        ]);
     }
 
 

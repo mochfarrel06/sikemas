@@ -33,6 +33,14 @@ class LoginController extends Controller
         } else if ($request->user()->role === 'pasien') {
             session()->flash('success', 'Berhasil masuk aplikasi');
             return redirect()->intended(RouteServiceProvider::PATIENT);
+
+        //     auth()->logout();
+        // $request->session()->invalidate();
+        // $request->session()->regenerateToken();
+
+        // return redirect()->route('login')->withErrors([
+        //     'email' => 'Akses ditolak. Silakan gunakan aplikasi mobile untuk login.',
+        // ]);
         }
     }
 
