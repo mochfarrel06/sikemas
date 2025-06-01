@@ -27,7 +27,26 @@ class PatientController extends Controller
     public function store(PatientStoreRequest $request)
     {
         try {
+            $user = User::create([
+                'nama_depan' => $request->nama_depan,
+                'nama_belakang' => $request->nama_belakang,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'pasien',
+                'no_hp' => $request->no_hp,
+                'tgl_lahir' => $request->tgl_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'negara' => $request->negara,
+                'provinsi' => $request->provinsi,
+                'kota' => $request->kota,
+                'kodepos' => $request->kodepos,
+                'no_nik' => $request->no_nik,
+                'no_bpjs' => $request->no_bpjs,
+            ]);
+
             $patient = new Patient([
+                'user_id' => $user->id,
                 'kode_pasien' => Patient::generateKodePasien(),
                 'nama_depan' => $request->nama_depan,
                 'nama_belakang' => $request->nama_belakang,
@@ -41,16 +60,11 @@ class PatientController extends Controller
                 'provinsi' => $request->provinsi,
                 'kota' => $request->kota,
                 'kodepos' => $request->kodepos,
+                'no_nik' => $request->no_nik,
+                'no_bpjs' => $request->no_bpjs,
             ]);
 
             $patient->save();
-
-            User::create([
-                'name' => $request->nama_depan . ' ' . $request->nama_belakang,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => 'pasien'
-            ]);
 
             session()->flash('success', 'Berhasil menambahkan data pasien');
             return response()->json(['success' => true], 200);
@@ -80,7 +94,7 @@ class PatientController extends Controller
             $patient = Patient::findOrFail($id);
             $patients = $request->except('password');
             $user = User::findOrFail($patient->user_id);
-            $userData = $request->only(['nama_depan', 'nama_belakang', 'email', 'no_hp', 'tgl_lahir', 'jenis_kelamin', 'alamat', 'negara', 'provinsi', 'kota', 'kodepos']);
+            $userData = $request->only(['nama_depan', 'nama_belakang', 'email', 'no_hp', 'tgl_lahir', 'jenis_kelamin', 'alamat', 'negara', 'provinsi', 'kota', 'kodepos', 'no_nik', 'no_bpjs']);
 
             // Handle password update
             if ($request->filled('password')) {

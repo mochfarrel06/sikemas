@@ -31,6 +31,12 @@
                                 <i class="iconoir-table mr-2"></i>
                                 <h3 class="card-title">Tabel Pasien</h3>
                             </div>
+
+                            <div class="ml-auto">
+                                <a href="{{ route('admin.patients.create') }}"
+                                    class="btn btn-primary2 d-flex align-items-center"><i
+                                        class="iconoir-plus-circle mr-2"></i> Tambah</a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
