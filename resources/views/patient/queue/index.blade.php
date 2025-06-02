@@ -83,24 +83,24 @@
                                                         <li><a class="dropdown-item" href="{{ route('data-patient.queue.show', $queue->id) }}"><i
                                                                     class="iconoir-eye-solid mr-2"></i> Detail</a>
                                                         </li>
-                                                        @if (auth()->user()->role == 'dokter' && $queue->status == 'booking')
-                                                        <li>
-                                                            <a class="dropdown-item" href=""
-                                                                onclick="periksaPasien({{ $queue->id }})"><i
-                                                                    class="iconoir-check mr-2"></i> Periksa</a>
-                                                        </li>
+                                                        @if ($queue->status == 'booking')
+                                                        <li style="cursor: pointer">
+                                                                <a class="dropdown-item"
+                                                                    onclick="periksaPasien({{ $queue->id }})"><i
+                                                                        class="iconoir-check mr-2"></i> Periksa</a>
+                                                            </li>
                                                         {{-- @elseif (auth()->user()->role == 'dokter' && $queue->status == 'periksa')
                                                             <li>
                                                                 <a class="dropdown-item" href=""
                                                                     onclick="selesaiPeriksa({{ $queue->id }})"><i
                                                                         class="iconoir-check mr-2"></i> Selesai Periksa</a>
                                                             </li> --}}
-                                                        @elseif ((auth()->user()->role == 'admin' && $queue->status == 'booking') || (auth()->user()->role == 'pasien' && $queue->status == 'booking'))
-                                                            <li><a class="dropdown-item delete-item"
-                                                                    href="{{ route('data-patient.queue.destroy', $queue->id) }}"><i
-                                                                        class="iconoir-trash-solid mr-2"></i> Batal</a>
-                                                            </li>
                                                         @endif
+
+                                                        <li style="cursor: pointer"><a class="dropdown-item"
+                                                                    onclick="batalAntrean({{ $queue->id }})"><i
+                                                                        class="iconoir-xmark mr-2"></i> Batal</a>
+                                                            </li>
                                                     </ul>
                                                 </div>
                                             </td>
@@ -139,22 +139,89 @@
         }
 
         function periksaPasien(queueId) {
-            fetch(`/data-patient/periksa-pasien/${queueId}`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json'
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        location.reload();
-                    } else {
-                        alert('Gagal selesai!');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            Swal.fire({
+                title: 'Yakin ingin periksa pasien sekarang?',
+                text: "Tindakan ini akan memulai proses pemeriksaan pasien.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, periksa sekarang!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/data-patient/periksa-pasien/${queueId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Content-Type': 'application/json'
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: data.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Gagal!', 'Tidak dapat memproses permintaan.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Kesalahan!', 'Terjadi kesalahan pada server.', 'error');
+                        });
+                }
+            });
+        }
+
+        function batalAntrean(queueId) {
+            Swal.fire({
+                title: 'Yakin ingin membatalkan antrean pasien?',
+                text: "Tindakan ini akan membatalkan antrean pasien yang telah dilakukan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, batalkan antrean',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/data-patient/batal-antrean/${queueId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Content-Type': 'application/json'
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: data.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Gagal!', 'Tidak dapat memproses permintaan.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Kesalahan!', 'Terjadi kesalahan pada server.', 'error');
+                        });
+                }
+            });
         }
     </script>
 @endpush

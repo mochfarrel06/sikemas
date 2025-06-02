@@ -85,6 +85,7 @@ Route::group([
     Route::get('/queue/check-status', [QueueController::class, 'checkQueueStatus'])->name('queue.checkStatus');
     Route::post('selesai-periksa/{id}', [QueueController::class, 'selesaiPeriksa'])->name('queue.selesaiPeriksa');
     Route::post('periksa-pasien/{id}', [QueueController::class, 'periksaPasien'])->name('queue.periksaPasien');
+    Route::post('batal-antrean/{id}', [QueueController::class, 'batalAntrean'])->name('queue.batalAntrean')->middleware('role:pasien,admin,dokter');
 
     Route::get('create-antrean-khusus', [QueueController::class, 'createAntreanKhusus'])->name('createAntreanKhusus');
     Route::post('store-antrean-khusus', [QueueController::class, 'storeAntreanKhusus'])->name('storeAntreanKhusus');

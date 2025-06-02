@@ -16,17 +16,23 @@ class QueueHistoryController extends Controller
         $user = auth()->user();
         $role = $user->role;
 
-        if ($role === 'admin' || $role === 'dokter') {
+        if ($role === 'admin') {
             $queueHistories = Queue::with('doctor')
+                ->where('status', '!=', 'booking')
+                ->where('status', '!=', 'periksa')
+                ->get();
+        } elseif ($role === 'dokter') {
+            $queueHistories = Queue::with('doctor')
+                ->where('doctor_id', $user->doctor->id)
                 ->where('status', '!=', 'booking')
                 ->where('status', '!=', 'periksa')
                 ->get();
         } else {
             $queueHistories = Queue::with('doctor')
-            ->where('user_id', $user->id)
-            ->where('status', '!=', 'booking')
-            ->where('status', '!=', 'periksa')
-            ->get();
+                ->where('user_id', $user->id)
+                ->where('status', '!=', 'booking')
+                ->where('status', '!=', 'periksa')
+                ->get();
         }
 
         return view('patient.queue-history.index', compact('queueHistories'));

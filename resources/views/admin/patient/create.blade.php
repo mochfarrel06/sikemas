@@ -63,7 +63,7 @@
                                             <label for="no_bpjs">No. BPJS</label>
                                             <input type="text" class="form-control" name="no_bpjs"
                                                 id="no_bpjs" @error('no_bpjs') is-invalid @enderror"
-                                                placeholder="Masukkan Nama Belakang">
+                                                placeholder="Masukkan BPJS">
                                         </div>
                                     </div>
                                 </div>

@@ -26,9 +26,11 @@
                                 <h3 class="card-title">Riwayat Antrean Pasien</h3>
                             </div>
                             {{-- <div class="ml-auto">
-                                <a href="{{ route('history.pdf') }}"
-                                    class="btn btn-primary2 d-flex align-items-center" target="_blank"><i
-                                        class="iconoir-download mr-2"></i> Export</a>
+                                <a href="{{ $jumlahhistory > 0 ? route('history.pdf') : '#' }}"
+                                    class="btn btn-primary d-flex align-items-center {{ $jumlahhistory <= 0 ? 'disabled' : '' }}"
+                                    target="_blank">
+                                    <i class="iconoir-download mr-2"></i> Export
+                                </a>
                             </div> --}}
                         </div>
                         <div class="card-body">
@@ -51,23 +53,18 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $queue->patient->nama_depan }} {{ $queue->patient->nama_belakang }}</td>
                                             <td>{{ $queue->tgl_periksa }}</td>
-                                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->start_time ?? $queue->waktu_mulai)->format('H:i') }}
-                                                -
-                                                {{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->end_time ?? $queue->waktu_selesai)->format('H:i') }}
-                                            </td>
+                                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->start_time ?? $queue->waktu_mulai)->format('H:i') }} - {{ \Carbon\Carbon::createFromFormat('H:i:s', $queue->end_time ?? $queue->waktu_selesai)->format('H:i') }}</td>
                                             <td>{{ $queue->doctor->nama_depan }} {{ $queue->doctor->nama_belakang }}</td>
                                             <td>{{ $queue->keterangan }}</td>
-                                            <td>
-                                                @if ($queue->status == 'booking')
-                                                    <a class="btn btn-warning btn-sm">Booking</a>
-                                                @elseif ($queue->status == 'periksa')
-                                                    <a class="btn btn-info btn-sm">Periksa</a>
-                                                @elseif ($queue->status == 'selesai')
-                                                    <a class="btn btn-success btn-sm">Selesai</a>
-                                                @elseif ($queue->status == 'batal')
-                                                    <a class="btn btn-danger btn-sm">Batal</a>
-                                                @endif
-                                            </td>
+                                            <td>@if ($queue->status == 'booking')
+                                                <a class="btn btn-warning btn-sm">Booking</a>
+                                            @elseif ($queue->status == 'periksa')
+                                                <a class="btn btn-info btn-sm">Periksa</a>
+                                            @elseif ($queue->status == 'selesai')
+                                                <a class="btn btn-success btn-sm">Selesai</a>
+                                            @elseif ($queue->status == 'batal')
+                                                <a class="btn btn-danger btn-sm">Batal</a>
+                                            @endif</td>
                                             <td>
                                                 <div class="btn-group">
                                                     <a data-toggle="dropdown">
