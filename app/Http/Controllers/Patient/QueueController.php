@@ -459,6 +459,8 @@ class QueueController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'keterangan' => $request->keterangan,
+            'waktu_mulai' => $request->start_time,
+            'waktu_selesai' => $request->end_time,
             'status' => 'booking',
             'is_booked' => true
         ]);
