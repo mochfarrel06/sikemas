@@ -47,7 +47,7 @@ class QueueController extends Controller
         }
 
         // Cek apakah slot waktu sudah dipesan
-        $existingQueue = Queue::where('doctor_id', $request->doctor_id)
+        $existingQueue = Queue::where('user_id', $userId)
             ->where('tgl_periksa', $request->tgl_periksa)
             ->whereNotNull('start_time')
             ->whereNotNull('end_time')
