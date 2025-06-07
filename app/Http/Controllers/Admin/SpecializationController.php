@@ -105,9 +105,11 @@ class SpecializationController extends Controller
 
             $specialization->delete();
 
-            return response(['status' => 'success', 'message' => 'Berhasil menghapus data poli']);
+            return redirect()->route('admin.specializations.index')
+                ->with('success', 'Data poli berhasil dihapus.');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+            return redirect()->route('admin.specializations.index')
+                ->with('error', 'Terdapat kesalahan.');
         }
     }
 }

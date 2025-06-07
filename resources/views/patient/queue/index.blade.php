@@ -75,7 +75,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -89,12 +89,6 @@
                                                                     onclick="periksaPasien({{ $queue->id }})"><i
                                                                         class="iconoir-check mr-2"></i> Periksa</a>
                                                             </li>
-                                                        {{-- @elseif (auth()->user()->role == 'dokter' && $queue->status == 'periksa')
-                                                            <li>
-                                                                <a class="dropdown-item" href=""
-                                                                    onclick="selesaiPeriksa({{ $queue->id }})"><i
-                                                                        class="iconoir-check mr-2"></i> Selesai Periksa</a>
-                                                            </li> --}}
                                                         @endif
 
                                                         <li style="cursor: pointer"><a class="dropdown-item"
@@ -102,7 +96,23 @@
                                                                         class="iconoir-xmark mr-2"></i> Batal</a>
                                                             </li>
                                                     </ul>
-                                                </div>
+                                                </div> --}}
+                                                <div class="d-flex flex-column" style="gap: 10px">
+                                                            <a href="{{ route('data-patient.queue.show', $queue->id) }}"
+                                                                class="btn btn-sm btn-warning d-flex align-items-center justify-content-center"
+                                                                style="gap: 5px"><i class="iconoir-eye-solid"
+                                                                    style="font-size: 15px"></i> Detail</a>
+                                                            @if ($queue->status == 'booking')
+                                                                <a onclick="periksaPasien({{ $queue->id }})"
+                                                                    class="btn btn-sm btn-info d-flex align-items-center justify-content-center"
+                                                                    style="gap: 5px"><i class="iconoir-check"
+                                                                        style="font-size: 15px"></i> Periksa</a>
+                                                            @endif
+                                                            <a onclick="batalAntrean({{ $queue->id }})"
+                                                                class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+                                                                style="gap: 5px"><i class="iconoir-xmark"
+                                                                    style="font-size: 15px"></i> Batal</a>
+                                                        </div>
                                             </td>
                                         </tr>
                                     @endforeach

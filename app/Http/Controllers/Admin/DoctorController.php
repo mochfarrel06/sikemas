@@ -158,9 +158,11 @@ class DoctorController extends Controller
 
             $doctor->delete();
 
-            return response(['status' => 'success', 'message' => 'Berhasil menghapus data dokter']);
+            return redirect()->route('admin.doctors.index')
+                ->with('success', 'Data dokter berhasil dihapus.');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+            return redirect()->route('admin.doctors.index')
+                ->with('error', 'Terdapat kesalahan.');
         }
     }
 }

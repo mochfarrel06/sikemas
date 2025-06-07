@@ -125,9 +125,11 @@ class PatientController extends Controller
             $patient = Patient::findOrFail($id);
             $patient->delete();
 
-            return response(['status' => 'success', 'message' => 'Berhasil menghapus data pasien']);
+            return redirect()->route('admin.patients.index')
+                ->with('success', 'Data Pasien berhasil dihapus.');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+            return redirect()->route('admin.patients.index')
+                ->with('error', 'Terdapat kesalahan.');
         }
     }
 }

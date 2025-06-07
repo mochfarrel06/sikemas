@@ -56,7 +56,8 @@
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
-                        <a href="{{ route('data-patient.queue.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('data-patient.queue.index') }}" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-6">
@@ -69,7 +70,8 @@
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
-                        <a href="{{ route('admin.specializations.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('admin.specializations.index') }}" class="small-box-footer">More info <i
+                                class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -80,7 +82,8 @@
                         <div class="card-header d-flex">
                             <div class="d-flex align-items-center">
                                 <i class="iconoir-table mr-2"></i>
-                                <h3 class="card-title">Antrean Pasien <b>{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d-m-Y') }}</b></h3>
+                                <h3 class="card-title">Antrean Pasien
+                                    <b>{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d-m-Y') }}</b></h3>
                             </div>
                         </div>
                         <div class="card-body">
@@ -120,7 +123,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -141,6 +144,22 @@
                                                                     class="iconoir-xmark mr-2"></i> Batal</a>
                                                         </li>
                                                     </ul>
+                                                </div> --}}
+                                                <div class="d-flex flex-column" style="gap: 10px">
+                                                    <a href="{{ route('data-patient.queue.show', $queue->id) }}"
+                                                        class="btn btn-sm btn-warning d-flex align-items-center justify-content-center"
+                                                        style="gap: 5px"><i class="iconoir-eye-solid"
+                                                            style="font-size: 15px"></i> Detail</a>
+                                                    @if ($queue->status == 'booking')
+                                                        <a onclick="periksaPasien({{ $queue->id }})"
+                                                            class="btn btn-sm btn-info d-flex align-items-center justify-content-center"
+                                                            style="gap: 5px"><i class="iconoir-check"
+                                                                style="font-size: 15px"></i> Periksa</a>
+                                                    @endif
+                                                    <a onclick="batalAntrean({{ $queue->id }})"
+                                                        class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+                                                        style="gap: 5px"><i class="iconoir-xmark"
+                                                            style="font-size: 15px"></i> Batal</a>
                                                 </div>
                                             </td>
                                         </tr>

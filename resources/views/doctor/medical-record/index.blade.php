@@ -57,7 +57,7 @@
                                             <td>{{ $record->user->nama_depan }} {{ $record->user->nama_belakang }}</td>
                                             <td>{{ Str::limit($record->diagnosis, 30) }}</td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -72,6 +72,10 @@
                                                                 Download</a>
                                                         </li>
                                                     </ul>
+                                                </div> --}}
+                                                <div class="d-flex align-items-center" style="gap: 10px">
+                                                    <a href="{{ route('doctor.medical-record.show', $record->id) }}" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-eye-solid" style="font-size: 15px"></i>Detail</a>
+                                                    <a href="{{ route('doctor.medical-record.pdf', $record->id) }}" target="_blank" class="btn btn-sm btn-info d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-download" style="font-size: 15px"></i> Download</a>
                                                 </div>
                                             </td>
                                         </tr>

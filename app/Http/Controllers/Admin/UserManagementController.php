@@ -95,9 +95,11 @@ class UserManagementController extends Controller
 
             $user->delete();
 
-            return response(['status' => 'success', 'message' => 'Berhasil menghapus data user']);
+            return redirect()->route('admin.user-management.index')
+                ->with('success', 'Data user berhasil dihapus.');
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+            return redirect()->route('admin.user-management.index')
+                ->with('error', 'Terdapat kesalahan');
         }
     }
 }

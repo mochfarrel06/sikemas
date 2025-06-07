@@ -58,7 +58,7 @@
                                             </td>
                                             <td>{{ $schedule->doctor->specialization->name }}</td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -74,6 +74,10 @@
                                                             </button>
                                                         </li>
                                                     </ul>
+                                                </div> --}}
+                                                <div class="d-flex align-items-center" style="gap: 10px">
+                                                    <a href="{{ route('admin.doctor-schedules.edit', $schedule->doctor_id) }}" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-edit-pencil" style="font-size: 15px"></i> Edit</a>
+                                                    <buttton type="button" data-id="{{ $schedule->doctor_id }}" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center btn-delete" style="gap: 5px"><i class="iconoir-trash-solid" style="font-size: 15px"></i> Hapus</buttton>
                                                 </div>
                                             </td>
                                         </tr>

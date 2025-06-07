@@ -66,7 +66,7 @@
                                                 <a class="btn btn-danger btn-sm">Batal</a>
                                             @endif</td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -82,7 +82,20 @@
                                                             </li>
                                                         @endif
                                                     </ul>
-                                                </div>
+                                                </div> --}}
+
+                                                <div class="d-flex flex-column" style="gap: 10px">
+                                                            <a href="{{ route('history.queue-history.show', $queue->id) }}"
+                                                                class="btn btn-sm btn-warning d-flex align-items-center justify-content-center"
+                                                                style="gap: 5px"><i class="iconoir-eye-solid"
+                                                                    style="font-size: 15px"></i> Detail</a>
+                                                            @if ($queue->status == 'selesai' && $queue->medical_id)
+                                                                <a href="{{ route('history.history-medical.pdf', $queue->medical_id) }}" target="_blank"
+                                                                    class="btn btn-sm btn-info d-flex align-items-center justify-content-center"
+                                                                    style="gap: 5px"><i class="iconoir-download"
+                                                                        style="font-size: 15px"></i> Download</a>
+                                                            @endif
+                                                        </div>
                                             </td>
                                         </tr>
                                     @endforeach

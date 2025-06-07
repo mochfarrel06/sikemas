@@ -57,7 +57,7 @@
                                             <td>{{ $doctor->nama_depan }} {{ $doctor->nama_belakang }}</td>
                                             <td>{{ $doctor->specialization->name }}</td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -75,12 +75,23 @@
                                                                     class="iconoir-trash-solid mr-2"></i> Hapus</a>
                                                         </li>
                                                     </ul>
+                                                </div> --}}
+                                                <div class="d-flex align-items-center" style="gap: 10px">
+                                                    <a href="{{ route('admin.doctors.show', $doctor->id) }}" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-eye-solid" style="font-size: 15px"></i>Detail</a>
+                                                    <a href="{{ route('admin.doctors.edit', $doctor->id) }}" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-edit-pencil" style="font-size: 15px"></i> Edit</a>
+                                                    <buttton type="button" data-id="{{ $doctor->id }}" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center btn-delete" style="gap: 5px"><i class="iconoir-trash-solid" style="font-size: 15px"></i> Hapus</buttton>
                                                 </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <!-- Form Hapus (Hidden) -->
+                            <form id="delete-form" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </div>
                     </div>
                 </section>
@@ -88,3 +99,31 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".btn-delete").forEach(function(button) {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
+                Swal.fire({
+                    title: "Apakah Anda yakin?",
+                    text: "Data ini akan dihapus secara permanen!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, hapus!",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let form = document.getElementById("delete-form");
+                        form.action = `/admin/doctors/${id}`;
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+@endpush

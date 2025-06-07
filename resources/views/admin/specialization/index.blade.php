@@ -54,7 +54,7 @@
                                             <td class="index">{{ $loop->index + 1 }}</td>
                                             <td>{{ $specialization->name }}</td>
                                             <td>
-                                                <div class="btn-group">
+                                                {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
                                                         <i class="iconoir-more-vert"></i>
                                                     </a>
@@ -72,12 +72,23 @@
                                                                     class="iconoir-trash-solid mr-2"></i> Hapus</a>
                                                         </li>
                                                     </ul>
+                                                </div> --}}
+                                                <div class="d-flex align-items-center" style="gap: 10px">
+                                                    <a href="{{ route('admin.specializations.show', $specialization->id) }}" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-eye-solid" style="font-size: 15px"></i> Detail</a>
+                                                    <a href="{{ route('admin.specializations.edit', $specialization->id) }}" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-edit-pencil" style="font-size: 15px"></i> Edit</a>
+                                                    {{-- <a href="{{ route('admin.specializations.destroy', $specialization->id) }}" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center delete-item"><i class="iconoir-trash-solid" style="font-size: 15px"></i></a> --}}
+                                                    <buttton type="button" data-id="{{ $specialization->id }}" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center btn-delete" style="gap: 5px"><i class="iconoir-trash-solid" style="font-size: 15px"></i> Hapus</buttton>
                                                 </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <form id="delete-form" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -88,3 +99,31 @@
     </section>
     <!-- /.content -->
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".btn-delete").forEach(function(button) {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
+                Swal.fire({
+                    title: "Apakah Anda yakin?",
+                    text: "Data ini akan dihapus secara permanen!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, hapus!",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let form = document.getElementById("delete-form");
+                        form.action = `/admin/specializations/${id}`;
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+@endpush
