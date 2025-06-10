@@ -11,7 +11,6 @@ use App\Models\QueueHistory;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class MedicalRecordController extends Controller
 {
@@ -23,27 +22,11 @@ class MedicalRecordController extends Controller
     }
 
     public function create()
-{
-    // Mengambil doctor_id dari user yang sedang login
-    $doctorId = auth()->id(); // atau auth()->user()->id
-    
-    // Debugging - hapus setelah berhasil
-    // dd($doctorId, Carbon::today()->toDateString());
-    
-    // Mengambil antrian sesuai dengan pola yang Anda gunakan
-    $queues = Queue::with(['patient', 'doctor'])
-                   ->whereDate('tgl_periksa', Carbon::today())
-                   ->where('doctor_id', $doctorId)
-                   ->whereIn('status', ['booking', 'periksa'])
-                   ->orderBy('start_time', 'asc')
-                   ->get();
-    
-    // Debugging - hapus setelah berhasil               
-    // dd($queues->count(), $queues);
-                   
-    $medicines = Medicine::all();
-    return view('doctor.medical-record.create', compact('queues', 'medicines'));
-}
+    {
+        $queues = Queue::where('status', 'periksa')->get();
+        $medicines = Medicine::all();
+        return view('doctor.medical-record.create', compact('queues', 'medicines'));
+    }
 
     public function store(MedicalRecordStoreRequest $request)
     {
