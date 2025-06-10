@@ -17,7 +17,7 @@
                                 style="color: #38A6B1">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('doctor.medical-record.index') }}"
                                 style="color: #38A6B1">Rekam Medis</a></li>
-                        {{-- <li class="breadcrumb-item active">Detail</li> --}}
+                        <li class="breadcrumb-item active">Detail</li>
                     </ol>
                 </div>
             </div>
