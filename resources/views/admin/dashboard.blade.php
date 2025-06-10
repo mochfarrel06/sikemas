@@ -150,16 +150,16 @@
                                                         class="btn btn-sm btn-warning d-flex align-items-center justify-content-center"
                                                         style="gap: 5px"><i class="iconoir-eye-solid"
                                                             style="font-size: 15px"></i> Detail</a>
-                                                    @if ($queue->status == 'booking')
+                                                    {{-- @if ($queue->status == 'booking')
                                                         <a onclick="periksaPasien({{ $queue->id }})"
                                                             class="btn btn-sm btn-info d-flex align-items-center justify-content-center"
                                                             style="gap: 5px"><i class="iconoir-check"
                                                                 style="font-size: 15px"></i> Periksa</a>
-                                                    @endif
-                                                    <a onclick="batalAntrean({{ $queue->id }})"
+                                                    @endif --}}
+                                                    {{-- <a onclick="batalAntrean({{ $queue->id }})"
                                                         class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
                                                         style="gap: 5px"><i class="iconoir-xmark"
-                                                            style="font-size: 15px"></i> Batal</a>
+                                                            style="font-size: 15px"></i> Batal</a> --}}
                                                 </div>
                                             </td>
                                         </tr>

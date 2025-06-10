@@ -16,7 +16,52 @@ class MedicalRecord extends Model
         'tgl_periksa',
         'diagnosis',
         'resep',
-        'catatan_medis'
+        'catatan_medis',
+        'medicine_id',
+
+        // Kolom hasil laboratorium
+    'gula_darah_acak',
+    'gula_darah_puasa',
+    'gula_darah_2jm_pp',
+    'analisa_lemak',
+    'cholesterol',
+    'trigliserida',
+    'hdl',
+    'ldl',
+    'asam_urat',
+    'bun',
+    'creatinin',
+    'sgot',
+    'sgpt',
+    'warna',
+    'ph',
+    'berat_jenis',
+    'reduksi',
+    'protein',
+    'bilirubin',
+    'urobilinogen',
+    'nitrit',
+    'keton',
+    'sedimen_lekosit',
+    'sedimen_eritrosit',
+    'sedimen_epitel',
+    'sedimen_kristal',
+    'sedimen_bakteri',
+    'hemoglobin',
+    'leukosit',
+    'erytrosit',
+    'trombosit',
+    'pcv',
+    'dif',
+    'bleeding_time',
+    'clotting_time',
+    'salmonella_o',
+    'salmonella_h',
+    'salmonella_p_a',
+    'salmonella_p_b',
+    'hbsag',
+    'vdrl',
+    'plano_test',
     ];
 
     public function user()
@@ -37,6 +82,11 @@ class MedicalRecord extends Model
     public function patient()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function medicine()
+    {
+        return $this->belongsTo(Medicine::class);
     }
 
 }

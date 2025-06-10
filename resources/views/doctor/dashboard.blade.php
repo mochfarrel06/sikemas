@@ -160,7 +160,7 @@
                                     icon: 'success',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    location.reload();
+                                    window.location.href = '/doctor/medical-record/create';
                                 });
                             } else {
                                 Swal.fire('Gagal!', 'Tidak dapat memproses permintaan.', 'error');

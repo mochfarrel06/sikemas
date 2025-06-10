@@ -218,7 +218,7 @@ class QueueController extends Controller
         $queue->save();
 
         $phone = $queue->patient->no_hp;
-        $message = "Halo, pasien dengan nama {$queue->patient->nama_depan} Bisa periksa sekarang";
+        $message = "Halo, pasien dengan nama {$queue->patient->nama_depan} {$queue->patient->nama_belakang}, dan periksa dengan dokter {$queue->doctor->nama_depan} {$queue->doctor->nama_belakang} poli {$queue->doctor->specialization->name}, tanggal {$queue->tgl_periksa} pukul {$queue->start_time} - {$queue->end_time}. Bisa periksa sekarang!!!";
 
 
         $response = Http::withHeaders([

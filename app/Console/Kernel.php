@@ -49,22 +49,53 @@ class Kernel extends ConsoleKernel
 
     protected function sendWhatsAppReminder($minutesBefore)
     {
+        // $appointments = Queue::where('tgl_periksa', today())
+        //     ->where('start_time', Carbon::now()->addMinutes($minutesBefore)->format('H:i'))
+        //     ->get();
+
+        // foreach ($appointments as $appointment) {
+        //     $phone = $appointment->patient->no_hp; // Pastikan ini ada di database
+        //     $message = ($minutesBefore == 0)
+        //         ? "Halo {$appointment->patient_name}, waktunya untuk pemeriksaan! Silakan datang ke lokasi."
+        //         : "Halo {$appointment->patient_name}, antrean Anda kurang 10 menit lagi. Mohon bersiap.";
+
+        //     // Kirim pesan ke WhatsApp menggunakan API Fonnte
+        //     $this->sendWhatsAppMessage($phone, $message);
+
+        //     if ($minutesBefore == 0) {
+        //         $appointment->update(['status' => 'periksa']);
+        //     }
+        // }
         $appointments = Queue::where('tgl_periksa', today())
             ->where('start_time', Carbon::now()->addMinutes($minutesBefore)->format('H:i'))
+            ->where('status', 'booking')
+            ->orderBy('start_time')
             ->get();
 
         foreach ($appointments as $appointment) {
-            $phone = $appointment->patient->no_hp; // Pastikan ini ada di database
-            $message = ($minutesBefore == 0)
-                ? "Halo {$appointment->patient_name}, waktunya untuk pemeriksaan! Silakan datang ke lokasi."
-                : "Halo {$appointment->patient_name}, antrean Anda kurang 10 menit lagi. Mohon bersiap.";
-
-            // Kirim pesan ke WhatsApp menggunakan API Fonnte
-            $this->sendWhatsAppMessage($phone, $message);
+            $phone = $appointment->patient->no_hp;
+            $message = "";
 
             if ($minutesBefore == 0) {
-                $appointment->update(['status' => 'periksa']);
+                // Cek antrean sebelumnya berdasarkan waktu dan dokter yang sama
+                $previousQueue = Queue::where('tgl_periksa', today())
+                    ->where('doctor_id', $appointment->doctor_id)
+                    ->where('start_time', '<', $appointment->start_time)
+                    ->whereIn('status', ['booking', 'periksa'])
+                    ->orderByDesc('start_time')
+                    ->first();
+
+                if ($previousQueue) {
+                    $message = "Halo, pasien dengan nama {$appointment->patient->nama_depan} {$appointment->patient->nama_belakang}, dan periksa dengan dokter {$appointment->doctor->nama_depan} {$appointment->doctor->nama_belakang} poli {$appointment->doctor->specialization->name}, tanggal {$appointment->tgl_periksa} pukul {$appointment->start_time} - {$appointment->end_time}. Antrean sebelumnya belum selesai. Mohon ditunggu, antrean Anda akan dipanggil sebentar lagi.";
+                } else {
+                    $message = "Halo, pasien dengan nama {$appointment->patient->nama_depan} {$appointment->patient->nama_belakang}, dan periksa dengan dokter {$appointment->doctor->nama_depan} {$appointment->doctor->nama_belakang} poli {$appointment->doctor->specialization->name}, tanggal {$appointment->tgl_periksa} pukul {$appointment->start_time} - {$appointment->end_time}. Bisa periksa sekarang!!!";
+                    $appointment->update(['status' => 'periksa']);
+                }
+            } else {
+                $message = "Halo, pasien dengan nama {$appointment->patient->nama_depan} {$appointment->patient->nama_belakang}, dan periksa dengan dokter {$appointment->doctor->nama_depan} {$appointment->doctor->nama_belakang} poli {$appointment->doctor->specialization->name}, tanggal {$appointment->tgl_periksa} pukul {$appointment->start_time} - {$appointment->end_time}. Antrean Anda kurang 10 menit lagi. Mohon bersiap.";
             }
+
+            $this->sendWhatsAppMessage($phone, $message);
         }
     }
 
