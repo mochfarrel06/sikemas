@@ -22,11 +22,22 @@ class MedicalRecordController extends Controller
     }
 
     public function create()
-    {
-        $queues = Queue::where('status', 'periksa')->get();
-        $medicines = Medicine::all();
-        return view('doctor.medical-record.create', compact('queues', 'medicines'));
-    }
+{
+    // Jika doctor_id ada di tabel queues
+    $queues = Queue::where('status', 'periksa')
+                   ->where('doctor_id', Auth::user()->doctor->id) // jika ada relasi doctor
+                   ->with('patient')
+                   ->get();
+    
+    // Atau jika menggunakan user_id langsung
+    $queues = Queue::where('status', 'periksa')
+                   ->where('user_id', Auth::id()) // jika user_id adalah dokter
+                   ->with('patient')
+                   ->get();
+    
+    $medicines = Medicine::all();
+    return view('doctor.medical-record.create', compact('queues', 'medicines'));
+}
 
     public function store(MedicalRecordStoreRequest $request)
     {
