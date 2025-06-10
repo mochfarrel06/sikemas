@@ -24,10 +24,22 @@ class MedicalRecordController extends Controller
 
     public function create()
 {
-    // Mengambil antrian hanya untuk dokter yang sedang login
-    $queues = Queue::where('status', 'periksa')
-                   ->where('doctor_id', auth()->id()) // Filter berdasarkan dokter yang login
+    // Mengambil doctor_id dari user yang sedang login
+    $doctorId = auth()->id(); // atau auth()->user()->id
+    
+    // Debugging - hapus setelah berhasil
+    // dd($doctorId, Carbon::today()->toDateString());
+    
+    // Mengambil antrian sesuai dengan pola yang Anda gunakan
+    $queues = Queue::with(['patient', 'doctor'])
+                   ->whereDate('tgl_periksa', Carbon::today())
+                   ->where('doctor_id', $doctorId)
+                   ->whereIn('status', ['booking', 'periksa'])
+                   ->orderBy('start_time', 'asc')
                    ->get();
+    
+    // Debugging - hapus setelah berhasil               
+    // dd($queues->count(), $queues);
                    
     $medicines = Medicine::all();
     return view('doctor.medical-record.create', compact('queues', 'medicines'));
