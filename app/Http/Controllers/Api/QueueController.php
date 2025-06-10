@@ -83,8 +83,8 @@ class QueueController extends Controller
             'tgl_periksa' => $request->tgl_periksa,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
-            // 'waktu_mulai' => $request->start_time,
-            // 'waktu_selesai' => $request->end_time,
+            'waktu_mulai' => $request->start_time,
+            'waktu_selesai' => $request->end_time,
             'keterangan' => $request->keterangan,
             'status' => 'booking',
             'is_booked' => true

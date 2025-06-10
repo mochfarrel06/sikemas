@@ -22,16 +22,11 @@ class MedicalRecordController extends Controller
     }
 
     public function create()
-{
-    // Ambil data antrean yang statusnya 'periksa' DAN sesuai dengan dokter yang login
-    $queues = Queue::where('status', 'periksa')
-                   ->where('doctor_id', Auth::id()) // atau Auth::user()->id
-                   ->with('patient') // eager loading untuk performa
-                   ->get();
-    
-    $medicines = Medicine::all();
-    return view('doctor.medical-record.create', compact('queues', 'medicines'));
-}
+    {
+        $queues = Queue::where('status', 'periksa')->get();
+        $medicines = Medicine::all();
+        return view('doctor.medical-record.create', compact('queues', 'medicines'));
+    }
 
     public function store(MedicalRecordStoreRequest $request)
     {
