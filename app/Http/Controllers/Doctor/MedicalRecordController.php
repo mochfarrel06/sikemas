@@ -23,16 +23,10 @@ class MedicalRecordController extends Controller
 
     public function create()
 {
-    // Jika doctor_id ada di tabel queues
+    // Ambil data antrean yang statusnya 'periksa' DAN sesuai dengan dokter yang login
     $queues = Queue::where('status', 'periksa')
-                   ->where('doctor_id', Auth::user()->doctor->id) // jika ada relasi doctor
-                   ->with('patient')
-                   ->get();
-    
-    // Atau jika menggunakan user_id langsung
-    $queues = Queue::where('status', 'periksa')
-                   ->where('user_id', Auth::id()) // jika user_id adalah dokter
-                   ->with('patient')
+                   ->where('doctor_id', Auth::id()) // atau Auth::user()->id
+                   ->with('patient') // eager loading untuk performa
                    ->get();
     
     $medicines = Medicine::all();
