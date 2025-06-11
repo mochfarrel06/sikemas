@@ -36,6 +36,7 @@ class PatientUpdateRequest extends FormRequest
             'provinsi' => ['required', 'string'],
             'kota' => ['required', 'string'],
             'kodepos' => ['required', 'string'],
+            'no_nik' => ['required', 'string']
         ];
     }
 
@@ -56,6 +57,7 @@ class PatientUpdateRequest extends FormRequest
             'provinsi.required' => 'Provinsi tidak boleh kosong',
             'kota.required' => 'Kota tidak boleh kosong',
             'kodepos.required' => 'Kode pos tidak boleh kosong',
+            'no_nik.required' => 'NIK tidak boleh kosong',
         ];
     }
 }

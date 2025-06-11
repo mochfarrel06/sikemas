@@ -23,7 +23,10 @@ class MedicalRecordController extends Controller
 
     public function create()
     {
-        $queues = Queue::where('status', 'periksa')->get();
+        $user = auth()->user();
+        $queues = Queue::where('status', 'periksa')
+            ->where('doctor_id', $user->doctor->id)
+            ->get();
         $medicines = Medicine::all();
         return view('doctor.medical-record.create', compact('queues', 'medicines'));
     }
@@ -35,7 +38,7 @@ class MedicalRecordController extends Controller
 
             $medicalRecord = MedicalRecord::create([
                 'user_id' => $queue->user_id,
-                'medicine_id' => $request->medicine_id,
+                // 'medicine_id' => $request->medicine_id,
                 'queue_id' => $queue->id,
                 'tgl_periksa' => now(),
                 'diagnosis' => $request->diagnosis,
@@ -87,6 +90,11 @@ class MedicalRecordController extends Controller
     'plano_test' => $request->plano_test ?? null,
             ]);
 
+            if ($request->has('medicine_id')) {
+                $medicalRecord->medicines()->attach($request->medicine_id);
+            }
+
+
             $queue->update([
                 'status' => 'selesai',
                 'medical_id' => $medicalRecord->id,
@@ -125,7 +133,7 @@ class MedicalRecordController extends Controller
 
     public function show(string $id)
     {
-        $medicalRecord = MedicalRecord::findOrFail($id);
+        $medicalRecord = MedicalRecord::with('medicines')->findOrFail($id);
         return view('doctor.medical-record.show', compact('medicalRecord'));
     }
 }

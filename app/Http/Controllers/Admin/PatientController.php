@@ -123,6 +123,11 @@ class PatientController extends Controller
     {
         try {
             $patient = Patient::findOrFail($id);
+
+             if ($patient->user) {
+                $patient->user->delete();
+            }
+
             $patient->delete();
 
             return redirect()->route('admin.patients.index')

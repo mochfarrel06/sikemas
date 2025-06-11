@@ -32,7 +32,16 @@ class Kernel extends ConsoleKernel
                 ->get();
 
             foreach ($appointments as $appointment) {
-                $appointment->update(['status' => 'batal']);
+                $appointment->update([
+                    'status' => 'batal',
+                    'waktu_mulai' => null,
+                    'waktu_selesai' => null,
+                ]);
+
+                $phone = $appointment->patient->no_hp;
+                $message = "Halo, pasien dengan nama {$appointment->patient->nama_depan} {$appointment->patient->nama_belakang}, jadwal periksa Anda dengan dokter {$appointment->doctor->nama_depan} {$appointment->doctor->nama_belakang} pada tanggal {$appointment->tgl_periksa} pukul {$appointment->start_time} - {$appointment->end_time} telah dibatalkan karena melewati waktu antrean. Silakan buat janji ulang.";
+
+                $this->sendWhatsAppMessage($phone, $message);
             }
         })->everyMinute();
     }

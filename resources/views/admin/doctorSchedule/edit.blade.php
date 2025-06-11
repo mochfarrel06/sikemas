@@ -119,8 +119,8 @@
                                     @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
                                         @php
                                             $times = [];
-                                            $startTime = strtotime('00:00');
-                                            $endTime = strtotime('24:00');
+                                            $startTime = strtotime('08:00');
+                                            $endTime = strtotime('22:00');
 
                                             while ($startTime <= $endTime) {
                                                 $times[] = date('H:i', $startTime);

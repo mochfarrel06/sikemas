@@ -69,8 +69,16 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Obat</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->medicine->name }}" disabled>
+                                            @if ($medicalRecord->medicines->isNotEmpty())
+                                                <ul>
+                                                    @foreach ($medicalRecord->medicines as $medicine)
+                                                        <li>{{ $medicine->name }} - Rp
+                                                            {{ number_format($medicine->price, 0, ',', '.') }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <p class="text-muted">Tidak ada obat yang diresepkan.</p>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -506,8 +514,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="dif">Dif</label>
-                                            <input type="text"
-                                                class="form-control @error('dif') is-invalid @enderror"
+                                            <input type="text" class="form-control @error('dif') is-invalid @enderror"
                                                 name="dif" value="{{ $medicalRecord->dif ?? '' }}" disabled>
                                             @error('dif')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -519,7 +526,8 @@
                                             <label for="bleeding_time">Bleeding Time</label>
                                             <input type="text"
                                                 class="form-control @error('bleeding_time') is-invalid @enderror"
-                                                name="bleeding_time" value="{{ $medicalRecord->bleeding_time ?? '' }}" disabled>
+                                                name="bleeding_time" value="{{ $medicalRecord->bleeding_time ?? '' }}"
+                                                disabled>
                                             @error('bleeding_time')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -533,7 +541,8 @@
                                             <label for="clotting_time">Clotting Time</label>
                                             <input type="text"
                                                 class="form-control @error('clotting_time') is-invalid @enderror"
-                                                name="clotting_time" value="{{ $medicalRecord->clotting_time ?? '' }}" disabled>
+                                                name="clotting_time" value="{{ $medicalRecord->clotting_time ?? '' }}"
+                                                disabled>
                                             @error('clotting_time')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -544,7 +553,8 @@
                                             <label for="salmonella_o">Salmonella O</label>
                                             <input type="text"
                                                 class="form-control @error('salmonella_o') is-invalid @enderror"
-                                                name="salmonella_o" value="{{ $medicalRecord->salmonella_o ?? '' }}" disabled>
+                                                name="salmonella_o" value="{{ $medicalRecord->salmonella_o ?? '' }}"
+                                                disabled>
                                             @error('salmonella_o')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -559,7 +569,8 @@
                                             <label for="salmonella_h">Salmonella H</label>
                                             <input type="text"
                                                 class="form-control @error('salmonella_h') is-invalid @enderror"
-                                                name="salmonella_h" value="{{ $medicalRecord->salmonella_h ?? '' }}" disabled>
+                                                name="salmonella_h" value="{{ $medicalRecord->salmonella_h ?? '' }}"
+                                                disabled>
                                             @error('salmonella_h')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -570,7 +581,8 @@
                                             <label for="salmonella_p_a">Salmonella P A</label>
                                             <input type="text"
                                                 class="form-control @error('salmonella_p_a') is-invalid @enderror"
-                                                name="salmonella_p_a" value="{{ $medicalRecord->salmonella_p_a ?? '' }}" disabled>
+                                                name="salmonella_p_a" value="{{ $medicalRecord->salmonella_p_a ?? '' }}"
+                                                disabled>
                                             @error('salmonella_p_a')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -584,7 +596,8 @@
                                             <label for="salmonella_p_b">Salmonella P B</label>
                                             <input type="text"
                                                 class="form-control @error('salmonella_p_b') is-invalid @enderror"
-                                                name="salmonella_p_b" value="{{ $medicalRecord->salmonella_p_b ?? '' }}" disabled>
+                                                name="salmonella_p_b" value="{{ $medicalRecord->salmonella_p_b ?? '' }}"
+                                                disabled>
                                             @error('salmonella_p_b')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -594,8 +607,8 @@
                                         <div class="form-group">
                                             <label for="hbsag">hbsag</label>
                                             <input type="text"
-                                                class="form-control @error('hbsag') is-invalid @enderror"
-                                                name="hbsag" value="{{ $medicalRecord->hbsag ?? '' }}" disabled>
+                                                class="form-control @error('hbsag') is-invalid @enderror" name="hbsag"
+                                                value="{{ $medicalRecord->hbsag ?? '' }}" disabled>
                                             @error('hbsag')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -608,8 +621,8 @@
                                         <div class="form-group">
                                             <label for="vdrl">VDRL</label>
                                             <input type="text"
-                                                class="form-control @error('vdrl') is-invalid @enderror"
-                                                name="vdrl" value="{{ $medicalRecord->vdrl ?? '' }}" disabled>
+                                                class="form-control @error('vdrl') is-invalid @enderror" name="vdrl"
+                                                value="{{ $medicalRecord->vdrl ?? '' }}" disabled>
                                             @error('vdrl')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -620,7 +633,8 @@
                                             <label for="plano_test">Plano Test</label>
                                             <input type="text"
                                                 class="form-control @error('plano_test') is-invalid @enderror"
-                                                name="plano_test" value="{{ $medicalRecord->plano_test ?? '' }}" disabled>
+                                                name="plano_test" value="{{ $medicalRecord->plano_test ?? '' }}"
+                                                disabled>
                                             @error('plano_test')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror

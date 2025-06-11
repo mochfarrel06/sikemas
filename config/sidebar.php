@@ -42,6 +42,12 @@ return [
         'role' => ['admin'],
         'icon' => 'iconoir-user-square',
     ],
+    [
+        'text' => 'Obat',
+        'url' => '/admin/medicines',
+        'role' => ['admin'],
+        'icon' => 'iconoir-pharmacy-cross-circle',
+    ],
 
     // 2. Dokter
     [

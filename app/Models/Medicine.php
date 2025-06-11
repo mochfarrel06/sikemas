@@ -16,7 +16,7 @@ class Medicine extends Model
 
     public function medicalRecords()
     {
-        return $this->hasMany(MedicalRecord::class);
+        return $this->belongsToMany(MedicalRecord::class, 'medical_record_medicine');
     }
 
 }

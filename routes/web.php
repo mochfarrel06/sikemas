@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\DoctorScheduleController;
+use App\Http\Controllers\Admin\MedicineController;
 use App\Http\Controllers\Admin\PatientController;
 use App\Http\Controllers\Admin\SpecializationController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -62,6 +63,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'role:admin
     Route::get('user-management/{id}/edit', [UserManagementController::class, 'edit'])->name('user-management.edit');
     Route::put('user-management/{id}', [UserManagementController::class, 'update'])->name('user-management.update');
     Route::delete('user-management/{id}', [UserManagementController::class, 'destroy'])->name('user-management.destroy');
+
+    // Medicine
+    Route::get('medicines', [MedicineController::class, 'index'])->name('medicines.index');
+    Route::get('medicines/create', [MedicineController::class, 'create'])->name('medicines.create');
+    Route::post('medicines', [MedicineController::class, 'store'])->name('medicines.store');
+    Route::get('medicines/{id}/edit', [MedicineController::class, 'edit'])->name('medicines.edit');
+    Route::put('medicines/{id}', [MedicineController::class, 'update'])->name('medicines.update');
+    Route::delete('medicines/{id}', [MedicineController::class, 'destroy'])->name('medicines.destroy');
 });
 
 // 4. Route patient

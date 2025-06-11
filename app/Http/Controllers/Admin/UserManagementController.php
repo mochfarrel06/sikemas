@@ -93,6 +93,10 @@ class UserManagementController extends Controller
         try {
             $user = User::findOrFail($id);
 
+            if ($user->patient) {
+            $user->patient->delete();
+        }
+
             $user->delete();
 
             return redirect()->route('admin.user-management.index')

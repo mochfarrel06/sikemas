@@ -9,14 +9,14 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Tambah Data Dokter</h1>
+                    <h1 class="m-0">Tambah Rekam Medis</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('doctor.dashboard') }}"
                                 style="color: #38A6B1">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('doctor.medical-record.index') }}"
-                                style="color: #38A6B1">Dokter</a></li>
+                                style="color: #38A6B1">Rekam Medis</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
                 </div>
@@ -54,9 +54,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="medicine_id">Pilih Obat</label>
-                                            <select name="medicine_id" id="medicine_id"
-                                                class="form-control @error('medicine_id') is-invalid @enderror">
-                                                <option value="">-- Pilih Obat --</option>
+                                            <select name="medicine_id[]" id="medicine_id"
+                                                class="form-control @error('medicine_id') is-invalid @enderror" multiple>
                                                 @foreach ($medicines as $medicine)
                                                     <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
                                                 @endforeach
@@ -66,6 +65,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="row">
@@ -492,8 +492,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="pcv">PCV</label>
-                                            <input type="text"
-                                                class="form-control @error('pcv') is-invalid @enderror"
+                                            <input type="text" class="form-control @error('pcv') is-invalid @enderror"
                                                 name="pcv" value="{{ old('pcv') }}">
                                             @error('pcv')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -503,8 +502,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="dif">Dif</label>
-                                            <input type="text"
-                                                class="form-control @error('dif') is-invalid @enderror"
+                                            <input type="text" class="form-control @error('dif') is-invalid @enderror"
                                                 name="dif" value="{{ old('dif') }}">
                                             @error('dif')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -593,8 +591,8 @@
                                         <div class="form-group">
                                             <label for="hbsag">HBsAg</label>
                                             <input type="text"
-                                                class="form-control @error('hbsag') is-invalid @enderror"
-                                                name="hbsag" value="{{ old('hbsag') }}">
+                                                class="form-control @error('hbsag') is-invalid @enderror" name="hbsag"
+                                                value="{{ old('hbsag') }}">
                                             @error('hbsag')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -604,8 +602,8 @@
                                         <div class="form-group">
                                             <label for="vdrl">VDRL</label>
                                             <input type="text"
-                                                class="form-control @error('vdrl') is-invalid @enderror"
-                                                name="vdrl" value="{{ old('vdrl') }}">
+                                                class="form-control @error('vdrl') is-invalid @enderror" name="vdrl"
+                                                value="{{ old('vdrl') }}">
                                             @error('vdrl')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror

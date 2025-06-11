@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="no_bpjs">No. BPJS</label>
+                                            <label for="no_bpjs">No. BPJS (opsional)</label>
                                             <input type="text" class="form-control" name="no_bpjs"
                                                 id="no_bpjs" @error('no_bpjs') is-invalid @enderror"
                                                 placeholder="Masukkan BPJS" value="{{ old('email', $patient->no_bpjs) }}">

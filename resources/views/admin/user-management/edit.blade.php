@@ -99,10 +99,12 @@
                                 @endif
 
                                 {{-- Data request --}}
+                                @if($user->role == 'pasien')
                                 <input type="hidden" class="form-control" name="nama_depan" id="nama_depan" value="{{ $user->nama_depan }}">
                                 <input type="hidden" class="form-control" name="nama_belakang" id="nama_belakang" value="{{ $user->nama_belakang }}">
                                 <input type="hidden" class="form-control" name="email" id="email" value="{{ $user->email }}">
                                 <input type="hidden" class="form-control" name="role" id="role" value="{{ $user->role }}">
+                                @endif
 
                                 <div class="row">
                                     <div class="col-md-6">

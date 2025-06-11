@@ -17,7 +17,7 @@ class MedicalRecord extends Model
         'diagnosis',
         'resep',
         'catatan_medis',
-        'medicine_id',
+        // 'medicine_id',
 
         // Kolom hasil laboratorium
     'gula_darah_acak',
@@ -84,9 +84,9 @@ class MedicalRecord extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function medicine()
+    public function medicines()
     {
-        return $this->belongsTo(Medicine::class);
+        return $this->belongsToMany(Medicine::class, 'medical_record_medicine');
     }
 
 }

@@ -26,7 +26,9 @@ class MedicalRecordStoreRequest extends FormRequest
             'diagnosis' => ['required', 'string'],
             'resep' => ['required', 'string'],
             'catatan_medis' => ['required', 'string'],
-            'medicine_id' => ['required', 'string'],
+            'medicine_id' => 'required|array',
+            'medicine_id.*' => 'exists:medicines,id',
+
 
             'gula_darah_acak' => ['nullable', 'string'],
             'gula_darah_puasa' => ['nullable', 'string'],
