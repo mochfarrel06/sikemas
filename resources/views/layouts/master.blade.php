@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/izitoast/css/iziToast.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+
     <style>
         .time-slot-box {
             border: 1px solid #ccc;
@@ -114,6 +117,8 @@
     <script src="{{ asset('assets/admin/plugins/izitoast/js/iziToast.min.js') }}"></script>
     <!-- SweetAlert Library for Beautiful Alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="{{ asset('assets/admin/plugins/select2/js/select2.full.min.js') }}"></script>
 
     <script>
         $(function() {
@@ -224,6 +229,13 @@
                 });
             @endif
         });
+    </script>
+
+    <script>
+         $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+         })
     </script>
 
     @stack('scripts')

@@ -55,7 +55,7 @@
                                         <div class="form-group">
                                             <label for="medicine_id">Pilih Obat</label>
                                             <select name="medicine_id[]" id="medicine_id"
-                                                class="form-control @error('medicine_id') is-invalid @enderror" multiple>
+                                                class="form-control select2 @error('medicine_id') is-invalid @enderror" multiple>
                                                 @foreach ($medicines as $medicine)
                                                     <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
                                                 @endforeach
