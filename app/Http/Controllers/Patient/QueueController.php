@@ -222,7 +222,7 @@ class QueueController extends Controller
 
 
         $response = Http::withHeaders([
-            'Authorization' => 'QPwX1ySyYbPhmV4MAzJ8', // Ganti dengan API Key Fonnte
+            'Authorization' => 'Jsaa5RrwTfkDtiwsGaMy', // Ganti dengan API Key Fonnte
             'Content-Type'  => 'application/json',
         ])->post('https://api.fonnte.com/send', [
             'target'      => $phone,
@@ -258,7 +258,7 @@ class QueueController extends Controller
 
 
             $response = Http::withHeaders([
-                'Authorization' => 'QPwX1ySyYbPhmV4MAzJ8', // Ganti dengan API Key Fonnte
+                'Authorization' => 'Jsaa5RrwTfkDtiwsGaMy', // Ganti dengan API Key Fonnte
                 'Content-Type'  => 'application/json',
             ])->post('https://api.fonnte.com/send', [
                 'target'      => $phone,
