@@ -46,6 +46,7 @@
                                         <th>Tanggal Periksa</th>
                                         <th>Pasien</th>
                                         <th>Diagnosis</th>
+                                        <th>Pembayaran</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -56,6 +57,13 @@
                                             <td>{{ $record->tgl_periksa }}</td>
                                             <td>{{ $record->user->nama_depan }} {{ $record->user->nama_belakang }}</td>
                                             <td>{{ Str::limit($record->diagnosis, 30) }}</td>
+                                            <td>
+                                                @if(!empty($record->queue->patient->no_bpjs))
+                                                    BAYAR BPJS
+                                                @else
+                                                    BAYAR TUNAI
+                                                @endif
+                                            </td>
                                             <td>
                                                 {{-- <div class="btn-group">
                                                     <a data-toggle="dropdown">
@@ -76,6 +84,8 @@
                                                 <div class="d-flex align-items-center" style="gap: 10px">
                                                     <a href="{{ route('doctor.medical-record.show', $record->id) }}" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-eye-solid" style="font-size: 15px"></i>Detail</a>
                                                     <a href="{{ route('doctor.medical-record.pdf', $record->id) }}" target="_blank" class="btn btn-sm btn-info d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-download" style="font-size: 15px"></i> Download</a>
+
+                                                    <a href="{{ route('doctor.medical-record.nota', $record->id) }}" target="_blank" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-printer" style="font-size: 15px"></i> Nota</a>
                                                 </div>
                                             </td>
                                         </tr>

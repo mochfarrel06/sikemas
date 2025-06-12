@@ -122,6 +122,7 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dok
     Route::get('/medical-record/{id}', [MedicalRecordController::class, 'show'])->name('medical-record.show');
 
     Route::get('/medical-record/{id}/pdf', [MedicalRecordController::class, 'generatePDF'])->name('medical-record.pdf');
+    Route::get('/medical-record/{id}/nota', [MedicalRecordController::class, 'generateNota'])->name('medical-record.nota');
 });
 
 // 8. Route Profil

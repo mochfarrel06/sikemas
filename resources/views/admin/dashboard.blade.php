@@ -160,6 +160,10 @@
                                                         class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
                                                         style="gap: 5px"><i class="iconoir-xmark"
                                                             style="font-size: 15px"></i> Batal</a> --}}
+                                                            <a onclick="batalAntrean({{ $queue->id }})"
+                                                        class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+                                                        style="gap: 5px"><i class="iconoir-xmark"
+                                                            style="font-size: 15px"></i> Batal</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -221,8 +225,8 @@
 
         function batalAntrean(queueId) {
             Swal.fire({
-                title: 'Yakin ingin membatalkan antrean pasien?',
-                text: "Tindakan ini akan membatalkan antrean pasien yang telah dilakukan.",
+                title: 'Yakin ingin membatalkan Jadwal Temu?',
+                text: "Tindakan ini akan membatalkan Jadwal Temu yang telah dilakukan.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

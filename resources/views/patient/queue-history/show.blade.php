@@ -1,17 +1,17 @@
 @extends('layouts.master')
 
-@section('title-page', 'Detail Antrean')
+@section('title-page', 'Detail Jadwal Temu')
 
 @section('content')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Detail Riwayat Data Antrean</h1>
+                    <h1 class="m-0">Detail Riwayat Jadwal Temu</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('history.history.index') }}">Antrean Pasien</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('history.history.index') }}">Riwayat Jadwal Temu</a></li>
                         <li class="breadcrumb-item active">Detail</li>
                     </ol>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="col-md-9">
                     <div class="card">
                         <div class="card-header p-2">
-                            <h3 class="card-title">Antrean Pasien</h3>
+                            <h3 class="card-title">Jadwal Temu</h3>
                         </div>
                         <div class="card-body">
                             <div class="row">

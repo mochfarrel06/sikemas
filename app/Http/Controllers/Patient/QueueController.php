@@ -375,7 +375,7 @@ class QueueController extends Controller
             ]);
         }
 
-        return redirect()->route('data-patient.queue.index')->with('success', 'Antrean berhasil ditambahkan.');
+        return redirect()->route('data-patient.queue.index')->with('success', 'Jadwal Temu ditambahkan.');
     }
 
     public function createAntreanAdmin(Request $request)
@@ -465,6 +465,6 @@ class QueueController extends Controller
             'is_booked' => true
         ]);
 
-        return redirect()->route('data-patient.queue.index')->with('success', 'Antrean berhasil ditambahkan.');
+        return redirect()->route('data-patient.queue.index')->with('success', 'Jadwal Temu berhasil ditambahkan.');
     }
 }

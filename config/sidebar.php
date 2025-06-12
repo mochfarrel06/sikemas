@@ -78,14 +78,14 @@ return [
     //     'is_header' => true,
     // ],
     [
-        'text' => 'Antrean Pasien',
+        'text' => 'Jadwal Temu',
         'url' => ['/data-patient/queue', '/data-patient/create-antrean-admin'],
         'role' => ['pasien', 'dokter', 'admin'],
         'icon' => 'iconoir-task-list',
     ],
 
     [
-        'text' => 'Riwayat Antrean Pasien',
+        'text' => 'Riwayat Jadwal Temu',
         'url' => '/history/queue',
         'role' => ['pasien', 'dokter', 'admin'],
         'icon' => 'iconoir-ease-curve-control-points',

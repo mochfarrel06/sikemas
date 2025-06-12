@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Riwayat Antrean Pasien</h1>
+                    <h1 class="m-0">Riwayat Jadwal Temu</h1>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
                         <div class="card-header d-flex">
                             <div class="d-flex align-items-center">
                                 <i class="iconoir-table mr-2"></i>
-                                <h3 class="card-title">Riwayat Antrean Pasien</h3>
+                                <h3 class="card-title">Riwayat Jadwal Temu</h3>
                             </div>
                             {{-- <div class="ml-auto">
                                 <a href="{{ $jumlahhistory > 0 ? route('history.pdf') : '#' }}"

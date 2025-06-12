@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title-page')
-    Antrean
+    Jadwal Temu
 @endsection
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Antrean Pasien</h1>
+                    <h1 class="m-0">Jadwal Temu</h1>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
                         <div class="card-header d-flex">
                             <div class="d-flex align-items-center">
                                 <i class="iconoir-table mr-2"></i>
-                                <h3 class="card-title">Antrean Pasien</h3>
+                                <h3 class="card-title">Jadwal Temu</h3>
                             </div>
 
                             @if (auth()->user() && auth()->user()->role == 'pasien')
@@ -108,7 +108,7 @@
                                                                     style="gap: 5px"><i class="iconoir-check"
                                                                         style="font-size: 15px"></i> Periksa</a>
 
-                                                            @elseif (auth()->user()->role == 'dokter')
+                                                            @elseif (auth()->user()->role == 'dokter' || auth()->user()->role == 'admin')
                                                                     <a onclick="batalAntrean({{ $queue->id }})"
                                                                 class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
                                                                 style="gap: 5px"><i class="iconoir-xmark"
@@ -195,8 +195,8 @@
 
         function batalAntrean(queueId) {
             Swal.fire({
-                title: 'Yakin ingin membatalkan antrean pasien?',
-                text: "Tindakan ini akan membatalkan antrean pasien yang telah dilakukan.",
+                title: 'Yakin ingin membatalkan jadwal temu?',
+                text: "Tindakan ini akan membatalkan jadwal temu yang telah dilakukan.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

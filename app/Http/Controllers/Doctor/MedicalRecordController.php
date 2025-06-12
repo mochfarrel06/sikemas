@@ -136,4 +136,14 @@ class MedicalRecordController extends Controller
         $medicalRecord = MedicalRecord::with('medicines')->findOrFail($id);
         return view('doctor.medical-record.show', compact('medicalRecord'));
     }
+
+    public function generateNota($id)
+    {
+        $medicalRecord = MedicalRecord::with(['patient', 'queue'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('doctor.medical-record.nota', compact('medicalRecord'))
+            ->setPaper([0, 0, 500, 500], 'portrait');
+
+        return $pdf->stream('nota.pdf');
+    }
 }
