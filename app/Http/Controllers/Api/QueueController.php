@@ -46,20 +46,20 @@ class QueueController extends Controller
             ], 404);
         }
 
-        // Cek apakah slot waktu sudah dipesan
-        $existingQueue = Queue::where('user_id', $userId)
-            ->where('tgl_periksa', $request->tgl_periksa)
-            ->whereNotNull('start_time')
-            ->whereNotNull('end_time')
-            ->where('status', '!=', 'batal')
-            ->exists();
+        // // Cek apakah slot waktu sudah dipesan
+        // $existingQueue = Queue::where('user_id', $userId)
+        //     ->where('tgl_periksa', $request->tgl_periksa)
+        //     ->whereNotNull('start_time')
+        //     ->whereNotNull('end_time')
+        //     ->where('status', '!=', 'batal')
+        //     ->exists();
 
-        if ($existingQueue) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Antrean hanya dapat dilakukan sehari 1 kali saja'
-            ], 409); // Conflict
-        }
+        // if ($existingQueue) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Antrean hanya dapat dilakukan sehari 1 kali saja'
+        //     ], 409); // Conflict
+        // }
 
         if ($request->start_time && $request->end_time) {
             $existingQueue = Queue::where('doctor_id', $request->doctor_id)
