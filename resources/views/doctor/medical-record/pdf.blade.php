@@ -4,488 +4,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekam Medis - Hasil Pemeriksaan Laboratorium</title>
+    <title>Rekam Medis - {{ $medicalRecord->patient->nama_depan }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             font-size: 14px;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin: 0 auto;
         }
 
         .header {
-            margin-bottom: 30px;
-            border-bottom: 2px solid #2c5aa0;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
         }
 
         .header .title {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            color: #2c5aa0;
-            margin-bottom: 20px;
         }
 
-        .subtitle {
-            text-align: center;
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 20px;
+        .info {
+            margin-bottom: 10px;
         }
 
-        /* Tabel Info Pasien */
-        .table-up {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        .info label {
+            font-weight: bold;
         }
 
-        .table-header {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table-header td {
-            padding: 8px 4px;
-            vertical-align: top;
-        }
-
-        .patient-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* Tabel Hasil Lab */
+        /* Tabel 1 */
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .table,
+        .table th,
+        .table td {
+            border: 1px solid black;
         }
 
         .table th,
         .table td {
-            border: 1px solid #ddd;
-            padding: 10px 8px;
+            padding: 8px;
             text-align: left;
         }
 
-        .table th {
-            background-color: #2c5aa0;
-            color: white;
-            font-weight: bold;
-            text-align: center;
+        /* Tabel 2 */
+        .table-header {
+            width: 100%;
+            border-collapse: collapse;
+            padding: 0;
         }
 
-        .table tr:nth-child(even) {
-            background-color: #f8f9fa;
+        .table-header,
+        .table-header th,
+        .table-header td {
+            border: none;
         }
 
-        .table tr:hover {
-            background-color: #e8f4f8;
+        /* Tabel 3 */
+        .table-up {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
 
-        .section-header {
-            background-color: #e3f2fd !important;
-            font-weight: bold;
-            color: #1976d2;
-        }
-
-        .section-header td {
-            text-align: center;
-            font-size: 14px;
-            padding: 12px;
-        }
-
-        .abnormal {
-            background-color: #ffebee !important;
-            color: #c62828;
-            font-weight: bold;
-        }
-
-        .normal {
-            color: #2e7d32;
-        }
-
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-        }
-
-        .doctor-signature {
-            margin-top: 40px;
-            text-align: right;
-        }
-
-        .signature-box {
-            display: inline-block;
-            text-align: center;
-            min-width: 200px;
-        }
-
-        .signature-line {
-            border-top: 1px solid #333;
-            margin-top: 60px;
-            padding-top: 5px;
-        }
-
-        @media print {
-            body {
-                background-color: white;
-                margin: 0;
-            }
-            .container {
-                box-shadow: none;
-                border-radius: 0;
-            }
+        .table-up th,
+        .table-up td {
+            text-align: left;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="title">RUMAH SAKIT UMUM</div>
-            <div class="subtitle">Hasil Pemeriksaan Laboratorium</div>
-        </div>
+    <div class="header">
+        <table class="table-up">
+            <tr>
+                <td style="width: 50%; vertical-align: top;">
+                    <table class="table-header">
+                        <tr>
+                            <td style="width: 25%; padding: 4px">Nama</td>
+                            <td style="padding: 4px">: {{ $medicalRecord->user->nama_depan }}
+                                {{ $medicalRecord->user->nama_belakang }}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 25%; padding: 4px">Umur</td>
+                            <td style="padding: 4px">:
+                                {{ \Carbon\Carbon::parse($medicalRecord->queue->patient->tgl_lahir)->age }} tahun</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 25%; padding: 4px">Alamat</td>
+                            <td style="padding: 4px">: {{ $medicalRecord->queue->patient->alamat }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 50%; padding: 0">
+                    <table class="table-header">
+                        <tr>
+                            <td style="width: 40%; padding: 4px">Poli</td>
+                            <td style="padding: 4px">: {{ $medicalRecord->queue->doctor->specialization->name }}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; padding: 4px">No. Rekam Medis</td>
+                            <td style="padding: 4px">: {{ $medicalRecord->id }}</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 40%; padding: 4px">Tgl Pemeriksaan</td>
+                            <td style="padding: 4px">: {{ $medicalRecord->queue->tgl_periksa }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
-        <div class="patient-info">
-            <table class="table-up">
-                <tr>
-                    <td style="width: 50%; vertical-align: top;">
-                        <table class="table-header">
-                            <tr>
-                                <td style="width: 30%; font-weight: bold;">Nama</td>
-                                <td>: <span id="patient-name">John Doe</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;">Umur</td>
-                                <td>: <span id="patient-age">35</span> tahun</td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;">Alamat</td>
-                                <td>: <span id="patient-address">Jl. Contoh No. 123, Kediri</span></td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td style="width: 50%; vertical-align: top;">
-                        <table class="table-header">
-                            <tr>
-                                <td style="width: 40%; font-weight: bold;">Poli</td>
-                                <td>: <span id="poli-name">Poli Umum</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;">No. Rekam Medis</td>
-                                <td>: <span id="medical-record-id">20</span></td>
-                            </tr>
-                            <tr>
-                                <td style="font-weight: bold;">Tgl Pemeriksaan</td>
-                                <td>: <span id="examination-date">2025-06-12</span></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
+        <h3 style="text-align:center; margin-top: 30px;">Hasil Pemeriksaan Laboratorium</h3>
         <table class="table">
             <thead>
                 <tr>
-                    <th style="width: 40%;">Jenis Pemeriksaan</th>
-                    <th style="width: 20%;">Hasil</th>
-                    <th style="width: 40%;">Nilai Normal</th>
+                    <th>Jenis Pemeriksaan</th>
+                    <th>Hasil</th>
+                    <th>Nilai Normal</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- KIMIA KLINIK -->
-                <tr class="section-header">
-                    <td colspan="3">KIMIA KLINIK</td>
+                <tr>
+                    <td colspan="3"><strong>SIKEMAS</strong></td>
                 </tr>
                 <tr>
                     <td>Gula Darah Acak</td>
-                    <td class="normal">95 mg/dL</td>
-                    <td>&lt; 200 mg/dL</td>
+                    <td>{{ $medicalRecord->gula_darah_acak }}</td>
+                    <td>&lt; 200 mg/dl</td>
                 </tr>
                 <tr>
                     <td>Gula Darah Puasa</td>
-                    <td class="normal">85 mg/dL</td>
-                    <td>70-100 mg/dL</td>
+                    <td>{{ $medicalRecord->gula_darah_puasa }}</td>
+                    <td>70-100 mg/dl</td>
                 </tr>
                 <tr>
                     <td>Gula Darah 2 jam PP</td>
-                    <td class="normal">120 mg/dL</td>
-                    <td>&lt; 140 mg/dL</td>
+                    <td>{{ $medicalRecord->gula_darah_2jm_pp }}</td>
+                    <td>&lt; 140 mg/dl</td>
                 </tr>
                 <tr>
-                    <td>Cholesterol Total</td>
-                    <td class="normal">180 mg/dL</td>
-                    <td>&lt; 200 mg/dL</td>
+                    <td>Analisa Lemak</td>
+                    <td>{{ $medicalRecord->analisa_lemak }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Cholesterol</td>
+                    <td>{{ $medicalRecord->cholesterol }}</td>
+                    <td>&lt; 200 mg/dl</td>
                 </tr>
                 <tr>
                     <td>Trigliserida</td>
-                    <td class="normal">120 mg/dL</td>
-                    <td>&lt; 150 mg/dL</td>
+                    <td>{{ $medicalRecord->trigliserida }}</td>
+                    <td>&lt; 150 mg/dl</td>
                 </tr>
                 <tr>
-                    <td>HDL Cholesterol</td>
-                    <td class="normal">55 mg/dL</td>
-                    <td>L: &gt;40, P: &gt;50 mg/dL</td>
+                    <td>HDL</td>
+                    <td>{{ $medicalRecord->hdl }}</td>
+                    <td>L: &gt;40 P: &gt;50 mg/dl</td>
                 </tr>
                 <tr>
-                    <td>LDL Cholesterol</td>
-                    <td class="normal">110 mg/dL</td>
-                    <td>&lt; 130 mg/dL</td>
+                    <td>LDL</td>
+                    <td>{{ $medicalRecord->ldl }}</td>
+                    <td>&lt; 100 mg/dl</td>
                 </tr>
                 <tr>
                     <td>Asam Urat</td>
-                    <td class="normal">5.5 mg/dL</td>
-                    <td>L: 3.5-7.0, P: 2.6-6.0 mg/dL</td>
+                    <td>{{ $medicalRecord->asam_urat }}</td>
+                    <td>L: 3.5-7.2 P: 2.6-6.0 mg/dl</td>
                 </tr>
                 <tr>
-                    <td>BUN (Blood Urea Nitrogen)</td>
-                    <td class="normal">15 mg/dL</td>
-                    <td>8-25 mg/dL</td>
+                    <td>BUN</td>
+                    <td>{{ $medicalRecord->bun }}</td>
+                    <td>8-20 mg/dl</td>
                 </tr>
                 <tr>
                     <td>Creatinin</td>
-                    <td class="normal">0.9 mg/dL</td>
-                    <td>L: 0.7-1.3, P: 0.6-1.1 mg/dL</td>
+                    <td>{{ $medicalRecord->creatinin }}</td>
+                    <td>L: 0.7-1.2 P: 0.6-1.1 mg/dl</td>
                 </tr>
                 <tr>
-                    <td>SGOT (AST)</td>
-                    <td class="normal">25 U/L</td>
-                    <td>&lt; 40 U/L</td>
+                    <td>SGOT</td>
+                    <td>{{ $medicalRecord->sgot }}</td>
+                    <td>L: &lt;37 P: &lt;31 U/L</td>
                 </tr>
                 <tr>
-                    <td>SGPT (ALT)</td>
-                    <td class="normal">28 U/L</td>
-                    <td>&lt; 40 U/L</td>
+                    <td>SGPT</td>
+                    <td>{{ $medicalRecord->sgpt }}</td>
+                    <td>L: &lt;41 P: &lt;31 U/L</td>
                 </tr>
 
-                <!-- HEMATOLOGI -->
-                <tr class="section-header">
-                    <td colspan="3">HEMATOLOGI (DARAH LENGKAP)</td>
-                </tr>
+                <!-- URINE LENGKAP -->
                 <tr>
-                    <td>Hemoglobin</td>
-                    <td class="normal">16.3 g/dL</td>
-                    <td>L: 14-16, P: 12-14 g/dL</td>
-                </tr>
-                <tr>
-                    <td>Leukosit</td>
-                    <td class="abnormal">2.700 /mm³</td>
-                    <td>4.000-10.000 /mm³</td>
-                </tr>
-                <tr>
-                    <td>Eritrosit</td>
-                    <td class="normal">5.020.000 /mm³</td>
-                    <td>4.000.000-5.000.000 /mm³</td>
-                </tr>
-                <tr>
-                    <td>Trombosit</td>
-                    <td class="abnormal">81.000 /mm³</td>
-                    <td>150.000-450.000 /mm³</td>
-                </tr>
-                <tr>
-                    <td>PCV/HCT</td>
-                    <td class="normal">46.0 %</td>
-                    <td>L: 40-48, P: 38-43 %</td>
-                </tr>
-
-                <!-- URINALISIS -->
-                <tr class="section-header">
-                    <td colspan="3">URINALISIS</td>
+                    <td colspan="3"><strong>URINE LENGKAP</strong></td>
                 </tr>
                 <tr>
                     <td>Warna</td>
-                    <td class="normal">Kuning Jernih</td>
-                    <td>Kuning Jernih</td>
+                    <td>{{ $medicalRecord->warna }}</td>
+                    <td>Kuning jernih</td>
                 </tr>
                 <tr>
                     <td>pH</td>
-                    <td class="normal">6.0</td>
-                    <td>5.0-8.0</td>
+                    <td>{{ $medicalRecord->ph }}</td>
+                    <td>4.8-7.4</td>
                 </tr>
                 <tr>
                     <td>Berat Jenis</td>
-                    <td class="normal">1.020</td>
-                    <td>1.005-1.030</td>
+                    <td>{{ $medicalRecord->berat_jenis }}</td>
+                    <td>1.015-1.025</td>
                 </tr>
                 <tr>
-                    <td>Protein</td>
-                    <td class="normal">Negatif</td>
+                    <td>Reduksi</td>
+                    <td>{{ $medicalRecord->reduksi }}</td>
                     <td>Negatif</td>
                 </tr>
                 <tr>
-                    <td>Glukosa/Reduksi</td>
-                    <td class="normal">Negatif</td>
+                    <td>Protein</td>
+                    <td>{{ $medicalRecord->protein }}</td>
                     <td>Negatif</td>
                 </tr>
                 <tr>
                     <td>Bilirubin</td>
-                    <td class="normal">Negatif</td>
+                    <td>{{ $medicalRecord->bilirubin }}</td>
                     <td>Negatif</td>
                 </tr>
                 <tr>
                     <td>Urobilinogen</td>
-                    <td class="normal">Normal</td>
+                    <td>{{ $medicalRecord->urobilinogen }}</td>
                     <td>Normal</td>
                 </tr>
                 <tr>
                     <td>Nitrit</td>
-                    <td class="normal">Negatif</td>
+                    <td>{{ $medicalRecord->nitrit }}</td>
                     <td>Negatif</td>
                 </tr>
                 <tr>
                     <td>Keton</td>
-                    <td class="normal">Negatif</td>
+                    <td>{{ $medicalRecord->keton }}</td>
+                    <td>Negatif</td>
+                </tr>
+                <tr>
+                    <td>Sedimen Lekosit</td>
+                    <td>{{ $medicalRecord->sedimen_lekosit }}</td>
+                    <td>0-5 /lpb</td>
+                </tr>
+                <tr>
+                    <td>Sedimen Eritrosit</td>
+                    <td>{{ $medicalRecord->sedimen_eritrosit }}</td>
+                    <td>0-2 /lpb</td>
+                </tr>
+                <tr>
+                    <td>Sedimen Epitel</td>
+                    <td>{{ $medicalRecord->sedimen_epitel }}</td>
+                    <td>0-2 /lpb</td>
+                </tr>
+                <tr>
+                    <td>Sedimen Kristal</td>
+                    <td>{{ $medicalRecord->sedimen_kristal }}</td>
+                    <td>Negatif</td>
+                </tr>
+                <tr>
+                    <td>Sedimen Bakteri</td>
+                    <td>{{ $medicalRecord->sedimen_bakteri }}</td>
                     <td>Negatif</td>
                 </tr>
 
-                <!-- SEDIMEN URIN -->
-                <tr class="section-header">
-                    <td colspan="3">SEDIMEN URIN</td>
+                <!-- DARAH LENGKAP -->
+                <tr>
+                    <td colspan="3"><strong>DARAH LENGKAP</strong></td>
+                </tr>
+                <tr>
+                    <td>Hemoglobin</td>
+                    <td>{{ $medicalRecord->hemoglobin }}</td>
+                    <td>L:14-16 P:12-14 g/dl</td>
                 </tr>
                 <tr>
                     <td>Leukosit</td>
-                    <td class="normal">1-2 /lpb</td>
-                    <td>&lt; 5 /lpb</td>
+                    <td>{{ $medicalRecord->leukosit }}</td>
+                    <td>4-10 ribu sel/mm3</td>
                 </tr>
                 <tr>
-                    <td>Eritrosit</td>
-                    <td class="normal">0-1 /lpb</td>
-                    <td>&lt; 3 /lpb</td>
+                    <td>Erytrosit</td>
+                    <td>{{ $medicalRecord->erytrosit }}</td>
+                    <td>4-5 juta sel/mm3</td>
                 </tr>
                 <tr>
-                    <td>Epitel</td>
-                    <td class="normal">Positif 1</td>
-                    <td>Positif 1-2</td>
+                    <td>Trombosit</td>
+                    <td>{{ $medicalRecord->trombosit }}</td>
+                    <td>150-450 ribu sel/mm3</td>
                 </tr>
                 <tr>
-                    <td>Kristal</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
+                    <td>PCV/HCT</td>
+                    <td>{{ $medicalRecord->pcv }}</td>
+                    <td>L:40-48 P:38-43 Vol%</td>
                 </tr>
                 <tr>
-                    <td>Bakteri</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
+                    <td>Diff Count</td>
+                    <td>{{ $medicalRecord->dif }}</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Bleeding Time</td>
+                    <td>{{ $medicalRecord->bleeding_time }}</td>
+                    <td>1-4 menit</td>
+                </tr>
+                <tr>
+                    <td>Clotting Time</td>
+                    <td>{{ $medicalRecord->clotting_time }}</td>
+                    <td>2-6 menit</td>
                 </tr>
 
-                <!-- HEMOSTASIS -->
-                <tr class="section-header">
-                    <td colspan="3">HEMOSTASIS</td>
+                <!-- WIDAL SLIDE -->
+                <tr>
+                    <td colspan="3"><strong>WIDAL SLIDE</strong></td>
                 </tr>
                 <tr>
-                    <td>Bleeding Time (BT)</td>
-                    <td class="normal">2 menit</td>
-                    <td>1-3 menit</td>
+                    <td>Salmonella O</td>
+                    <td>{{ $medicalRecord->salmonella_o }}</td>
+                    <td>Negatif</td>
                 </tr>
                 <tr>
-                    <td>Clotting Time (CT)</td>
-                    <td class="normal">5 menit</td>
-                    <td>3-8 menit</td>
+                    <td>Salmonella H</td>
+                    <td>{{ $medicalRecord->salmonella_h }}</td>
+                    <td>Negatif</td>
+                </tr>
+                <tr>
+                    <td>Salmonella P, A</td>
+                    <td>{{ $medicalRecord->salmonella_p_a }}</td>
+                    <td>Negatif</td>
+                </tr>
+                <tr>
+                    <td>Salmonella P, B</td>
+                    <td>{{ $medicalRecord->salmonella_p_b }}</td>
+                    <td>Negatif</td>
                 </tr>
 
                 <!-- SEROLOGI -->
-                <tr class="section-header">
-                    <td colspan="3">SEROLOGI</td>
-                </tr>
                 <tr>
-                    <td>Widal - Salmonella O</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
-                </tr>
-                <tr>
-                    <td>Widal - Salmonella H</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
-                </tr>
-                <tr>
-                    <td>Widal - Salmonella P.A</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
-                </tr>
-                <tr>
-                    <td>Widal - Salmonella P.B</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
+                    <td colspan="3"><strong>SEROLOGI</strong></td>
                 </tr>
                 <tr>
                     <td>HbsAg</td>
-                    <td class="normal">Negatif</td>
+                    <td>{{ $medicalRecord->hbsag }}</td>
                     <td>Negatif</td>
                 </tr>
                 <tr>
                     <td>VDRL</td>
-                    <td class="normal">Negatif</td>
-                    <td>Negatif</td>
+                    <td>{{ $medicalRecord->vdrl }}</td>
+                    <td>Non Reaktif</td>
                 </tr>
                 <tr>
                     <td>Plano Test</td>
-                    <td class="normal">Negatif</td>
+                    <td>{{ $medicalRecord->plano_test }}</td>
                     <td>Negatif</td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="footer">
-            <p><strong>Catatan:</strong></p>
-            <p>• Nilai yang ditandai <span class="abnormal">merah</span> menunjukkan hasil di luar batas normal</p>
-            <p>• Konsultasikan hasil pemeriksaan dengan dokter untuk interpretasi yang tepat</p>
+        <!-- Diagnosis dan Catatan -->
+        <div style="margin-top: 30px;">
+            <h3>Diagnosis</h3>
+            <p>{{ $medicalRecord->diagnosis }}</p>
+            
+            <h3>Resep</h3>
+            <p>{{ $medicalRecord->resep }}</p>
+            
+            <h3>Catatan Medis</h3>
+            <p>{{ $medicalRecord->catatan_medis }}</p>
         </div>
 
-        <div class="doctor-signature">
-            <div class="signature-box">
-                <p>Kediri, <span id="report-date">12 Juni 2025</span></p>
-                <div class="signature-line">
-                    <p><strong>dr. Nama Dokter</strong></p>
-                    <p>Dokter Penanggung Jawab</p>
-                </div>
-            </div>
+        <!-- Tanda Tangan -->
+        <div style="margin-top: 50px; text-align: right;">
+            <p>Dokter Pemeriksa</p>
+            <br><br><br>
+            <p style="text-decoration: underline;">{{ $medicalRecord->queue->doctor->nama_depan }} {{ $medicalRecord->queue->doctor->nama_belakang }}</p>
         </div>
     </div>
-
-    <script>
-        // Function to update patient data
-        function updatePatientData(data) {
-            if (data.patient_name) document.getElementById('patient-name').textContent = data.patient_name;
-            if (data.patient_age) document.getElementById('patient-age').textContent = data.patient_age;
-            if (data.patient_address) document.getElementById('patient-address').textContent = data.patient_address;
-            if (data.poli_name) document.getElementById('poli-name').textContent = data.poli_name;
-            if (data.medical_record_id) document.getElementById('medical-record-id').textContent = data.medical_record_id;
-            if (data.examination_date) document.getElementById('examination-date').textContent = data.examination_date;
-            if (data.report_date) document.getElementById('report-date').textContent = data.report_date;
-        }
-
-        // Add responsive behavior
-        window.addEventListener('resize', function() {
-            const table = document.querySelector('.table');
-            if (window.innerWidth < 768) {
-                table.style.fontSize = '11px';
-            } else {
-                table.style.fontSize = '13px';
-            }
-        });
-
-        // Initialize responsive design
-        if (window.innerWidth < 768) {
-            document.querySelector('.table').style.fontSize = '11px';
-        }
-    </script>
+</body>
 
 </html>
