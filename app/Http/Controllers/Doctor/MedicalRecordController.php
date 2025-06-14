@@ -118,7 +118,7 @@ class MedicalRecordController extends Controller
             // ]);
 
             session()->flash('success', 'Berhasil menambahkan data rekam medis');
-            return response()->json(['success' => true], 200);
+            return redirect()->route('transaction.transaction.create', $medicalRecord->id);
         } catch (\Exception $e) {
             session()->flash('error', 'Terdapat kesalahan pada proses data dokter: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 400);

@@ -91,6 +91,13 @@ return [
         'icon' => 'iconoir-ease-curve-control-points',
     ],
 
+    [
+        'text' => 'Transaksi',
+        'url' => '/transaction/index',
+        'role' => ['dokter', 'admin'],
+        'icon' => 'iconoir-money-square-solid',
+    ],
+
     // [
     //     'text' => 'Pengguna',
     //     'role' => ['admin'],

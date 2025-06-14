@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
 use App\Http\Controllers\Doctor\MedicalRecordController;
+use App\Http\Controllers\Doctor\TransactionController;
 use App\Http\Controllers\Patient\DashboardController as PatientDashboardController;
 use App\Http\Controllers\Patient\QueueController;
 use App\Http\Controllers\Patient\QueueHistoryController;
@@ -109,7 +110,7 @@ Route::group(['prefix' => 'history', 'as' => 'history.', 'middleware' => 'role:a
     Route::get('/queue/pdf', [QueueHistoryController::class, 'exportPdf'])->name('pdf');
 
     Route::get('queue/{id}', [QueueHistoryController::class, 'show'])->name('queue-history.show');
-     Route::get('/queue/medical-record/{id}/pdf', [QueueHistoryController::class, 'generatePDF'])->name('history-medical.pdf');
+    Route::get('/queue/medical-record/{id}/pdf', [QueueHistoryController::class, 'generatePDF'])->name('history-medical.pdf');
 });
 
 // 7. Route doctor
@@ -129,4 +130,12 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dok
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => 'role:pasien,admin,dokter'], function () {
     Route::get('dashboard', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('update', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+Route::group(['prefix' => 'transaction', 'as' => 'transaction.', 'middleware' => 'role:admin,dokter'], function() {
+    Route::get('/index', [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get('/create/{medical_record}', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::post('/store', [TransactionController::class, 'store'])->name('transaction.store');
+
+    Route::get('/{id}/nota', [TransactionController::class, 'generateNota'])->name('transaction.nota');
 });

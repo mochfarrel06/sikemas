@@ -55,7 +55,8 @@
                                         <div class="form-group">
                                             <label for="medicine_id">Pilih Obat</label>
                                             <select name="medicine_id[]" id="medicine_id"
-                                                class="form-control select2 @error('medicine_id') is-invalid @enderror" multiple>
+                                                class="form-control select2 @error('medicine_id') is-invalid @enderror"
+                                                multiple>
                                                 @foreach ($medicines as $medicine)
                                                     <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
                                                 @endforeach
@@ -636,52 +637,52 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            const $submitBtn = $('#submit-btn');
-            $('#main-form').on('submit', function(event) {
-                event.preventDefault();
+            // const $submitBtn = $('#submit-btn');
+            // $('#main-form').on('submit', function(event) {
+            //     event.preventDefault();
 
-                const form = $(this)[0];
-                const formData = new FormData(form);
+            //     const form = $(this)[0];
+            //     const formData = new FormData(form);
 
-                $submitBtn.prop('disabled', true).text('Loading...');
+            //     $submitBtn.prop('disabled', true).text('Loading...');
 
-                $.ajax({
-                    url: form.action,
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success) {
-                            sessionStorage.setItem('success',
-                                'Data Rekam Medis berhasil disubmit.');
-                            window.location.href =
-                                "{{ route('doctor.medical-record.index') }}";
-                        } else {
-                            $('#flash-messages').html('<div class="alert alert-danger">' +
-                                response.error + '</div>');
-                        }
-                    },
-                    error: function(response) {
-                        const errors = response.responseJSON.errors;
-                        for (let field in errors) {
-                            let input = $('[name=' + field + ']');
-                            let error = errors[field][0];
-                            input.addClass('is-invalid');
-                            input.next('.invalid-feedback').remove();
-                            input.after('<div class="invalid-feedback">' + error + '</div>');
-                        }
+            //     $.ajax({
+            //         url: form.action,
+            //         method: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(response) {
+            //             if (response.success && response.redirect) {
+            //                 sessionStorage.setItem('success',
+            //                     'Data Rekam Medis berhasil disubmit.');
+            //                 window.location.href = response
+            //                 .redirect; // arahkan ke halaman transaksi create
+            //             } else {
+            //                 $('#flash-messages').html('<div class="alert alert-danger">' +
+            //                     (response.error || 'Terjadi kesalahan.') + '</div>');
+            //             }
+            //         }
+            //         error: function(response) {
+            //             const errors = response.responseJSON.errors;
+            //             for (let field in errors) {
+            //                 let input = $('[name=' + field + ']');
+            //                 let error = errors[field][0];
+            //                 input.addClass('is-invalid');
+            //                 input.next('.invalid-feedback').remove();
+            //                 input.after('<div class="invalid-feedback">' + error + '</div>');
+            //             }
 
-                        const message = response.responseJSON.message ||
-                            'Terdapat kesalahan pada proses rekam medis';
-                        $('#flash-messages').html('<div class="alert alert-danger">' + message +
-                            '</div>');
-                    },
-                    complete: function() {
-                        $submitBtn.prop('disabled', false).text('Simpan');
-                    }
-                });
-            });
+            //             const message = response.responseJSON.message ||
+            //                 'Terdapat kesalahan pada proses rekam medis';
+            //             $('#flash-messages').html('<div class="alert alert-danger">' + message +
+            //                 '</div>');
+            //         },
+            //         complete: function() {
+            //             $submitBtn.prop('disabled', false).text('Simpan');
+            //         }
+            //     });
+            // });
 
             $('input, select, textarea').on('input change', function() {
                 $(this).removeClass('is-invalid');

@@ -89,4 +89,7 @@ class MedicalRecord extends Model
         return $this->belongsToMany(Medicine::class, 'medical_record_medicine');
     }
 
+    public function transaction() {
+        return $this->hasOne(Transaction::class);
+    }
 }
