@@ -24,80 +24,22 @@
                             @csrf
 
                             <div class="card-body">
-                                <h5>Data Pasien</h5>
-                                <div class="row" style="margin-bottom: 10px">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Nama Pasien</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->queue->patient->nama_depan }}" disabled>
-                                                <input type="hidden" name="medical_record_id" value="{{ $medicalRecord->id }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Umur</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ \Carbon\Carbon::parse($medicalRecord->queue->patient->tgl_lahir)->age }} Tahun"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Alamat</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->queue->patient->alamat }}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>No BPJS</label>
-                                            <input type="text" class="form-control" name="no_bpjs" id="no_bpjs"
-                                                value="{{ $medicalRecord->queue->patient->no_bpjs }}"
-                                                {{ $medicalRecord->queue->patient->no_bpjs ? '' : '' }}>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="width: 100%; border-top:1px solid #c5c5c5; padding: 10px 0"></div>
-                                <h5>Data Dokter</h5>
-                                <div class="row" style="margin-bottom: 10px">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Nama Dokter</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->queue->doctor->nama_depan }} {{ $medicalRecord->queue->doctor->nama_belakang }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Poli</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->queue->doctor->specialization->name }}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="width: 100%; border-top:1px solid #c5c5c5; padding: 10px 0"></div>
-                                <h5>Data Rekam Medis</h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Nama Dokter</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->queue->doctor->nama_depan }} {{ $medicalRecord->queue->doctor->nama_belakang }}"
-                                                disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Poli</label>
-                                            <input type="text" class="form-control"
-                                                value="{{ $medicalRecord->queue->doctor->specialization->name }}" disabled>
+                                            <label for="">Pasien</label>
+                                            <select name="medical_record_id" id="medical_record_id"
+                                                class="form-control @error('medical_record_id') is-invalid @enderror">
+                                                <option value="">-- Pilih Pasien --</option>
+                                                @foreach ($medicalRecords as $medicalRecord)
+                                                    <option value="{{ $medicalRecord->id }}">
+                                                        {{ $medicalRecord->queue->patient->nama_depan }}
+                                                        {{ $medicalRecord->queue->patient->nama_belakang }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('medical_record_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -112,50 +54,44 @@
                                                     <th>Harga</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                @php $total = 0; @endphp
-                                                @foreach ($medicalRecord->medicines as $medicine)
-                                                    <tr>
-                                                        <td>{{ $medicine->name }}</td>
-                                                        <td>Rp {{ number_format($medicine->price, 0, ',', '.') }}</td>
-                                                    </tr>
-                                                    @php $total += $medicine->price; @endphp
-                                                @endforeach
+                                            <tbody id="obat-body">
+                                                <!-- Data obat akan dimuat via JavaScript -->
                                             </tbody>
                                             <tfoot>
                                                 <tr>
                                                     <th>Total</th>
-                                                    <th>Rp {{ number_format($total, 0, ',', '.') }}</th>
+                                                    <th id="obat-total">Rp 0</th>
                                                 </tr>
                                             </tfoot>
+
                                         </table>
                                     </div>
                                 </div>
 
                                 <div style="width: 100%; border-top:1px solid #c5c5c5; padding: 10px 0"></div>
-                                <h5>Data Transaksi</h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Jenis Pembayaran</label>
-                                            <select name="jenis_pembayaran" id="jenis_pembayaran" class="form-control">
-                                                <option value="">-- Pilih Jenis Pembayaran --</option>
-                                                <option value="bayar_tunai">Bayar Tunai</option>
+        <h5>Data Transaksi</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Jenis Pembayaran</label>
+                    <select name="jenis_pembayaran" id="jenis_pembayaran" class="form-control">
+                        <option value="">-- Pilih Jenis Pembayaran --</option>
+                        <option value="bayar_tunai">Bayar Tunai</option>
 
-                                                @if ($medicalRecord->queue->patient->no_bpjs)
-                                                    <option value="bayar_bpjs">Bayar BPJS</option>
-                                                @endif
-                                            </select>
+                        @if ($medicalRecord->queue->patient->no_bpjs)
+                            <option value="bayar_bpjs">Bayar BPJS</option>
+                        @endif
+                    </select>
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Total Harga</label>
-                                            <input type="number" class="form-control" id="total" name="total" />
-                                        </div>
-                                    </div>
-                                </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Total Harga</label>
+                    <input type="number" class="form-control" id="total" name="total" />
+                </div>
+            </div>
+        </div>
                             </div>
 
 
@@ -267,4 +203,43 @@
             });
         });
     </script>
+
+    <script>
+    $(document).ready(function() {
+        $('#medical_record_id').on('change', function() {
+            const recordId = $(this).val();
+
+            if (!recordId) {
+                $('#obat-body').html('');
+                $('#obat-total').text('Rp 0');
+                $('#total_hidden').val(0);
+                return;
+            }
+
+            $.ajax({
+                url: `/transaction/get-medicines/${recordId}`,
+                method: 'GET',
+                success: function(data) {
+                    let rows = '';
+                    data.medicines.forEach(med => {
+                        rows += `
+                            <tr>
+                                <td>${med.name}</td>
+                                <td>Rp ${parseInt(med.price).toLocaleString('id-ID')}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $('#obat-body').html(rows);
+                    $('#obat-total').text('Rp ' + parseInt(data.total).toLocaleString('id-ID'));
+                    $('#total_hidden').val(data.total);
+                },
+                error: function() {
+                    alert('Gagal mengambil data obat.');
+                }
+            });
+        });
+    });
+</script>
+
 @endpush

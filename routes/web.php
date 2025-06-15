@@ -114,7 +114,7 @@ Route::group(['prefix' => 'history', 'as' => 'history.', 'middleware' => 'role:a
 });
 
 // 7. Route doctor
-Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dokter'], function () {
+Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dokter,admin'], function () {
     Route::get('dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/medical-record', [MedicalRecordController::class, 'index'])->name('medical-record.index');
@@ -134,8 +134,12 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => 'role:p
 
 Route::group(['prefix' => 'transaction', 'as' => 'transaction.', 'middleware' => 'role:admin,dokter'], function() {
     Route::get('/index', [TransactionController::class, 'index'])->name('transaction.index');
-    Route::get('/create/{medical_record}', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::get('/create', [TransactionController::class, 'create'])->name('transaction.create');
     Route::post('/store', [TransactionController::class, 'store'])->name('transaction.store');
 
     Route::get('/{id}/nota', [TransactionController::class, 'generateNota'])->name('transaction.nota');
+
+    Route::get('/get-medicines/{id}', [TransactionController::class, 'getMedicines']);
+
+
 });
