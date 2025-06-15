@@ -17,20 +17,35 @@ use Illuminate\Support\Facades\DB;
 class QueueController extends Controller
 {
     public function index()
-    {
-        $user = auth()->user();
-        $role = $user->role;
+{
+    $user = auth()->user();
+    $role = $user->role;
 
-        if ($role === 'admin' || $role === 'dokter') {
-            $queues = Queue::with('doctor')->get();
-        } else {
-            $queues = Queue::with('doctor')->where('user_id', $user->id)->get();
-        }
-
-        return response()->json([
-            'data' => $queues,
-        ], 200);
+    if ($role === 'admin' || $role === 'dokter') {
+        $queues = Queue::with(['doctor', 'transaction' => function($query) {
+            $query->select('id', 'user_id', 'medical_record_id', 'jenis_pembayaran', 'total');
+        }])
+        ->leftJoin('transactions', function($join) {
+            $join->on('queues.patient_id', '=', 'transactions.user_id');
+        })
+        ->select('queues.*', 'transactions.jenis_pembayaran', 'transactions.total')
+        ->get();
+    } else {
+        $queues = Queue::with(['doctor', 'transaction' => function($query) {
+            $query->select('id', 'user_id', 'medical_record_id', 'jenis_pembayaran', 'total');
+        }])
+        ->leftJoin('transactions', function($join) {
+            $join->on('queues.patient_id', '=', 'transactions.user_id');
+        })
+        ->select('queues.*', 'transactions.jenis_pembayaran', 'transactions.total')
+        ->where('queues.user_id', $user->id)
+        ->get();
     }
+
+    return response()->json([
+        'data' => $queues,
+    ], 200);
+}
 
     public function store(Request $request)
     {
