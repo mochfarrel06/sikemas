@@ -32,7 +32,7 @@
                                                 class="form-control @error('medical_record_id') is-invalid @enderror">
                                                 <option value="">-- Pilih Pasien --</option>
                                                 @foreach ($medicalRecords as $medicalRecord)
-                                                    <option value="{{ $medicalRecord->id }}">
+                                                    <option value="{{ $medicalRecord->id }}" data-no-bpjs="{{ $medicalRecord->queue->patient->no_bpjs }}">
                                                         {{ $medicalRecord->queue->patient->nama_depan }}
                                                         {{ $medicalRecord->queue->patient->nama_belakang }}</option>
                                                 @endforeach
@@ -63,37 +63,36 @@
                                                     <th id="obat-total">Rp 0</th>
                                                 </tr>
                                             </tfoot>
-
                                         </table>
                                     </div>
                                 </div>
 
                                 <div style="width: 100%; border-top:1px solid #c5c5c5; padding: 10px 0"></div>
-        <h5>Data Transaksi</h5>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Jenis Pembayaran</label>
-                    <select name="jenis_pembayaran" id="jenis_pembayaran" class="form-control">
-                        <option value="">-- Pilih Jenis Pembayaran --</option>
-                        <option value="bayar_tunai">Bayar Tunai</option>
-
-                        @if ($medicalRecord->queue->patient->no_bpjs)
-                            <option value="bayar_bpjs">Bayar BPJS</option>
-                        @endif
-                    </select>
-
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Total Harga</label>
-                    <input type="number" class="form-control" id="total" name="total" />
-                </div>
-            </div>
-        </div>
+                                <h5>Data Transaksi</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Jenis Pembayaran</label>
+                                            <select name="jenis_pembayaran" id="jenis_pembayaran" class="form-control @error('jenis_pembayaran') is-invalid @enderror">
+                                                <option value="">-- Pilih Jenis Pembayaran --</option>
+                                                <option value="bayar_tunai">Bayar Tunai</option>
+                                            </select>
+                                            @error('jenis_pembayaran')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Total Harga</label>
+                                            <input type="number" class="form-control @error('total') is-invalid @enderror" id="total" name="total" readonly />
+                                            @error('total')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
 
                             <div class="card-footer">
                                 <button type="submit" id="submit-btn" class="btn btn-primary2 mr-2">Simpan</button>
@@ -108,54 +107,112 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const noBpjsInput = document.getElementById('no_bpjs');
-            const jenisPembayaranSelect = document.getElementById('jenis_pembayaran');
+        $(document).ready(function() {
+            let originalTotal = 0; // Simpan total asli
+            let currentPatientBpjs = ''; // Simpan no BPJS pasien yang dipilih
 
-            function toggleBpjsOption() {
-                const hasValue = noBpjsInput.value.trim() !== '';
+            // Event listener untuk perubahan pasien
+            $('#medical_record_id').on('change', function() {
+                const recordId = $(this).val();
+                const selectedOption = $(this).find('option:selected');
+                currentPatientBpjs = selectedOption.data('no-bpjs') || '';
 
-                // Cek apakah opsi BPJS sudah ada
-                const optionExists = [...jenisPembayaranSelect.options].some(opt => opt.value === 'bayar_bpjs');
+                // Reset jenis pembayaran
+                $('#jenis_pembayaran').val('');
+                updatePaymentOptions();
 
-                if (hasValue && !optionExists) {
-                    // Tambahkan opsi BPJS
-                    const bpjsOption = document.createElement('option');
-                    bpjsOption.value = 'bayar_bpjs';
-                    bpjsOption.text = 'Bayar BPJS';
-                    jenisPembayaranSelect.appendChild(bpjsOption);
-                } else if (!hasValue && optionExists) {
-                    // Hapus opsi BPJS
-                    for (let i = 0; i < jenisPembayaranSelect.options.length; i++) {
-                        if (jenisPembayaranSelect.options[i].value === 'bayar_bpjs') {
-                            jenisPembayaranSelect.remove(i);
-                            break;
-                        }
+                if (!recordId) {
+                    $('#obat-body').html('');
+                    $('#obat-total').text('Rp 0');
+                    $('#total').val(0);
+                    originalTotal = 0;
+                    return;
+                }
+
+                // Ambil data obat
+                $.ajax({
+                    url: `/transaction/get-medicines/${recordId}`,
+                    method: 'GET',
+                    success: function(data) {
+                        let rows = '';
+                        data.medicines.forEach(med => {
+                            rows += `
+                                <tr>
+                                    <td>${med.name}</td>
+                                    <td>Rp ${parseInt(med.price).toLocaleString('id-ID')}</td>
+                                </tr>
+                            `;
+                        });
+
+                        $('#obat-body').html(rows);
+
+                        // Simpan total asli
+                        originalTotal = data.total;
+
+                        // Tampilkan total asli (akan berubah sesuai jenis pembayaran)
+                        $('#obat-total').text('Rp ' + parseInt(data.total).toLocaleString('id-ID'));
+                        $('#total').val(data.total);
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data obat.');
                     }
+                });
+            });
 
-                    // Jika sebelumnya BPJS terpilih, ubah ke tunai
-                    if (jenisPembayaranSelect.value === 'bayar_bpjs') {
-                        jenisPembayaranSelect.value = 'bayar_tunai';
-                    }
+            // Function untuk update opsi pembayaran
+            function updatePaymentOptions() {
+                const jenisPembayaranSelect = $('#jenis_pembayaran');
+
+                // Reset options
+                jenisPembayaranSelect.html(`
+                    <option value="">-- Pilih Jenis Pembayaran --</option>
+                    <option value="bayar_tunai">Bayar Tunai</option>
+                `);
+
+                // Tambahkan opsi BPJS jika pasien memiliki no BPJS
+                if (currentPatientBpjs && currentPatientBpjs.trim() !== '') {
+                    jenisPembayaranSelect.append('<option value="bayar_bpjs">Bayar BPJS</option>');
                 }
             }
 
-            // Jalankan saat halaman load
-            toggleBpjsOption();
+            // Event listener untuk perubahan jenis pembayaran
+            $('#jenis_pembayaran').on('change', function() {
+                const jenisPayment = $(this).val();
+                const totalInput = $('#total');
+                const obatTotalDisplay = $('#obat-total');
 
-            // Jalankan saat mengetik di field No BPJS
-            noBpjsInput.addEventListener('input', toggleBpjsOption);
-        });
-    </script>
+                if (jenisPayment === 'bayar_bpjs') {
+                    // Jika BPJS dipilih, set total menjadi 0
+                    totalInput.val(0);
+                    obatTotalDisplay.text('Rp 0');
+                } else if (jenisPayment === 'bayar_tunai') {
+                    // Jika tunai dipilih, kembalikan ke total asli
+                    if (originalTotal > 0) {
+                        totalInput.val(originalTotal);
+                        obatTotalDisplay.text('Rp ' + parseInt(originalTotal).toLocaleString('id-ID'));
+                    }
+                } else {
+                    // Jika tidak ada yang dipilih, kembalikan ke total asli
+                    if (originalTotal > 0) {
+                        totalInput.val(originalTotal);
+                        obatTotalDisplay.text('Rp ' + parseInt(originalTotal).toLocaleString('id-ID'));
+                    }
+                }
+            });
 
-    <script>
-        $(document).ready(function() {
+            // Form submission dengan AJAX
             const $submitBtn = $('#submit-btn');
             $('#main-form').on('submit', function(event) {
                 event.preventDefault();
 
                 const form = $(this)[0];
                 const formData = new FormData(form);
+                const jenisPayment = $('#jenis_pembayaran').val();
+
+                // Validasi: jika BPJS, pastikan total adalah 0
+                if (jenisPayment === 'bayar_bpjs') {
+                    formData.set('total', '0');
+                }
 
                 $submitBtn.prop('disabled', true).text('Loading...');
 
@@ -167,79 +224,89 @@
                     contentType: false,
                     success: function(response) {
                         if (response.success) {
-                            sessionStorage.setItem('success',
-                                'Data Poli berhasil disubmit.');
-                            window.location.href =
-                                "{{ route('transaction.transaction.index') }}";
+                            sessionStorage.setItem('success', 'Data Transaksi berhasil disimpan.');
+                            window.location.href = "{{ route('transaction.transaction.index') }}";
                         } else {
-                            $('#flash-messages').html('<div class="alert alert-danger">' +
-                                response.error + '</div>');
+                            $('#flash-messages').html('<div class="alert alert-danger">' + response.error + '</div>');
                         }
                     },
                     error: function(response) {
-                        const errors = response.responseJSON.errors;
-                        for (let field in errors) {
-                            let input = $('[name=' + field + ']');
-                            let error = errors[field][0];
-                            input.addClass('is-invalid');
-                            input.next('.invalid-feedback').remove();
-                            input.after('<div class="invalid-feedback">' + error + '</div>');
+                        // Clear previous error states
+                        $('.is-invalid').removeClass('is-invalid');
+                        $('.invalid-feedback').remove();
+
+                        if (response.responseJSON && response.responseJSON.errors) {
+                            const errors = response.responseJSON.errors;
+                            for (let field in errors) {
+                                let input = $('[name=' + field + ']');
+                                let error = errors[field][0];
+                                input.addClass('is-invalid');
+                                input.after('<div class="invalid-feedback">' + error + '</div>');
+                            }
                         }
 
-                        const message = response.responseJSON.message ||
-                            'Terdapat kesalahan pada proses Poli';
-                        $('#flash-messages').html('<div class="alert alert-danger">' + message +
-                            '</div>');
+                        const message = response.responseJSON && response.responseJSON.message ?
+                            response.responseJSON.message : 'Terdapat kesalahan pada proses transaksi';
+
+                        $('#flash-messages').html('<div class="alert alert-danger">' + message + '</div>');
                     },
                     complete: function() {
-                        $submitBtn.prop('disabled', false).text('Tambah');
+                        $submitBtn.prop('disabled', false).text('Simpan');
                     }
                 });
             });
 
+            // Clear validation errors on input change
             $('input, select, textarea').on('input change', function() {
                 $(this).removeClass('is-invalid');
-                $(this).next('.invalid-feedback').text('');
+                $(this).next('.invalid-feedback').remove();
             });
+
+            // Display flash messages if any
+            const successMessage = sessionStorage.getItem('success');
+            if (successMessage) {
+                $('#flash-messages').html('<div class="alert alert-success">' + successMessage + '</div>');
+                sessionStorage.removeItem('success');
+            }
         });
     </script>
 
+    <!-- Script untuk compatibility dengan sistem yang sudah ada -->
     <script>
-    $(document).ready(function() {
-        $('#medical_record_id').on('change', function() {
-            const recordId = $(this).val();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Script ini untuk kompatibilitas dengan kode lama jika diperlukan
+            const noBpjsInput = document.getElementById('no_bpjs');
 
-            if (!recordId) {
-                $('#obat-body').html('');
-                $('#obat-total').text('Rp 0');
-                $('#total_hidden').val(0);
-                return;
-            }
+            // Jika ada input no_bpjs terpisah (untuk form lain)
+            if (noBpjsInput) {
+                const jenisPembayaranSelect = document.getElementById('jenis_pembayaran');
 
-            $.ajax({
-                url: `/transaction/get-medicines/${recordId}`,
-                method: 'GET',
-                success: function(data) {
-                    let rows = '';
-                    data.medicines.forEach(med => {
-                        rows += `
-                            <tr>
-                                <td>${med.name}</td>
-                                <td>Rp ${parseInt(med.price).toLocaleString('id-ID')}</td>
-                            </tr>
-                        `;
-                    });
+                function toggleBpjsOption() {
+                    const hasValue = noBpjsInput.value.trim() !== '';
+                    const optionExists = [...jenisPembayaranSelect.options].some(opt => opt.value === 'bayar_bpjs');
 
-                    $('#obat-body').html(rows);
-                    $('#obat-total').text('Rp ' + parseInt(data.total).toLocaleString('id-ID'));
-                    $('#total_hidden').val(data.total);
-                },
-                error: function() {
-                    alert('Gagal mengambil data obat.');
+                    if (hasValue && !optionExists) {
+                        const bpjsOption = document.createElement('option');
+                        bpjsOption.value = 'bayar_bpjs';
+                        bpjsOption.text = 'Bayar BPJS';
+                        jenisPembayaranSelect.appendChild(bpjsOption);
+                    } else if (!hasValue && optionExists) {
+                        for (let i = 0; i < jenisPembayaranSelect.options.length; i++) {
+                            if (jenisPembayaranSelect.options[i].value === 'bayar_bpjs') {
+                                jenisPembayaranSelect.remove(i);
+                                break;
+                            }
+                        }
+
+                        if (jenisPembayaranSelect.value === 'bayar_bpjs') {
+                            jenisPembayaranSelect.value = 'bayar_tunai';
+                        }
+                    }
                 }
-            });
-        });
-    });
-</script>
 
+                toggleBpjsOption();
+                noBpjsInput.addEventListener('input', toggleBpjsOption);
+            }
+        });
+    </script>
 @endpush
