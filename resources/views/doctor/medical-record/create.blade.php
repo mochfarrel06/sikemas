@@ -17,8 +17,10 @@
                                 style="color: #38A6B1">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('doctor.medical-record.index') }}"
                                 style="color: #38A6B1">Rekam Medis</a></li>
+                        @if (auth()->user() && auth()->user()->role != 'admin')
                         <li class="breadcrumb-item active">Tambah</li>
-                    </ol>
+                        @endif
+                        </ol>
                 </div>
             </div>
         </div>
