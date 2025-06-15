@@ -125,7 +125,7 @@ class QueueController extends Controller
     $queue = Queue::where('id', $request->queue_id)
         ->where('user_id', $user->id)
         ->where('status', 'selesai')
-        ->with(['medicalRecord', 'transaction'])
+        ->with(['medicalRecord.transaction'])
         ->first();
 
     if (!$queue || !$queue->medicalRecord) {
@@ -138,8 +138,8 @@ class QueueController extends Controller
     // Prepare response data
     $responseData = [
         'medical_record' => $queue->medicalRecord,
-        'jenis_pembayaran' => $queue->transaction ? $queue->transaction->jenis_pembayaran : null,
-        'total' => $queue->transaction ? $queue->transaction->total : null,
+        'jenis_pembayaran' => $queue->medicalRecord->transaction ? $queue->medicalRecord->transaction->jenis_pembayaran : null,
+        'total' => $queue->medicalRecord->transaction ? $queue->medicalRecord->transaction->total : null,
     ];
 
     return response()->json([
