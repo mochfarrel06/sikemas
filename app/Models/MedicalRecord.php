@@ -92,4 +92,5 @@ class MedicalRecord extends Model
     public function transaction() {
         return $this->hasOne(Transaction::class);
     }
+    
 }

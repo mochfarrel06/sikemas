@@ -125,7 +125,7 @@ class QueueController extends Controller
     $queue = Queue::where('id', $request->queue_id)
         ->where('user_id', $user->id)
         ->where('status', 'selesai')
-        ->with(['medicalRecord.transaction'])
+        ->with(['medicalRecord.transaction', 'medicalRecord.medicines']) // Tambah eager load medicines
         ->first();
 
     if (!$queue || !$queue->medicalRecord) {
@@ -135,11 +135,21 @@ class QueueController extends Controller
         ], 404);
     }
 
+    // Ambil daftar nama obat dari relasi medicines
+    $medicines = $queue->medicalRecord->medicines->map(function ($medicine) {
+        return [
+            'id' => $medicine->id,
+            'name' => $medicine->name,
+            'price' => $medicine->price,
+        ];
+    });
+
     // Prepare response data
     $responseData = [
         'medical_record' => $queue->medicalRecord,
-        'jenis_pembayaran' => $queue->medicalRecord->transaction ? $queue->medicalRecord->transaction->jenis_pembayaran : null,
-        'total' => $queue->medicalRecord->transaction ? $queue->medicalRecord->transaction->total : null,
+        'jenis_pembayaran' => $queue->medicalRecord->transaction->jenis_pembayaran ?? null,
+        'total' => $queue->medicalRecord->transaction->total ?? null,
+        'medicines' => $medicines, // Tambahkan daftar obat di sini
     ];
 
     return response()->json([
@@ -147,6 +157,7 @@ class QueueController extends Controller
         'data' => $responseData
     ]);
 }
+
 
 
     public function show_dokter()
