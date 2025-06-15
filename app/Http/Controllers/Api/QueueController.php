@@ -17,35 +17,20 @@ use Illuminate\Support\Facades\DB;
 class QueueController extends Controller
 {
     public function index()
-{
-    $user = auth()->user();
-    $role = $user->role;
+    {
+        $user = auth()->user();
+        $role = $user->role;
 
-    if ($role === 'admin' || $role === 'dokter') {
-        $queues = Queue::with(['doctor', 'transaction' => function($query) {
-            $query->select('id', 'user_id', 'medical_record_id', 'jenis_pembayaran', 'total');
-        }])
-        ->leftJoin('transactions', function($join) {
-            $join->on('queues.patient_id', '=', 'transactions.user_id');
-        })
-        ->select('queues.*', 'transactions.jenis_pembayaran', 'transactions.total')
-        ->get();
-    } else {
-        $queues = Queue::with(['doctor', 'transaction' => function($query) {
-            $query->select('id', 'user_id', 'medical_record_id', 'jenis_pembayaran', 'total');
-        }])
-        ->leftJoin('transactions', function($join) {
-            $join->on('queues.patient_id', '=', 'transactions.user_id');
-        })
-        ->select('queues.*', 'transactions.jenis_pembayaran', 'transactions.total')
-        ->where('queues.user_id', $user->id)
-        ->get();
+        if ($role === 'admin' || $role === 'dokter') {
+            $queues = Queue::with('doctor')->get();
+        } else {
+            $queues = Queue::with('doctor')->where('user_id', $user->id)->get();
+        }
+
+        return response()->json([
+            'data' => $queues,
+        ], 200);
     }
-
-    return response()->json([
-        'data' => $queues,
-    ], 200);
-}
 
     public function store(Request $request)
     {
@@ -130,31 +115,38 @@ class QueueController extends Controller
     //     ], 200);
     // }
     public function show_history(Request $request)
-    {
-        $request->validate([
-            'queue_id' => 'required|exists:queues,id',
-        ]);
+{
+    $request->validate([
+        'queue_id' => 'required|exists:queues,id',
+    ]);
 
-        $user = auth()->user();
+    $user = auth()->user();
 
-        $queue = Queue::where('id', $request->queue_id)
-            ->where('user_id', $user->id)
-            ->where('status', 'selesai')
-            ->with('medicalRecord')
-            ->first();
+    $queue = Queue::where('id', $request->queue_id)
+        ->where('user_id', $user->id)
+        ->where('status', 'selesai')
+        ->with(['medicalRecord', 'transaction'])
+        ->first();
 
-        if (!$queue || !$queue->medicalRecord) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Medical record tidak ditemukan atau antrian belum selesai.',
-            ], 404);
-        }
-
+    if (!$queue || !$queue->medicalRecord) {
         return response()->json([
-            'success' => true,
-            'data' => $queue->medicalRecord
-        ]);
+            'success' => false,
+            'message' => 'Medical record tidak ditemukan atau antrian belum selesai.',
+        ], 404);
     }
+
+    // Prepare response data
+    $responseData = [
+        'medical_record' => $queue->medicalRecord,
+        'jenis_pembayaran' => $queue->transaction ? $queue->transaction->jenis_pembayaran : null,
+        'total' => $queue->transaction ? $queue->transaction->total : null,
+    ];
+
+    return response()->json([
+        'success' => true,
+        'data' => $responseData
+    ]);
+}
 
 
     public function show_dokter()
