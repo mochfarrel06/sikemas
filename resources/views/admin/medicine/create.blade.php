@@ -15,8 +15,10 @@
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" style="color: #38A6B1">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('admin.medicines.index') }}" style="color: #38A6B1">Obat</a></li>
+                        @if (auth()->user() && auth()->user()->role != 'admin')
                         <li class="breadcrumb-item active">Tambah</li>
-                    </ol>
+                        @endif
+                        </ol>
                 </div>
             </div>
         </div>
