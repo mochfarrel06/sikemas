@@ -73,8 +73,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="diagnosis">Diagnosis</label>
-                                            <input type="text" class="form-control" name="diagnosis"
-                                                @error('diagnosis') is-invalid @enderror">
+                                            <input list="diagnosis-list" type="text" name="diagnosis"
+                                                class="form-control @error('diagnosis') is-invalid @enderror">
+                                            <datalist id="diagnosis-list">
+                                                @foreach ($diagnoses as $diag)
+                                                    <option value="{{ $diag }}">
+                                                @endforeach
+                                            </datalist>
                                             @error('diagnosis')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror

@@ -15,37 +15,42 @@ use Illuminate\Support\Facades\Auth;
 class MedicalRecordController extends Controller
 {
     public function index()
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    if ($user->role === 'admin') {
-        // Jika user adalah admin, ambil semua data medical record
-        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
-    } else {
-        // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
-        $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
-            $query->where('doctor_id', $user->doctor->id);
-        })->with(['queue.patient', 'medicines'])->get();
+        if ($user->role === 'admin') {
+            // Jika user adalah admin, ambil semua data medical record
+            $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
+        } else {
+            // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
+            $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
+                $query->where('doctor_id', $user->doctor->id);
+            })->with(['queue.patient', 'medicines'])->get();
+        }
+
+        return view('doctor.medical-record.index', compact('medicalRecords'));
     }
-
-    return view('doctor.medical-record.index', compact('medicalRecords'));
-}
 
 
     public function create()
     {
         $user = auth()->user();
         if ($user->role === 'admin') {
-        // Admin bisa melihat semua antrean yang statusnya 'periksa'
-        $queues = Queue::where('status', 'periksa')->get();
-    } else {
-        // Dokter hanya bisa melihat antrean yang sesuai dengan dirinya
-        $queues = Queue::where('status', 'periksa')
-            ->where('doctor_id', $user->doctor->id)
-            ->get();
-    }
+            // Admin bisa melihat semua antrean yang statusnya 'periksa'
+            $queues = Queue::where('status', 'periksa')->get();
+        } else {
+            // Dokter hanya bisa melihat antrean yang sesuai dengan dirinya
+            $queues = Queue::where('status', 'periksa')
+                ->where('doctor_id', $user->doctor->id)
+                ->get();
+        }
         $medicines = Medicine::all();
-        return view('doctor.medical-record.create', compact('queues', 'medicines'));
+        $diagnoses = MedicalRecord::select('diagnosis')
+            ->distinct()
+            ->pluck('diagnosis')
+            ->filter() // Buang null/empty
+            ->values();
+        return view('doctor.medical-record.create', compact('queues', 'medicines', 'diagnoses'));
     }
 
     public function store(MedicalRecordStoreRequest $request)
