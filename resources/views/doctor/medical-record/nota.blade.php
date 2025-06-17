@@ -143,14 +143,14 @@
 
 
 
-    <div class="signature">
+    <!-- <div class="signature">
         <strong>Tanda tangan</strong>
         <br>
         <br>
         <br>
         <br>
         <strong>dr. Opik Ahmad Subakri</strong>
-    </div>
+    </div> -->
 
 </body>
 </html>
