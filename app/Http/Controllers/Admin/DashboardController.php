@@ -22,10 +22,8 @@ class DashboardController extends Controller
         $jumlahPoli = Specialization::count();
 
         $antreanHariIni = Queue::whereDate('tgl_periksa', Carbon::today())
+            ->whereIn('status', ['booking', 'periksa'])
             ->orderBy('start_time', 'asc')
-            ->where('status', '!=', 'selesai')
-            ->where('status', '!=', 'batal')
-            ->whereIn('status', ['booking', 'periksa']) // Menambahkan filter status booking dan periksa
             ->get();
 
         return view('admin.dashboard', compact('jumlahDokter', 'jumlahPasien', 'jumlahAntrean', 'antreanHariIni', 'jumlahPoli'));
