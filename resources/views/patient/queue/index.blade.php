@@ -225,7 +225,9 @@
                                     location.reload();
                                 });
                             } else {
-                                Swal.fire('Gagal!', 'Tidak dapat memproses permintaan.', 'error');
+                                // Swal.fire('Gagal!', 'Tidak dapat memproses permintaan.', 'error');
+                                console.warn('Permintaan tidak berhasil:', data);
+                        Swal.fire('Gagal!', data.message || 'Tidak dapat memproses permintaan.', 'error');
                             }
                         })
                         .catch(error => {
