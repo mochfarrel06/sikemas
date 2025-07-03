@@ -44,10 +44,4 @@ class Queue extends Model
     return $this->hasOne(MedicalRecord::class, 'queue_id');
     }
 
-    // Relasi dengan Transaction berdasarkan patient_id
-    public function transaction()
-    {
-        return $this->hasOne(Transaction::class, 'user_id', 'patient_id');
-    }
-
 }
