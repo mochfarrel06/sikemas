@@ -3123,3 +3123,50 @@ section,
   left: 20%;
   animation-delay: 4s;
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@media (min-width: 992px) {
+  .mobile-jkn-container {
+      padding: 80px 60px;
+  }
+  
+  .download-section {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+  }
+  
+  .app-info {
+      flex: 1;
+      margin-left: 60px;
+      margin-top: 0;
+      text-align: left;
+  }
+  
+  .download-buttons {
+      flex-shrink: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-jkn-section {
+      padding: 60px 0;
+  }
+  
+  .mobile-jkn-container {
+      padding: 40px 20px;
+  }
+
+  .app-title {
+      font-size: 2.5rem;
+  }
+
+  .app-description {
+      font-size: 1rem;
+      padding: 20px;
+  }
+}
