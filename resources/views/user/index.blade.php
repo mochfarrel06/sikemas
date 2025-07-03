@@ -85,7 +85,7 @@
         
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
-                <div class="container">
+                <div class="mobile-jkn-container">
                     <div class="download-section">
                         <div class="download-buttons">
                             <a href="#" class="download-btn">
