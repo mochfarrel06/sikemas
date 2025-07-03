@@ -2,121 +2,24 @@
 
 @section('content')
     <section id="hero" class="hero section">
-        <div class="container position-relative">
+        <div class="container position-relative" >
             <div class="row gy-5 justify-content-between">
                 <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
-                    <h2>Lindungi Kesehatan Gigi Andi</h2>
-                    <p>Kami Menyediakan Solusi Perawatan Kesehatan Gigi</p>
-                    <div class="d-flex">
-                        <a href="#about" class="btn-get-started">Ayo Ambil Antrian</a>
-                    </div>
+                    <h2>Sikemas</h2>
+                    <p class="hero-description">
+                        Revolusi pelayanan kesehatan digital yang menghubungkan admin, dokter, dan pasien dalam satu platform terintegrasi. 
+                        Dengan akses mobile yang mudah untuk pasien, Sikemas hadir memberikan solusi kesehatan yang lebih efisien dan terjangkau.
+                    </p>                
                 </div>
-                <div class="col-lg-5 order-1 order-lg-2 d-flex justify-content-center">
-                    <img src="{{ asset('assets/user/img/hero/coba2.svg') }}" class="img-fluid" alt="" />
-                </div>
-            </div>
-        </div>
-
-        <div class="icon-boxes position-relative" data-aos="fade-up" data-aos-delay="200">
-            <div class="container position-relative">
-                <div class="row gy-4 mt-5">
-                    <div class="col-xl-4 col-md-6">
-                        <div class="icon-box">
-                            <h4 class="title">
-                                <a href="" class="stretched-link">SISTEM ANTREAN ONLINE DENTHIS.PLUS</a>
-                                <p class="desk-card">
-                                    Dapatkan kemudahan dalam mengatur jadwal kunjungan Anda
-                                    dengan sistem antrean online Klinik Gigi kami! Pesan
-                                    jadwal kapan saja dan di mana saja melalui website atau
-                                    aplikasi kami, tanpa perlu antre panjang.
-                                </p>
-                            </h4>
-                        </div>
-                    </div>
-                    <!--End Icon Box -->
-
-                    <div class="col-xl-4 col-md-6">
-                        <div class="icon-box">
-                            <div class="icon"><i class="bi bi-gem"></i></div>
-                            <h4 class="title">
-                                <a href="" class="stretched-link">Klinik Gigi</a>
-                                <p class="desk-card">
-                                    Klinik Gigi Sehat adalah solusi terpercaya untuk perawatan
-                                    kesehatan gigi dan mulut Anda. Dengan layanan profesional
-                                    seperti pembersihan karang gigi, tambal gigi, hingga
-                                    pemasangan behel.
-                                </p>
-                            </h4>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-md-6">
-                        <div class="icon-box">
-                            <div class="icon"><i class="bi bi-hospital"></i></div>
-                            <h4 class="title">
-                                <a href="" class="stretched-link">Dokter Spesialis Gigi</a>
-                                <p class="desk-card">
-                                    Layanan Dokter Spesialis Gigi yang berpengalaman dalam menangani berbagai
-                                    permasalahan gigi, mulai dari pencabutan gigi bungsu, perawatan saluran akar,
-                                    hingga pemasangan gigi palsu dengan teknologi terbaru.
-                                </p>
-                            </h4>
-                        </div>
-                    </div>
+                <div class="col-lg-4 order-1 order-lg-2 d-flex justify-content-center">
+                    <img src="{{ asset('assets/user/img/hero/medical.png') }}" class="img-fluid" alt="" />
                 </div>
             </div>
         </div>
+
+    
     </section>
     <!-- /Hero Section -->
-
-    <!-- About Section -->
-    <section id="about" class="about section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Tentang Kami<br /></h2>
-            <p>
-                Selamat datang di DENTHIS.PLUS, tempat di mana senyum Anda menjadi
-                prioritas kami! Kami adalah klinik gigi yang didedikasikan untuk
-                memberikan perawatan kesehatan gigi dan mulut terbaik kepada setiap
-                pasien.
-            </p>
-        </div>
-        <!-- End Section Title -->
-
-        <div class="container">
-            <div class="row gy-4">
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                    <h3>
-                        Dengan tim dokter gigi profesional, teknologi modern, dan
-                        lingkungan yang nyaman,
-                    </h3>
-                    <img src="{{ asset('assets/user/img/about/about2.jpg') }}" class="img-fluid rounded-4 mb-4"
-                        alt="" />
-                    <p>
-                        kami berkomitmen untuk menghadirkan pengalaman perawatan gigi
-                        yang aman, ramah, dan berkualitas tinggi. Layanan kami mencakup
-                        perawatan umum, estetika, hingga spesialis, dirancang untuk
-                        memenuhi kebutuhan Anda dengan standar terbaik.
-                    </p>
-                </div>
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
-                    <div class="content ps-0 ps-lg-5">
-                        <p class="fst-italic">
-                            Kami percaya bahwa senyuman yang sehat adalah kunci
-                            kepercayaan diri. Bersama kami, wujudkan senyuman indah dan
-                            sehat yang selalu Anda impikan! Kunjungi kami dan rasakan
-                            perbedaan
-                        </p>
-                        <div class="position-relative mt-4">
-                            <img src="{{ asset('assets/user/img/about/about1.jpg') }}" class="img-fluid rounded-4"
-                                alt="" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- /About Section -->
 
     <!-- Services Section -->
     <section id="services" class="services section">
@@ -171,100 +74,52 @@
             </div>
         </div>
     </section>
-    <!-- /Services Section -->
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Kontak</h2>
-            <p>
-                Kami siap membantu Anda merawat kesehatan gigi dan mulut Anda.
-                Jangan ragu untuk menghubungi kami atau mengunjungi klinik kami.
-            </p>
+    <!-- Mobile JKN Section -->
+    <section class="mobile-jkn-section">
+        <div class="decorative-elements">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
         </div>
-        <!-- End Section Title -->
+        
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-10">
+                    <div class="mobile-jkn-container">
+                        <div class="download-section">
+                            <div class="download-buttons">
+                                <a href="#" class="download-btn">
+                                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.13997 6.91 8.89997 6.88C10.1 6.86 11.25 7.75 12.12 7.75C12.98 7.75 14.31 6.68 15.87 6.84C16.65 6.87 18.4 7.18 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" fill="#333"/>
+                                    </svg>
+                                    <div class="btn-text">
+                                        <small>Available on the</small>
+                                        <span>App Store</span>
+                                    </div>
+                                </a>
 
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-            <div class="row gx-lg-0 gy-4">
-                <div class="col-lg-4">
-                    <div class="info-container d-flex flex-column align-items-center justify-content-center">
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-                            <i class="bi bi-geo-alt flex-shrink-0"></i>
-                            <div>
-                                <h3>Alamat</h3>
-                                <p>Kediri</p>
+                                <a href="#" class="download-btn">
+                                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" fill="#333"/>
+                                    </svg>
+                                    <div class="btn-text">
+                                        <small>Get it on</small>
+                                        <span>Google Play</span>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="app-info">
+                                <h1 class="app-title">Mobile Sikemas</h1>
+                                <p class="app-description">
+                                    Segera unduh aplikasi Mobile Sikemas untuk memberikan kemudahan akses dan pelayanan yang optimal bagi peserta secara cepat dan mudah, dimanapun dan kapanpun.
+                                </p>
                             </div>
                         </div>
-                        <!-- End Info Item -->
-
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-                            <i class="bi bi-telephone flex-shrink-0"></i>
-                            <div>
-                                <h3>Nomor</h3>
-                                <p>+628233222832</p>
-                            </div>
-                        </div>
-                        <!-- End Info Item -->
-
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-                            <i class="bi bi-envelope flex-shrink-0"></i>
-                            <div>
-                                <h3>Email Us</h3>
-                                <p>denthis.plus@gmail.com</p>
-                            </div>
-                        </div>
-                        <!-- End Info Item -->
-
-                        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="500">
-                            <i class="bi bi-clock flex-shrink-0"></i>
-                            <div>
-                                <h3>Jam Buka</h3>
-                                <p>Senin-Minggu: 08.00 - 16:00</p>
-                            </div>
-                        </div>
-                        <!-- End Info Item -->
                     </div>
                 </div>
-
-                <div class="col-lg-8">
-                    <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade"
-                        data-aos-delay="100">
-                        <div class="row gy-4">
-                            <div class="col-md-6">
-                                <input type="text" name="name" class="form-control" placeholder="Nama Lengkap"
-                                    required="" />
-                            </div>
-
-                            <div class="col-md-6">
-                                <input type="email" class="form-control" name="email" placeholder="Email"
-                                    required="" />
-                            </div>
-
-                            <div class="col-md-12">
-                                <input type="text" class="form-control" name="subject" placeholder="Subject"
-                                    required="" />
-                            </div>
-
-                            <div class="col-md-12">
-                                <textarea class="form-control" name="message" rows="8" placeholder="Pesan" required=""></textarea>
-                            </div>
-
-                            <div class="col-md-12 text-center">
-                                <div class="loading">Loading</div>
-                                <div class="error-message"></div>
-                                <div class="sent-message">
-                                    Your message has been sent. Thank you!
-                                </div>
-
-                                <button type="submit">Kirim</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <!-- End Contact Form -->
             </div>
         </div>
     </section>
-    <!-- /Contact Section -->
 @endsection
