@@ -36,66 +36,170 @@ class QueueController extends Controller
     {
         $userId = Auth::id();
         $userEmail = Auth::user()->email;
-
+    
         $patient = Patient::where('email', $userEmail)->first();
-
+    
         if (!$patient) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data pasien tidak ditemukan untuk pengguna ini.'
             ], 404);
         }
-
-        // // Cek apakah slot waktu sudah dipesan
-        // $existingQueue = Queue::where('user_id', $userId)
-        //     ->where('tgl_periksa', $request->tgl_periksa)
-        //     ->whereNotNull('start_time')
-        //     ->whereNotNull('end_time')
-        //     ->where('status', '!=', 'batal')
-        //     ->exists();
-
-        // if ($existingQueue) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Antrean hanya dapat dilakukan sehari 1 kali saja'
-        //     ], 409); // Conflict
-        // }
-
+    
+        // Jika user mengirim start_time dan end_time (manual booking)
         if ($request->start_time && $request->end_time) {
             $existingQueue = Queue::where('doctor_id', $request->doctor_id)
                 ->where('tgl_periksa', $request->tgl_periksa)
                 ->where('start_time', $request->start_time)
                 ->exists();
-
+    
             if ($existingQueue) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Slot waktu ini sudah dipesan.'
-                ], 409); // Conflict
+                ], 409);
             }
+    
+            // Simpan dengan slot manual
+            $queue = Queue::create([
+                'user_id' => $userId,
+                'doctor_id' => $request->doctor_id,
+                'patient_id' => $patient->id,
+                'tgl_periksa' => $request->tgl_periksa,
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'waktu_mulai' => $request->start_time,
+                'waktu_selesai' => $request->end_time,
+                'keterangan' => $request->keterangan,
+                'status' => 'booking',
+                'is_booked' => true
+            ]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Antrean berhasil ditambahkan.',
+                'data' => $queue
+            ], 201);
         }
-
-        // Simpan data antrean
+    
+        // AUTO SLOT ASSIGNMENT - Cari slot pertama yang tersedia
+        $availableSlot = $this->findFirstAvailableSlot($request->doctor_id, $request->tgl_periksa);
+    
+        if (!$availableSlot) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada slot yang tersedia untuk tanggal tersebut.'
+            ], 409);
+        }
+    
+        // Simpan dengan slot otomatis
         $queue = Queue::create([
             'user_id' => $userId,
             'doctor_id' => $request->doctor_id,
             'patient_id' => $patient->id,
             'tgl_periksa' => $request->tgl_periksa,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'waktu_mulai' => $request->start_time,
-            'waktu_selesai' => $request->end_time,
+            'start_time' => $availableSlot['start_time'],
+            'end_time' => $availableSlot['end_time'],
+            'waktu_mulai' => $availableSlot['start_time'],
+            'waktu_selesai' => $availableSlot['end_time'],
             'keterangan' => $request->keterangan,
             'status' => 'booking',
             'is_booked' => true
         ]);
-
+    
         return response()->json([
             'success' => true,
-            'message' => 'Antrean berhasil ditambahkan.',
-            'data' => $queue
+            'message' => 'Antrean berhasil ditambahkan dengan slot otomatis.',
+            'data' => $queue,
+            'slot_info' => [
+                'start_time' => $availableSlot['start_time'],
+                'end_time' => $availableSlot['end_time']
+            ]
         ], 201);
     }
+    
+    /**
+     * Mencari slot pertama yang tersedia untuk dokter dan tanggal tertentu
+     */
+    private function findFirstAvailableSlot($doctorId, $tanggalPeriksa)
+    {
+        // Dapatkan hari dari tanggal periksa
+        $dayOfWeek = \Carbon\Carbon::parse($tanggalPeriksa)->format('l'); // Monday, Tuesday, etc.
+        
+        // Konversi ke bahasa Indonesia jika perlu
+        $dayMapping = [
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa', 
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+            'Sunday' => 'Minggu'
+        ];
+        
+        $hari = $dayMapping[$dayOfWeek] ?? $dayOfWeek;
+    
+        // Ambil jadwal dokter untuk hari tersebut
+        $schedule = DoctorSchedule::where('doctor_id', $doctorId)
+            ->where('hari', $hari)
+            ->first();
+    
+        if (!$schedule) {
+            return null; // Dokter tidak praktik di hari tersebut
+        }
+    
+        // Generate semua slot yang mungkin berdasarkan jadwal
+        $allSlots = $this->generateTimeSlots(
+            $schedule->jam_mulai,
+            $schedule->jam_selesai,
+            $schedule->waktu_periksa,
+            $schedule->waktu_jeda
+        );
+    
+        // Ambil slot yang sudah terbooked
+        $bookedSlots = Queue::where('doctor_id', $doctorId)
+            ->where('tgl_periksa', $tanggalPeriksa)
+            ->where('is_booked', true)
+            ->pluck('start_time')
+            ->toArray();
+    
+        // Cari slot pertama yang belum terbooked
+        foreach ($allSlots as $slot) {
+            if (!in_array($slot['start_time'], $bookedSlots)) {
+                return $slot;
+            }
+        }
+    
+        return null; // Semua slot sudah terbooked
+    }
+    
+    /**
+     * Generate time slots berdasarkan jadwal dokter
+     */
+    private function generateTimeSlots($jamMulai, $jamSelesai, $waktuPeriksa, $waktuJeda = 0)
+    {
+        $slots = [];
+        $currentTime = \Carbon\Carbon::createFromFormat('H:i:s', $jamMulai);
+        $endTime = \Carbon\Carbon::createFromFormat('H:i:s', $jamSelesai);
+    
+        while ($currentTime->lt($endTime)) {
+            $slotEnd = $currentTime->copy()->addMinutes($waktuPeriksa);
+            
+            // Pastikan slot tidak melewati jam selesai
+            if ($slotEnd->lte($endTime)) {
+                $slots[] = [
+                    'start_time' => $currentTime->format('H:i:s'),
+                    'end_time' => $slotEnd->format('H:i:s')
+                ];
+            }
+    
+            // Pindah ke slot berikutnya (waktu periksa + waktu jeda)
+            $currentTime->addMinutes($waktuPeriksa + $waktuJeda);
+        }
+    
+        return $slots;
+    }
+    
 
     // public function show_history()
     // {
