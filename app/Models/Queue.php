@@ -21,7 +21,8 @@ class Queue extends Model
         'is_booked',
         'waktu_mulai',
         'waktu_selesai',
-        'medical_id'
+        'medical_id',
+        'nomer_antrian' // Tambahkan ini
     ];
 
     public function user()
