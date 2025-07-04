@@ -83,23 +83,12 @@ class QueueController extends Controller
         }
     
         // AUTO SLOT ASSIGNMENT - Cari slot pertama yang tersedia
-        \Log::info('DEBUG: Mulai mencari slot otomatis', [
-            'doctor_id' => $request->doctor_id,
-            'tgl_periksa' => $request->tgl_periksa
-        ]);
-    
         $availableSlot = $this->findFirstAvailableSlot($request->doctor_id, $request->tgl_periksa);
     
         if (!$availableSlot) {
-            // Debug info tambahan
-            $debugInfo = $this->getDebugInfo($request->doctor_id, $request->tgl_periksa);
-            
-            \Log::error('DEBUG: Tidak ada slot tersedia', $debugInfo);
-            
             return response()->json([
                 'success' => false,
-                'message' => 'Tidak ada slot yang tersedia untuk tanggal tersebut.',
-                'debug_info' => $debugInfo // Hapus ini di production
+                'message' => 'Tidak ada slot yang tersedia untuk tanggal tersebut.'
             ], 409);
         }
     
@@ -130,90 +119,15 @@ class QueueController extends Controller
     }
     
     /**
-     * Method untuk debug info
-     */
-    private function getDebugInfo($doctorId, $tanggalPeriksa)
-    {
-        $dayOfWeek = \Carbon\Carbon::parse($tanggalPeriksa)->format('l');
-        
-        $dayMapping = [
-            'Monday' => 'Senin',
-            'Tuesday' => 'Selasa', 
-            'Wednesday' => 'Rabu',
-            'Thursday' => 'Kamis',
-            'Friday' => 'Jumat',
-            'Saturday' => 'Sabtu',
-            'Sunday' => 'Minggu'
-        ];
-        
-        $hari = $dayMapping[$dayOfWeek] ?? $dayOfWeek;
-    
-        // Cek apakah dokter ada
-        $doctor = \App\Models\Doctor::find($doctorId);
-        
-        // Cek jadwal dokter
-        $schedule = DoctorSchedule::where('doctor_id', $doctorId)
-            ->where('hari', $hari)
-            ->first();
-    
-        // Cek semua jadwal dokter
-        $allSchedules = DoctorSchedule::where('doctor_id', $doctorId)->get();
-    
-        // Cek queue yang sudah ada
-        $existingQueues = Queue::where('doctor_id', $doctorId)
-            ->where('tgl_periksa', $tanggalPeriksa)
-            ->get();
-    
-        return [
-            'doctor_exists' => $doctor ? true : false,
-            'doctor_id' => $doctorId,
-            'tanggal_periksa' => $tanggalPeriksa,
-            'day_of_week' => $dayOfWeek,
-            'hari_indonesia' => $hari,
-            'schedule_found' => $schedule ? true : false,
-            'schedule_data' => $schedule,
-            'all_doctor_schedules' => $allSchedules,
-            'existing_queues_count' => $existingQueues->count(),
-            'existing_queues' => $existingQueues
-        ];
-    }
-    
-    /**
      * Mencari slot pertama yang tersedia untuk dokter dan tanggal tertentu
      */
     private function findFirstAvailableSlot($doctorId, $tanggalPeriksa)
     {
         // Dapatkan hari dari tanggal periksa
-        $dayOfWeek = \Carbon\Carbon::parse($tanggalPeriksa)->format('l');
+        $dayOfWeek = \Carbon\Carbon::parse($tanggalPeriksa)->format('l'); // Monday, Tuesday, etc.
         
-        // Konversi ke bahasa Indonesia
-        $dayMapping = [
-            'Monday' => 'Senin',
-            'Tuesday' => 'Selasa', 
-            'Wednesday' => 'Rabu',
-            'Thursday' => 'Kamis',
-            'Friday' => 'Jumat',
-            'Saturday' => 'Sabtu',
-            'Sunday' => 'Minggu'
-        ];
-        
-        $hari = $dayMapping[$dayOfWeek] ?? $dayOfWeek;
-    
-        \Log::info('DEBUG: Mencari jadwal dokter', [
-            'doctor_id' => $doctorId,
-            'day_of_week' => $dayOfWeek,
-            'hari_indonesia' => $hari
-        ]);
-    
-        // Ambil jadwal dokter untuk hari tersebut
-        $schedule = DoctorSchedule::where('doctor_id', $doctorId)
-            ->where('hari', $hari)
-            ->first();
-    
-        \Log::info('DEBUG: Hasil pencarian jadwal', [
-            'schedule_found' => $schedule ? true : false,
-            'schedule_data' => $schedule
-        ]);
+        // Cari jadwal dokter dengan fleksibilitas bahasa
+        $schedule = $this->findDoctorSchedule($doctorId, $dayOfWeek);
     
         if (!$schedule) {
             return null; // Dokter tidak praktik di hari tersebut
@@ -227,11 +141,6 @@ class QueueController extends Controller
             $schedule->waktu_jeda ?? 0
         );
     
-        \Log::info('DEBUG: Generated slots', [
-            'total_slots' => count($allSlots),
-            'slots' => $allSlots
-        ]);
-    
         // Ambil slot yang sudah terbooked
         $bookedSlots = Queue::where('doctor_id', $doctorId)
             ->where('tgl_periksa', $tanggalPeriksa)
@@ -239,20 +148,46 @@ class QueueController extends Controller
             ->pluck('start_time')
             ->toArray();
     
-        \Log::info('DEBUG: Booked slots', [
-            'booked_slots' => $bookedSlots
-        ]);
-    
         // Cari slot pertama yang belum terbooked
         foreach ($allSlots as $slot) {
             if (!in_array($slot['start_time'], $bookedSlots)) {
-                \Log::info('DEBUG: Found available slot', $slot);
                 return $slot;
             }
         }
     
-        \Log::info('DEBUG: No available slots found');
         return null; // Semua slot sudah terbooked
+    }
+    
+    /**
+     * Mencari jadwal dokter dengan fleksibilitas bahasa
+     */
+    private function findDoctorSchedule($doctorId, $dayOfWeek)
+    {
+        // Coba dengan bahasa Inggris dulu (sesuai data di database)
+        $schedule = DoctorSchedule::where('doctor_id', $doctorId)
+            ->where('hari', $dayOfWeek)
+            ->first();
+    
+        // Jika tidak ditemukan, coba dengan bahasa Indonesia
+        if (!$schedule) {
+            $dayMapping = [
+                'Monday' => 'Senin',
+                'Tuesday' => 'Selasa', 
+                'Wednesday' => 'Rabu',
+                'Thursday' => 'Kamis',
+                'Friday' => 'Jumat',
+                'Saturday' => 'Sabtu',
+                'Sunday' => 'Minggu'
+            ];
+            
+            $hariIndonesia = $dayMapping[$dayOfWeek] ?? $dayOfWeek;
+            
+            $schedule = DoctorSchedule::where('doctor_id', $doctorId)
+                ->where('hari', $hariIndonesia)
+                ->first();
+        }
+    
+        return $schedule;
     }
     
     /**
@@ -265,13 +200,6 @@ class QueueController extends Controller
         try {
             $currentTime = \Carbon\Carbon::createFromFormat('H:i:s', $jamMulai);
             $endTime = \Carbon\Carbon::createFromFormat('H:i:s', $jamSelesai);
-            
-            \Log::info('DEBUG: Generating time slots', [
-                'jam_mulai' => $jamMulai,
-                'jam_selesai' => $jamSelesai,
-                'waktu_periksa' => $waktuPeriksa,
-                'waktu_jeda' => $waktuJeda
-            ]);
     
             while ($currentTime->lt($endTime)) {
                 $slotEnd = $currentTime->copy()->addMinutes($waktuPeriksa);
@@ -288,33 +216,58 @@ class QueueController extends Controller
                 $currentTime->addMinutes($waktuPeriksa + $waktuJeda);
             }
         } catch (\Exception $e) {
-            \Log::error('DEBUG: Error generating time slots', [
-                'error' => $e->getMessage(),
-                'jam_mulai' => $jamMulai,
-                'jam_selesai' => $jamSelesai,
-                'waktu_periksa' => $waktuPeriksa,
-                'waktu_jeda' => $waktuJeda
-            ]);
+            \Log::error('Error generating time slots: ' . $e->getMessage());
         }
     
         return $slots;
     }
     
     /**
-     * Method untuk test/debug - bisa dipanggil dari route terpisah
+     * Method untuk mendapatkan semua slot yang tersedia (untuk UI)
      */
-    public function debugSlots(Request $request)
+    public function getAvailableSlots(Request $request)
     {
         $doctorId = $request->doctor_id;
         $tanggalPeriksa = $request->tgl_periksa;
         
-        $debugInfo = $this->getDebugInfo($doctorId, $tanggalPeriksa);
-        $availableSlot = $this->findFirstAvailableSlot($doctorId, $tanggalPeriksa);
+        // Dapatkan hari dari tanggal periksa
+        $dayOfWeek = \Carbon\Carbon::parse($tanggalPeriksa)->format('l');
         
+        // Cari jadwal dokter
+        $schedule = $this->findDoctorSchedule($doctorId, $dayOfWeek);
+    
+        if (!$schedule) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dokter tidak praktik di hari tersebut.',
+                'available_slots' => []
+            ]);
+        }
+    
+        // Generate semua slot
+        $allSlots = $this->generateTimeSlots(
+            $schedule->jam_mulai,
+            $schedule->jam_selesai,
+            $schedule->waktu_periksa,
+            $schedule->waktu_jeda ?? 0
+        );
+    
+        // Ambil slot yang sudah terbooked
+        $bookedSlots = Queue::where('doctor_id', $doctorId)
+            ->where('tgl_periksa', $tanggalPeriksa)
+            ->where('is_booked', true)
+            ->pluck('start_time')
+            ->toArray();
+    
+        // Filter slot yang masih tersedia
+        $availableSlots = array_filter($allSlots, function($slot) use ($bookedSlots) {
+            return !in_array($slot['start_time'], $bookedSlots);
+        });
+    
         return response()->json([
-            'debug_info' => $debugInfo,
-            'available_slot' => $availableSlot,
-            'has_available_slot' => $availableSlot ? true : false
+            'success' => true,
+            'available_slots' => array_values($availableSlots),
+            'total_available' => count($availableSlots)
         ]);
     }
 
