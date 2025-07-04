@@ -237,15 +237,14 @@ class QueueController extends Controller
      */
     private function generateNomorAntrian($doctorId, $tanggalPeriksa)
     {
-        
-        $datePart = \Carbon\Carbon::parse($tanggalPeriksa)->format('dmy');
+
         $existingCount = Queue::where('doctor_id', $doctorId)
-            ->where('tgl_periksa', $tanggalPeriksa)
-            ->count();
-        
+        ->where('tgl_periksa', $tanggalPeriksa)
+        ->count();
+    
         $nextNumber = $existingCount + 1;
         $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-        $nomorAntrian = 'sikemas' . $datePart . $formattedNumber;
+        $nomorAntrian = 'sikemas' . $formattedNumber;
         
         return $nomorAntrian;
     }
