@@ -112,7 +112,7 @@ class QueueController extends Controller
             'keterangan' => $request->keterangan,
             'status' => 'booking',
             'is_booked' => true,
-            'nomor_antrian' => $nomorAntrian
+            'nomer_antrian' => $nomorAntrian
         ]);
     
         return response()->json([
@@ -122,7 +122,7 @@ class QueueController extends Controller
             'slot_info' => [
                 'start_time' => $availableSlot['start_time'],
                 'end_time' => $availableSlot['end_time'],
-                'nomor_antrian' => $nomorAntrian
+                'nomer_antrian' => $nomorAntrian
             ]
         ], 201);
     }
