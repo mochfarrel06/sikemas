@@ -60,6 +60,9 @@ class QueueController extends Controller
                 ], 409);
             }
     
+            // Generate nomor antrian
+            $nomorAntrian = $this->generateNomorAntrian($request->doctor_id, $request->tgl_periksa);
+    
             // Simpan dengan slot manual
             $queue = Queue::create([
                 'user_id' => $userId,
@@ -72,7 +75,8 @@ class QueueController extends Controller
                 'waktu_selesai' => $request->end_time,
                 'keterangan' => $request->keterangan,
                 'status' => 'booking',
-                'is_booked' => true
+                'is_booked' => true,
+                'nomor_antrian' => $nomorAntrian
             ]);
     
             return response()->json([
@@ -92,6 +96,9 @@ class QueueController extends Controller
             ], 409);
         }
     
+        // Generate nomor antrian
+        $nomorAntrian = $this->generateNomorAntrian($request->doctor_id, $request->tgl_periksa);
+    
         // Simpan dengan slot otomatis
         $queue = Queue::create([
             'user_id' => $userId,
@@ -104,7 +111,8 @@ class QueueController extends Controller
             'waktu_selesai' => $availableSlot['end_time'],
             'keterangan' => $request->keterangan,
             'status' => 'booking',
-            'is_booked' => true
+            'is_booked' => true,
+            'nomor_antrian' => $nomorAntrian
         ]);
     
         return response()->json([
@@ -113,7 +121,8 @@ class QueueController extends Controller
             'data' => $queue,
             'slot_info' => [
                 'start_time' => $availableSlot['start_time'],
-                'end_time' => $availableSlot['end_time']
+                'end_time' => $availableSlot['end_time'],
+                'nomor_antrian' => $nomorAntrian
             ]
         ], 201);
     }
@@ -222,54 +231,64 @@ class QueueController extends Controller
         return $slots;
     }
     
+    
     /**
-     * Method untuk mendapatkan semua slot yang tersedia (untuk UI)
+     * Generate nomor antrian otomatis
      */
-    public function getAvailableSlots(Request $request)
+    private function generateNomorAntrian($doctorId, $tanggalPeriksa)
     {
-        $doctorId = $request->doctor_id;
-        $tanggalPeriksa = $request->tgl_periksa;
+        // Format: [PREFIX][DDMMYY][URUTAN]
+        // Contoh: A05072501, A05072502, dst.
         
-        // Dapatkan hari dari tanggal periksa
-        $dayOfWeek = \Carbon\Carbon::parse($tanggalPeriksa)->format('l');
+        // Dapatkan tanggal dalam format DDMMYY
+        $datePart = \Carbon\Carbon::parse($tanggalPeriksa)->format('dmy');
         
-        // Cari jadwal dokter
-        $schedule = $this->findDoctorSchedule($doctorId, $dayOfWeek);
-    
-        if (!$schedule) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dokter tidak praktik di hari tersebut.',
-                'available_slots' => []
-            ]);
-        }
-    
-        // Generate semua slot
-        $allSlots = $this->generateTimeSlots(
-            $schedule->jam_mulai,
-            $schedule->jam_selesai,
-            $schedule->waktu_periksa,
-            $schedule->waktu_jeda ?? 0
-        );
-    
-        // Ambil slot yang sudah terbooked
-        $bookedSlots = Queue::where('doctor_id', $doctorId)
+        // Dapatkan prefix berdasarkan doctor_id atau bisa custom
+        $prefix = $this->getDoctorPrefix($doctorId);
+        
+        // Hitung jumlah antrian yang sudah ada untuk dokter dan tanggal tersebut
+        $existingCount = Queue::where('doctor_id', $doctorId)
             ->where('tgl_periksa', $tanggalPeriksa)
-            ->where('is_booked', true)
-            ->pluck('start_time')
-            ->toArray();
-    
-        // Filter slot yang masih tersedia
-        $availableSlots = array_filter($allSlots, function($slot) use ($bookedSlots) {
-            return !in_array($slot['start_time'], $bookedSlots);
-        });
-    
-        return response()->json([
-            'success' => true,
-            'available_slots' => array_values($availableSlots),
-            'total_available' => count($availableSlots)
-        ]);
+            ->count();
+        
+        // Nomor urut berikutnya
+        $nextNumber = $existingCount + 1;
+        
+        // Format nomor dengan padding 2 digit
+        $formattedNumber = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+        
+        // Gabungkan semua
+        $nomorAntrian = $prefix . $datePart . $formattedNumber;
+        
+        return $nomorAntrian;
     }
+    
+    /**
+     * Dapatkan prefix untuk nomor antrian berdasarkan doctor_id
+     */
+    private function getDoctorPrefix($doctorId)
+    {
+        // Opsi 1: Prefix berdasarkan doctor_id
+        $prefixes = [
+            1 => 'A', // Dokter Umum
+            2 => 'B', // Dokter Gigi
+            3 => 'C', // Dokter Spesialis
+            4 => 'D', // Dokter Anak
+            5 => 'E', // Dokter Mata
+            // Tambahkan sesuai kebutuhan
+        ];
+        
+        // Jika doctor_id tidak ada dalam mapping, gunakan default
+        return $prefixes[$doctorId] ?? 'X';
+        
+        // Opsi 2: Prefix berdasarkan nama dokter (alternatif)
+        // $doctor = Doctor::find($doctorId);
+        // if ($doctor && $doctor->name) {
+        //     return strtoupper(substr($doctor->name, 0, 1));
+        // }
+        // return 'X';
+    }
+    
 
     // public function show_history()
     // {
