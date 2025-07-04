@@ -17,20 +17,26 @@ use Illuminate\Support\Facades\DB;
 class QueueController extends Controller
 {
     public function index()
-    {
-        $user = auth()->user();
-        $role = $user->role;
+{
+    $user = auth()->user();
+    $role = $user->role;
 
-        if ($role === 'admin' || $role === 'dokter') {
-            $queues = Queue::with('doctor')->get();
-        } else {
-            $queues = Queue::with('doctor')->where('user_id', $user->id)->get();
-        }
-
-        return response()->json([
-            'data' => $queues,
-        ], 200);
+    if ($role === 'admin' || $role === 'dokter') {
+        $queues = Queue::with('doctor')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    } else {
+        $queues = Queue::with('doctor')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
+
+    return response()->json([
+        'data' => $queues,
+    ], 200);
+}
+
 
     public function store(Request $request)
     {
