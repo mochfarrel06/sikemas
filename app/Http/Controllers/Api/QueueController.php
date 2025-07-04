@@ -237,58 +237,18 @@ class QueueController extends Controller
      */
     private function generateNomorAntrian($doctorId, $tanggalPeriksa)
     {
-        // Format: [PREFIX][DDMMYY][URUTAN]
-        // Contoh: A05072501, A05072502, dst.
         
-        // Dapatkan tanggal dalam format DDMMYY
         $datePart = \Carbon\Carbon::parse($tanggalPeriksa)->format('dmy');
-        
-        // Dapatkan prefix berdasarkan doctor_id atau bisa custom
-        $prefix = $this->getDoctorPrefix($doctorId);
-        
-        // Hitung jumlah antrian yang sudah ada untuk dokter dan tanggal tersebut
         $existingCount = Queue::where('doctor_id', $doctorId)
             ->where('tgl_periksa', $tanggalPeriksa)
             ->count();
         
-        // Nomor urut berikutnya
         $nextNumber = $existingCount + 1;
-        
-        // Format nomor dengan padding 2 digit
-        $formattedNumber = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
-        
-        // Gabungkan semua
-        $nomorAntrian = $prefix . $datePart . $formattedNumber;
+        $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $nomorAntrian = 'sikemas' . $datePart . $formattedNumber;
         
         return $nomorAntrian;
     }
-    
-    /**
-     * Dapatkan prefix untuk nomor antrian berdasarkan doctor_id
-     */
-    private function getDoctorPrefix($doctorId)
-    {
-        // Opsi 1: Prefix berdasarkan doctor_id
-        $prefixes = [
-            1 => 'A', // Dokter Umum
-            2 => 'B', // Dokter Gigi
-            3 => 'C', // Dokter Spesialis
-            4 => 'D', // Dokter Anak
-            5 => 'E', // Dokter Mata
-            // Tambahkan sesuai kebutuhan
-        ];
-        
-        // Jika doctor_id tidak ada dalam mapping, gunakan default
-        return $prefixes[$doctorId] ?? 'X';
-        
-        // Opsi 2: Prefix berdasarkan nama dokter (alternatif)
-        // $doctor = Doctor::find($doctorId);
-        // if ($doctor && $doctor->name) {
-        //     return strtoupper(substr($doctor->name, 0, 1));
-        // }
-        // return 'X';
-    }
-    
 
     // public function show_history()
     // {
