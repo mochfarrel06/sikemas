@@ -45,7 +45,7 @@ return [
     [
         'text' => 'Obat',
         'url' => '/admin/medicines',
-        'role' => ['admin'],
+        'role' => ['farmasi'],
         'icon' => 'iconoir-pharmacy-cross-circle',
     ],
 
@@ -94,7 +94,7 @@ return [
     [
         'text' => 'Transaksi',
         'url' => '/transaction/index',
-        'role' => ['dokter', 'admin'],
+        'role' => ['dokter', 'admin', 'kasir'],
         'icon' => 'iconoir-money-square-solid',
     ],
 

@@ -30,6 +30,12 @@ class LoginController extends Controller
         } else if ($request->user()->role === 'dokter') {
             session()->flash('success', 'Berhasil masuk aplikasi');
             return redirect()->intended(RouteServiceProvider::DOCTOR);
+        } else if ($request->user()->role === 'farmasi') {
+            session()->flash('success', 'Berhasil masuk aplikasi');
+            return redirect()->intended(RouteServiceProvider::FARMASI);
+        } else if ($request->user()->role === 'kasir') {
+            session()->flash('success', 'Berhasil masuk aplikasi');
+            return redirect()->intended(RouteServiceProvider::KASIR);
         } else if ($request->user()->role === 'pasien') {
             // session()->flash('success', 'Berhasil masuk aplikasi');
             // return redirect()->intended(RouteServiceProvider::PATIENT);

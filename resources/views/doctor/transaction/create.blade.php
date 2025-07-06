@@ -32,7 +32,8 @@
                                                 class="form-control @error('medical_record_id') is-invalid @enderror">
                                                 <option value="">-- Pilih Pasien --</option>
                                                 @foreach ($medicalRecords as $medicalRecord)
-                                                    <option value="{{ $medicalRecord->id }}" data-no-bpjs="{{ $medicalRecord->queue->patient->no_bpjs }}">
+                                                    <option value="{{ $medicalRecord->id }}"
+                                                        data-no-bpjs="{{ $medicalRecord->queue->patient->no_bpjs }}">
                                                         {{ $medicalRecord->queue->patient->nama_depan }}
                                                         {{ $medicalRecord->queue->patient->nama_belakang }}</option>
                                                 @endforeach
@@ -73,7 +74,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Jenis Pembayaran</label>
-                                            <select name="jenis_pembayaran" id="jenis_pembayaran" class="form-control @error('jenis_pembayaran') is-invalid @enderror">
+                                            <select name="jenis_pembayaran" id="jenis_pembayaran"
+                                                class="form-control @error('jenis_pembayaran') is-invalid @enderror">
                                                 <option value="">-- Pilih Jenis Pembayaran --</option>
                                                 <option value="bayar_tunai">Bayar Tunai</option>
                                             </select>
@@ -85,7 +87,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Total Harga</label>
-                                            <input type="number" class="form-control @error('total') is-invalid @enderror" id="total" name="total" readonly />
+                                            <input type="number" class="form-control @error('total') is-invalid @enderror"
+                                                id="total" name="total" readonly />
                                             @error('total')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -150,7 +153,8 @@
                         originalTotal = data.total;
 
                         // Tampilkan total asli (akan berubah sesuai jenis pembayaran)
-                        $('#obat-total').text('Rp ' + parseInt(data.total).toLocaleString('id-ID'));
+                        $('#obat-total').text('Rp ' + parseInt(data.total).toLocaleString(
+                            'id-ID'));
                         $('#total').val(data.total);
                     },
                     error: function() {
@@ -160,20 +164,43 @@
             });
 
             // Function untuk update opsi pembayaran
-            function updatePaymentOptions() {
-                const jenisPembayaranSelect = $('#jenis_pembayaran');
+            // function updatePaymentOptions() {
+            //     const jenisPembayaranSelect = $('#jenis_pembayaran');
 
-                // Reset options
-                jenisPembayaranSelect.html(`
-                    <option value="">-- Pilih Jenis Pembayaran --</option>
-                    <option value="bayar_tunai">Bayar Tunai</option>
-                `);
+            //     jenisPembayaranSelect.html(`
+            //     <option value="">-- Pilih Jenis Pembayaran --</option>
+            //     <option value="bayar_tunai">Bayar Tunai</option>
+            // `);
 
-                // Tambahkan opsi BPJS jika pasien memiliki no BPJS
-                if (currentPatientBpjs && currentPatientBpjs.trim() !== '') {
-                    jenisPembayaranSelect.append('<option value="bayar_bpjs">Bayar BPJS</option>');
-                }
-            }
+            //     if (typeof currentPatientBpjs === 'string' && currentPatientBpjs.trim() !== '') {
+            //         jenisPembayaranSelect.append('<option value="bayar_bpjs">BPJS</option>');
+            //     }
+            // }
+//             function updatePaymentOptions() {
+//     const jenisPembayaranSelect = $('#jenis_pembayaran');
+
+//     jenisPembayaranSelect.html(`
+//         <option value="">-- Pilih Jenis Pembayaran --</option>
+//         <option value="bayar_tunai">Bayar Tunai</option>
+//     `);
+
+//     console.log('BPJS value:', currentPatientBpjs);
+
+//     if (currentPatientBpjs && currentPatientBpjs.toString().trim() !== '') {
+//         jenisPembayaranSelect.append('<option value="bayar_bpjs">BPJS</option>');
+//     }
+// }
+function updatePaymentOptions() {
+    const jenisPembayaranSelect = $('#jenis_pembayaran');
+
+    jenisPembayaranSelect.html(`<option value="">-- Pilih Jenis Pembayaran --</option>`);
+
+    if (currentPatientBpjs && currentPatientBpjs.toString().trim() !== '') {
+        jenisPembayaranSelect.append('<option value="bayar_bpjs">BPJS</option>');
+    } else {
+        jenisPembayaranSelect.append('<option value="bayar_tunai">Bayar Tunai</option>');
+    }
+}
 
             // Event listener untuk perubahan jenis pembayaran
             $('#jenis_pembayaran').on('change', function() {
@@ -224,10 +251,13 @@
                     contentType: false,
                     success: function(response) {
                         if (response.success) {
-                            sessionStorage.setItem('success', 'Data Transaksi berhasil disimpan.');
-                            window.location.href = "{{ route('transaction.transaction.index') }}";
+                            sessionStorage.setItem('success',
+                                'Data Transaksi berhasil disimpan.');
+                            window.location.href =
+                                "{{ route('transaction.transaction.index') }}";
                         } else {
-                            $('#flash-messages').html('<div class="alert alert-danger">' + response.error + '</div>');
+                            $('#flash-messages').html('<div class="alert alert-danger">' +
+                                response.error + '</div>');
                         }
                     },
                     error: function(response) {
@@ -241,14 +271,17 @@
                                 let input = $('[name=' + field + ']');
                                 let error = errors[field][0];
                                 input.addClass('is-invalid');
-                                input.after('<div class="invalid-feedback">' + error + '</div>');
+                                input.after('<div class="invalid-feedback">' + error +
+                                '</div>');
                             }
                         }
 
                         const message = response.responseJSON && response.responseJSON.message ?
-                            response.responseJSON.message : 'Terdapat kesalahan pada proses transaksi';
+                            response.responseJSON.message :
+                            'Terdapat kesalahan pada proses transaksi';
 
-                        $('#flash-messages').html('<div class="alert alert-danger">' + message + '</div>');
+                        $('#flash-messages').html('<div class="alert alert-danger">' + message +
+                            '</div>');
                     },
                     complete: function() {
                         $submitBtn.prop('disabled', false).text('Simpan');
@@ -273,40 +306,40 @@
 
     <!-- Script untuk compatibility dengan sistem yang sudah ada -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Script ini untuk kompatibilitas dengan kode lama jika diperlukan
-            const noBpjsInput = document.getElementById('no_bpjs');
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Script ini untuk kompatibilitas dengan kode lama jika diperlukan
+        //     const noBpjsInput = document.getElementById('no_bpjs');
 
-            // Jika ada input no_bpjs terpisah (untuk form lain)
-            if (noBpjsInput) {
-                const jenisPembayaranSelect = document.getElementById('jenis_pembayaran');
+        //     // Jika ada input no_bpjs terpisah (untuk form lain)
+        //     if (noBpjsInput) {
+        //         const jenisPembayaranSelect = document.getElementById('jenis_pembayaran');
 
-                function toggleBpjsOption() {
-                    const hasValue = noBpjsInput.value.trim() !== '';
-                    const optionExists = [...jenisPembayaranSelect.options].some(opt => opt.value === 'bayar_bpjs');
+        //         function toggleBpjsOption() {
+        //             const hasValue = noBpjsInput.value.trim() !== '';
+        //             const optionExists = [...jenisPembayaranSelect.options].some(opt => opt.value === 'bayar_bpjs');
 
-                    if (hasValue && !optionExists) {
-                        const bpjsOption = document.createElement('option');
-                        bpjsOption.value = 'bayar_bpjs';
-                        bpjsOption.text = 'Bayar BPJS';
-                        jenisPembayaranSelect.appendChild(bpjsOption);
-                    } else if (!hasValue && optionExists) {
-                        for (let i = 0; i < jenisPembayaranSelect.options.length; i++) {
-                            if (jenisPembayaranSelect.options[i].value === 'bayar_bpjs') {
-                                jenisPembayaranSelect.remove(i);
-                                break;
-                            }
-                        }
+        //             if (hasValue && !optionExists) {
+        //                 const bpjsOption = document.createElement('option');
+        //                 bpjsOption.value = 'bayar_bpjs';
+        //                 bpjsOption.text = 'Bayar BPJS';
+        //                 jenisPembayaranSelect.appendChild(bpjsOption);
+        //             } else if (!hasValue && optionExists) {
+        //                 for (let i = 0; i < jenisPembayaranSelect.options.length; i++) {
+        //                     if (jenisPembayaranSelect.options[i].value === 'bayar_bpjs') {
+        //                         jenisPembayaranSelect.remove(i);
+        //                         break;
+        //                     }
+        //                 }
 
-                        if (jenisPembayaranSelect.value === 'bayar_bpjs') {
-                            jenisPembayaranSelect.value = 'bayar_tunai';
-                        }
-                    }
-                }
+        //                 if (jenisPembayaranSelect.value === 'bayar_bpjs') {
+        //                     jenisPembayaranSelect.value = 'bayar_tunai';
+        //                 }
+        //             }
+        //         }
 
-                toggleBpjsOption();
-                noBpjsInput.addEventListener('input', toggleBpjsOption);
-            }
-        });
+        //         toggleBpjsOption();
+        //         noBpjsInput.addEventListener('input', toggleBpjsOption);
+        //     }
+        // });
     </script>
 @endpush

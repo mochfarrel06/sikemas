@@ -47,7 +47,7 @@ Route::get('/', [UserController::class, 'index'])->name('home');
 Route::get('/dokter', [UserController::class, 'indexDokter'])->name('index-dokter');
 Route::get('/tentang-kami', [UserController::class, 'indexTentangKami'])->name('index-tentangKami');
 // 3. Route admin
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'role:admin'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'role:admin,farmasi'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('doctors', DoctorController::class);
@@ -136,7 +136,7 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'middleware' => 'role:p
     Route::put('update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-Route::group(['prefix' => 'transaction', 'as' => 'transaction.', 'middleware' => 'role:admin,dokter'], function() {
+Route::group(['prefix' => 'transaction', 'as' => 'transaction.', 'middleware' => 'role:admin,dokter,kasir'], function() {
     Route::get('/index', [TransactionController::class, 'index'])->name('transaction.index');
     Route::get('/create', [TransactionController::class, 'create'])->name('transaction.create');
     Route::post('/store', [TransactionController::class, 'store'])->name('transaction.store');
