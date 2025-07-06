@@ -94,7 +94,7 @@ return [
     [
         'text' => 'Transaksi',
         'url' => '/transaction/index',
-        'role' => ['dokter', 'admin', 'kasir'],
+        'role' => ['kasir'],
         'icon' => 'iconoir-money-square-solid',
     ],
 
