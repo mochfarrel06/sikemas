@@ -32,8 +32,9 @@
                         <form id="main-form" method="POST" action="{{ route('doctor.medical-record.store') }}">
                             @csrf
                             <div class="card-body">
+                                <!-- Dropdown Pasien - Selalu tampil untuk Admin dan Dokter -->
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="queue_id">Pilih Antrean Pasien</label>
                                             <select name="queue_id" id="queue_id"
@@ -51,141 +52,122 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="medicine_id">Pilih Obat</label>
-                                            <select name="medicine_id[]" id="medicine_id"
-                                                class="form-control select2 @error('medicine_id') is-invalid @enderror"
-                                                multiple>
-                                                @foreach ($medicines as $medicine)
-                                                    <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('medicine_id')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
                                 </div>
 
-                                @if(auth()->user()->role === 'admin')
-                                    <!-- Vital Signs Section - Only for Admin -->
+                                @if(auth()->user()->role !== 'admin')
+                                    <!-- Pilih Obat - Hanya tampil untuk Dokter -->
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <h5 class="mb-3" style="color: #38A6B1; border-bottom: 2px solid #38A6B1; padding-bottom: 5px;">
-                                                Tanda Vital
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="tinggi_badan">Tinggi Badan (cm)</label>
-                                                <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan"
-                                                    class="form-control @error('tinggi_badan') is-invalid @enderror"
-                                                    placeholder="Contoh: 170">
-                                                @error('tinggi_badan')
+                                                <label for="medicine_id">Pilih Obat</label>
+                                                <select name="medicine_id[]" id="medicine_id"
+                                                    class="form-control select2 @error('medicine_id') is-invalid @enderror"
+                                                    multiple>
+                                                    @foreach ($medicines as $medicine)
+                                                        <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('medicine_id')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="berat_badan">Berat Badan (kg)</label>
-                                                <input type="number" step="0.1" name="berat_badan" id="berat_badan"
-                                                    class="form-control @error('berat_badan') is-invalid @enderror"
-                                                    placeholder="Contoh: 70">
-                                                @error('berat_badan')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="tekanan_darah">Tekanan Darah (mmHg)</label>
-                                                <input type="text" name="tekanan_darah" id="tekanan_darah"
-                                                    class="form-control @error('tekanan_darah') is-invalid @enderror"
-                                                    placeholder="Contoh: 120/80">
-                                                @error('tekanan_darah')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                @else
-                                    <!-- Display Vital Signs for Doctor (Read Only) -->
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <h5 class="mb-3" style="color: #6c757d; border-bottom: 2px solid #6c757d; padding-bottom: 5px;">
-                                                Tanda Vital (Hanya Tampilan)
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Tinggi Badan (cm)</label>
-                                                <input type="text" class="form-control" value="Data akan diisi oleh Admin" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Berat Badan (kg)</label>
-                                                <input type="text" class="form-control" value="Data akan diisi oleh Admin" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label>Tekanan Darah (mmHg)</label>
-                                                <input type="text" class="form-control" value="Data akan diisi oleh Admin" readonly>
                                             </div>
                                         </div>
                                     </div>
                                 @endif
 
+                                <!-- Vital Signs Section - Selalu tampil -->
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h5 class="mb-3 mt-3" style="color: #38A6B1; border-bottom: 2px solid #38A6B1; padding-bottom: 5px;">
-                                            Pemeriksaan Medis
+                                        <h5 class="mb-3" style="color: #38A6B1; border-bottom: 2px solid #38A6B1; padding-bottom: 5px;">
+                                            Tanda Vital
                                         </h5>
                                     </div>
                                 </div>
-
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="diagnosis">Diagnosis</label>
-                                            <input list="diagnosis-list" type="text" name="diagnosis"
-                                                class="form-control @error('diagnosis') is-invalid @enderror">
-                                            <datalist id="diagnosis-list">
-                                                @foreach ($diagnoses as $diag)
-                                                    <option value="{{ $diag }}">
-                                                @endforeach
-                                            </datalist>
-                                            @error('diagnosis')
+                                            <label for="tinggi_badan">Tinggi Badan (cm)</label>
+                                            <input type="number" step="0.1" name="tinggi_badan" id="tinggi_badan"
+                                                class="form-control @error('tinggi_badan') is-invalid @enderror"
+                                                placeholder="Contoh: 170"
+                                                @if(auth()->user()->role !== 'admin') readonly @endif>
+                                            @error('tinggi_badan')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
-
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="resep">Perawatan</label>
-                                            <input type="text" class="form-control @error('resep') is-invalid @enderror" name="resep">
-                                            @error('resep')
+                                            <label for="berat_badan">Berat Badan (kg)</label>
+                                            <input type="number" step="0.1" name="berat_badan" id="berat_badan"
+                                                class="form-control @error('berat_badan') is-invalid @enderror"
+                                                placeholder="Contoh: 70"
+                                                @if(auth()->user()->role !== 'admin') readonly @endif>
+                                            @error('berat_badan')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="tekanan_darah">Tekanan Darah (mmHg)</label>
+                                            <input type="text" name="tekanan_darah" id="tekanan_darah"
+                                                class="form-control @error('tekanan_darah') is-invalid @enderror"
+                                                placeholder="Contoh: 120/80"
+                                                @if(auth()->user()->role !== 'admin') readonly @endif>
+                                            @error('tekanan_darah')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="catatan_medis">Catatan Medis</label>
-                                    <textarea name="catatan_medis" rows="4" class="form-control @error('catatan_medis') is-invalid @enderror"></textarea>
-                                    @error('catatan_medis')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
+                @if(auth()->user()->role !== 'admin')
+                                    <!-- Pemeriksaan Medis Section - Hanya tampil untuk Dokter -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h5 class="mb-3 mt-3" style="color: #38A6B1; border-bottom: 2px solid #38A6B1; padding-bottom: 5px;">
+                                                Pemeriksaan Medis
+                                            </h5>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="diagnosis">Diagnosis</label>
+                                                <input list="diagnosis-list" type="text" name="diagnosis"
+                                                    class="form-control @error('diagnosis') is-invalid @enderror">
+                                                <datalist id="diagnosis-list">
+                                                    @foreach ($diagnoses as $diag)
+                                                        <option value="{{ $diag }}">
+                                                    @endforeach
+                                                </datalist>
+                                                @error('diagnosis')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="resep">Perawatan</label>
+                                                <input type="text" class="form-control @error('resep') is-invalid @enderror" name="resep">
+                                                @error('resep')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="catatan_medis">Catatan Medis</label>
+                                        <textarea name="catatan_medis" rows="4" class="form-control @error('catatan_medis') is-invalid @enderror"></textarea>
+                                        @error('catatan_medis')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="card-footer">
