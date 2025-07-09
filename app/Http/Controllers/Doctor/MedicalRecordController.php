@@ -57,109 +57,49 @@ class MedicalRecordController extends Controller
     {
         try {
             $queue = Queue::findOrFail($request->queue_id);
-            $user = auth()->user();
 
-            $medicalRecordData = [
+            $medicalRecord = MedicalRecord::create([
                 'user_id' => $queue->user_id,
                 'queue_id' => $queue->id,
                 'tgl_periksa' => now(),
-            ];
-
-            // Jika user adalah admin, hanya simpan data vital signs
-            if ($user->role === 'admin') {
-                $medicalRecordData['tinggi_badan'] = $request->tinggi_badan;
-                $medicalRecordData['berat_badan'] = $request->berat_badan;
-                $medicalRecordData['tekanan_darah'] = $request->tekanan_darah;
-
-                // Set default values untuk data medis
-                $medicalRecordData['diagnosis'] = 'Menunggu diagnosis dokter';
-                $medicalRecordData['resep'] = 'Menunggu resep dokter';
-                $medicalRecordData['catatan_medis'] = 'Menunggu catatan medis dokter';
-            } else {
-                // Jika user adalah dokter, simpan data medis
-                $medicalRecordData['diagnosis'] = $request->diagnosis;
-                $medicalRecordData['resep'] = $request->resep;
-                $medicalRecordData['catatan_medis'] = $request->catatan_medis;
-            }
-
-            $medicalRecord = MedicalRecord::create($medicalRecordData);
-
-            // Hanya attach medicines jika user adalah dokter
-            if ($user->role !== 'admin' && $request->has('medicine_id')) {
-                $medicalRecord->medicines()->attach($request->medicine_id);
-            }
-
-            // Update status queue
-            $queue->update([
-                'status' => $user->role === 'admin' ? 'periksa' : 'selesai',
-                'medical_id' => $medicalRecord->id,
-            ]);
-
-            $message = $user->role === 'admin' ?
-                'Berhasil menambahkan data tanda vital pasien' :
-                'Berhasil menambahkan data rekam medis';
-
-            session()->flash('success', $message);
-            return redirect()->route('doctor.medical-record.index');
-        } catch (\Exception $e) {
-            session()->flash('error', 'Terdapat kesalahan pada proses data: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 400);
-        }
-    }
-
-    public function edit($id)
-    {
-        $medicalRecord = MedicalRecord::with(['queue.patient', 'medicines'])->findOrFail($id);
-        $user = auth()->user();
-
-        if ($user->role === 'admin') {
-            $queues = Queue::where('status', 'selesai')->get();
-        } else {
-            $queues = Queue::where('status', 'selesai')
-                ->where('doctor_id', $user->doctor->id)
-                ->get();
-        }
-
-        $medicines = Medicine::all();
-        $diagnoses = MedicalRecord::select('diagnosis')
-            ->distinct()
-            ->pluck('diagnosis')
-            ->filter()
-            ->values();
-
-        return view('doctor.medical-record.edit', compact('medicalRecord', 'queues', 'medicines', 'diagnoses'));
-    }
-
-    public function update(MedicalRecordStoreRequest $request, $id)
-    {
-        try {
-            $medicalRecord = MedicalRecord::findOrFail($id);
-            $user = auth()->user();
-
-            $updateData = [
                 'diagnosis' => $request->diagnosis,
                 'resep' => $request->resep,
                 'catatan_medis' => $request->catatan_medis,
-            ];
+                'tinggi_badan' => $request->tinggi_badan,
+                'berat_badan' => $request->berat_badan,
+                'tekanan_darah' => $request->tekanan_darah,
+            ]);
 
-            // Jika user adalah admin, update data vital signs
-            if ($user->role === 'admin') {
-                $updateData['tinggi_badan'] = $request->tinggi_badan;
-                $updateData['berat_badan'] = $request->berat_badan;
-                $updateData['tekanan_darah'] = $request->tekanan_darah;
-            }
-
-            $medicalRecord->update($updateData);
 
             if ($request->has('medicine_id')) {
-                $medicalRecord->medicines()->sync($request->medicine_id);
+                $medicalRecord->medicines()->attach($request->medicine_id);
             }
 
-            session()->flash('success', 'Berhasil memperbarui data rekam medis');
+
+            $queue->update([
+                'status' => 'selesai',
+                'medical_id' => $medicalRecord->id,
+            ]);
+
+            // QueueHistory::create([
+            //     'queue_id' => $queue->id,
+            //     'user_id' => $queue->user_id,
+            //     'doctor_id' => $queue->doctor_id,
+            //     'patient_id' => $queue->patient_id,
+            //     'tgl_periksa' => $queue->tgl_periksa,
+            //     'start_time' => $queue->start_time,
+            //     'end_time' => $queue->end_time,
+            //     'keterangan' => $queue->keterangan,
+            //     'status' => $queue->status,
+            //     'is_booked' => $queue->is_booked,
+            // ]);
+
+            session()->flash('success', 'Berhasil menambahkan data rekam medis');
+            // return redirect()->route('transaction.transaction.create', $medicalRecord->id);
             return redirect()->route('doctor.medical-record.index');
         } catch (\Exception $e) {
-            session()->flash('error', 'Terdapat kesalahan pada proses update: ' . $e->getMessage());
-            return back()->withInput();
+            session()->flash('error', 'Terdapat kesalahan pada proses data dokter: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 

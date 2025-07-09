@@ -20,16 +20,20 @@ class MedicalRecordStoreRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'queue_id' => ['required', 'exists:queues,id'],
-            'diagnosis' => ['required', 'string'],
-            'resep' => ['required', 'string'],
-            'catatan_medis' => ['required', 'string'],
-            'medicine_id' => 'required|array',
-            'medicine_id.*' => 'exists:medicines,id',
-        ];
-    }
+{
+    return [
+        'queue_id' => ['required', 'exists:queues,id'],
+        'diagnosis' => ['required', 'string'],
+        'resep' => ['required', 'string'],
+        'catatan_medis' => ['required', 'string'],
+        'tinggi_badan' => ['nullable', 'string', 'max:10'],
+        'berat_badan' => ['nullable', 'string', 'max:10'],
+        'tekanan_darah' => ['nullable', 'string', 'max:15'],
+        'medicine_id' => 'required|array',
+        'medicine_id.*' => 'exists:medicines,id',
+    ];
+}
+
 
     public function messages()
     {
@@ -38,7 +42,11 @@ class MedicalRecordStoreRequest extends FormRequest
             'diagnosis.required' => 'Diagnosis tidak boleh kosong',
             'resep.required' => 'Resep tidak boleh kosong',
             'catatan_medis.required' => 'Catatan medis tidak boleh kosong',
-            'medicine_id.required' => 'Obat tidak boleh kosong'
+            'medicine_id.required' => 'Obat tidak boleh kosong',
+            'tinggi_badan.max' => 'Tinggi badan maksimal 10 karakter',
+            'berat_badan.max' => 'Berat badan maksimal 10 karakter',
+            'tekanan_darah.max' => 'Tekanan darah maksimal 15 karakter',
+
         ];
     }
 }
