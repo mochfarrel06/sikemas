@@ -115,6 +115,8 @@ Route::group(['prefix' => 'history', 'as' => 'history.', 'middleware' => 'role:a
 
     Route::get('queue/{id}', [QueueHistoryController::class, 'show'])->name('queue-history.show');
     Route::get('/queue/medical-record/{id}/pdf', [QueueHistoryController::class, 'generatePDF'])->name('history-medical.pdf');
+    Route::get('/doctor/medical-record/get-existing/{queueId}', [MedicalRecordController::class, 'getExistingData'])
+    ->name('doctor.medical-record.get-existing');
 });
 
 // 7. Route doctor
