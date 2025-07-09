@@ -190,36 +190,37 @@
                 $(this).next('.invalid-feedback').text('');
             });
 
-            // Format input tekanan darah
-            $('#tekanan_darah').on('input', function() {
-                var value = $(this).val();
-                // Hapus semua karakter non-digit dan slash
-                value = value.replace(/[^0-9\/]/g, '');
-                // Pastikan hanya ada satu slash
-                var parts = value.split('/');
-                if (parts.length > 2) {
-                    value = parts[0] + '/' + parts[1];
-                }
-                $(this).val(value);
-            });
-
-            // Validasi tinggi dan berat badan
-            $('#tinggi_badan, #berat_badan').on('input', function() {
-                var value = parseFloat($(this).val());
-                var fieldName = $(this).attr('id').replace('_', ' ');
-
-                if ($(this).attr('id') === 'tinggi_badan') {
-                    if (value < 0 || value > 300) {
-                        $(this).addClass('is-invalid');
-                        $(this).next('.invalid-feedback').text('Tinggi badan tidak valid');
+            @if(auth()->user()->role === 'admin')
+                // Script khusus untuk admin - hanya untuk tanda vital
+                $('#tekanan_darah').on('input', function() {
+                    var value = $(this).val();
+                    // Hapus semua karakter non-digit dan slash
+                    value = value.replace(/[^0-9\/]/g, '');
+                    // Pastikan hanya ada satu slash
+                    var parts = value.split('/');
+                    if (parts.length > 2) {
+                        value = parts[0] + '/' + parts[1];
                     }
-                } else if ($(this).attr('id') === 'berat_badan') {
-                    if (value < 0 || value > 500) {
-                        $(this).addClass('is-invalid');
-                        $(this).next('.invalid-feedback').text('Berat badan tidak valid');
+                    $(this).val(value);
+                });
+
+                // Validasi tinggi dan berat badan
+                $('#tinggi_badan, #berat_badan').on('input', function() {
+                    var value = parseFloat($(this).val());
+
+                    if ($(this).attr('id') === 'tinggi_badan') {
+                        if (value < 0 || value > 300) {
+                            $(this).addClass('is-invalid');
+                            $(this).next('.invalid-feedback').text('Tinggi badan tidak valid');
+                        }
+                    } else if ($(this).attr('id') === 'berat_badan') {
+                        if (value < 0 || value > 500) {
+                            $(this).addClass('is-invalid');
+                            $(this).next('.invalid-feedback').text('Berat badan tidak valid');
+                        }
                     }
-                }
-            });
+                });
+            @endif
         });
     </script>
 @endpush
