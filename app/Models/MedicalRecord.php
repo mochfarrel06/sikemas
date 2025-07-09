@@ -17,6 +17,9 @@ class MedicalRecord extends Model
         'diagnosis',
         'resep',
         'catatan_medis',
+        'tinggi_badan',
+        'berat_badan',
+        'tekanan_darah'
         // 'medicine_id',
 
         // Kolom hasil laboratorium
