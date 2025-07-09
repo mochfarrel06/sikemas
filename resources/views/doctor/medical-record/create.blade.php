@@ -9,15 +9,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">
-                        @if(auth()->user()->role === 'admin')
-                            Input Data Vital Pasien
-                        @elseif(auth()->user()->role === 'doctor')
-                            Tambah Rekam Medis
-                        @else
-                            Tambah Rekam Medis
-                        @endif
-                    </h1>
+                    <h1 class="m-0">Tambah Rekam Medis</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -45,8 +37,7 @@
                                         <div class="form-group">
                                             <label for="queue_id">Pilih Antrean Pasien</label>
                                             <select name="queue_id" id="queue_id"
-                                                class="form-control @error('queue_id') is-invalid @enderror"
-                                                @if(auth()->user()->role === 'admin') @endif>
+                                                class="form-control @error('queue_id') is-invalid @enderror">
                                                 <option value="">-- Pilih Pasien --</option>
                                                 @foreach ($queues as $queue)
                                                     <option value="{{ $queue->id }}">{{ $queue->patient->kode_pasien }} -
@@ -60,17 +51,11 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-
-                                {{-- Data Vital - Admin bisa edit, Dokter readonly --}}
-                                <div class="row">
+                                    <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tinggi_badan">Tinggi Badan (cm)</label>
-                                            <input type="text" name="tinggi_badan" id="tinggi_badan"
-                                                class="form-control @error('tinggi_badan') is-invalid @enderror"
-                                                @if(auth()->user()->role === 'doctor') readonly @endif
-                                                placeholder="@if(auth()->user()->role === 'doctor') Data diisi oleh admin @endif">
+                                            <input type="text" name="tinggi_badan" class="form-control @error('tinggi_badan') is-invalid @enderror">
                                             @error('tinggi_badan')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -80,10 +65,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="berat_badan">Berat Badan (kg)</label>
-                                            <input type="text" name="berat_badan" id="berat_badan"
-                                                class="form-control @error('berat_badan') is-invalid @enderror"
-                                                @if(auth()->user()->role === 'doctor') readonly @endif
-                                                placeholder="@if(auth()->user()->role === 'doctor') Data diisi oleh admin @endif">
+                                            <input type="text" name="berat_badan" class="form-control @error('berat_badan') is-invalid @enderror">
                                             @error('berat_badan')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -93,10 +75,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tekanan_darah">Tekanan Darah (mmHg)</label>
-                                            <input type="text" name="tekanan_darah" id="tekanan_darah"
-                                                class="form-control @error('tekanan_darah') is-invalid @enderror"
-                                                @if(auth()->user()->role === 'doctor') readonly @endif
-                                                placeholder="@if(auth()->user()->role === 'doctor') Data diisi oleh admin @endif">
+                                            <input type="text" name="tekanan_darah" class="form-control @error('tekanan_darah') is-invalid @enderror">
                                             @error('tekanan_darah')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -104,9 +83,6 @@
                                     </div>
                                 </div>
 
-                                {{-- Data Medis - Hanya untuk Dokter --}}
-                                @if(auth()->user()->role === 'doctor')
-                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="medicine_id">Pilih Obat</label>
@@ -122,6 +98,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="row">
@@ -144,13 +121,16 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="resep">Perawatan</label>
-                                            <input type="text" class="form-control @error('resep') is-invalid @enderror" name="resep">
+                                            <input type="text" class="form-control" name="resep"
+                                                @error('resep') is-invalid @enderror">
                                             @error('resep')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
                                 </div>
+
+
 
                                 <div class="form-group">
                                     <label for="catatan_medis">Catatan Medis</label>
@@ -159,38 +139,14 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                @endif
-
-                                {{-- Info untuk Admin --}}
-                                @if(auth()->user()->role === 'admin')
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle"></i>
-                                    <strong>Info:</strong> Sebagai admin, Anda hanya dapat menginput data vital pasien (tinggi badan, berat badan, tekanan darah). Data medis akan dilengkapi oleh dokter.
-                                </div>
-                                @endif
-
-                                {{-- Info untuk Dokter --}}
-                                @if(auth()->user()->role === 'doctor')
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle"></i>
-                                    <strong>Info:</strong> Data vital pasien (tinggi badan, berat badan, tekanan darah) diinput oleh admin dan bersifat readonly.
-                                </div>
-                                @endif
                             </div>
 
                             <div class="card-footer">
-                                <button type="submit" id="submit-btn" class="btn btn-primary2 mr-2">
-                                    @if(auth()->user()->role === 'admin')
-                                        Simpan Data Vital
-                                    @elseif(auth()->user()->role === 'doctor')
-                                        Simpan Rekam Medis
-                                    @else
-                                        Simpan
-                                    @endif
-                                </button>
+                                <button type="submit" id="submit-btn" class="btn btn-primary2 mr-2">Simpan</button>
                                 <a href="{{ route('doctor.medical-record.index') }}" class="btn btn-warning">Kembali</a>
                             </div>
                         </form>
+
                     </div>
                 </section>
             </div>
@@ -201,64 +157,57 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Load existing data when queue is selected
-            $('#queue_id').on('change', function() {
-                const queueId = $(this).val();
+            // const $submitBtn = $('#submit-btn');
+            // $('#main-form').on('submit', function(event) {
+            //     event.preventDefault();
 
-                if (queueId) {
-                    // Ajax call to get existing medical record data
-                    $.ajax({
-                        url: '/doctor/medical-record/get-existing/' + queueId,
-                        method: 'GET',
-                        success: function(response) {
-                            if (response.success && response.data) {
-                                const data = response.data;
+            //     const form = $(this)[0];
+            //     const formData = new FormData(form);
 
-                                // Fill vital signs data
-                                $('#tinggi_badan').val(data.tinggi_badan || '');
-                                $('#berat_badan').val(data.berat_badan || '');
-                                $('#tekanan_darah').val(data.tekanan_darah || '');
+            //     $submitBtn.prop('disabled', true).text('Loading...');
 
-                                @if(auth()->user()->role === 'doctor')
-                                // Fill medical data for doctor
-                                $('input[name="diagnosis"]').val(data.diagnosis || '');
-                                $('input[name="resep"]').val(data.resep || '');
-                                $('textarea[name="catatan_medis"]').val(data.catatan_medis || '');
+            //     $.ajax({
+            //         url: form.action,
+            //         method: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(response) {
+            //             if (response.success && response.redirect) {
+            //                 sessionStorage.setItem('success',
+            //                     'Data Rekam Medis berhasil disubmit.');
+            //                 window.location.href = response
+            //                 .redirect; // arahkan ke halaman transaksi create
+            //             } else {
+            //                 $('#flash-messages').html('<div class="alert alert-danger">' +
+            //                     (response.error || 'Terjadi kesalahan.') + '</div>');
+            //             }
+            //         }
+            //         error: function(response) {
+            //             const errors = response.responseJSON.errors;
+            //             for (let field in errors) {
+            //                 let input = $('[name=' + field + ']');
+            //                 let error = errors[field][0];
+            //                 input.addClass('is-invalid');
+            //                 input.next('.invalid-feedback').remove();
+            //                 input.after('<div class="invalid-feedback">' + error + '</div>');
+            //             }
 
-                                // Set selected medicines
-                                if (data.medicines && data.medicines.length > 0) {
-                                    const medicineIds = data.medicines.map(m => m.id.toString());
-                                    $('#medicine_id').val(medicineIds).trigger('change');
-                                }
-                                @endif
-                            }
-                        },
-                        error: function() {
-                            // Clear form if no existing data
-                            $('#tinggi_badan, #berat_badan, #tekanan_darah').val('');
-                            @if(auth()->user()->role === 'doctor')
-                            $('input[name="diagnosis"], input[name="resep"]').val('');
-                            $('textarea[name="catatan_medis"]').val('');
-                            $('#medicine_id').val(null).trigger('change');
-                            @endif
-                        }
-                    });
-                }
-            });
+            //             const message = response.responseJSON.message ||
+            //                 'Terdapat kesalahan pada proses rekam medis';
+            //             $('#flash-messages').html('<div class="alert alert-danger">' + message +
+            //                 '</div>');
+            //         },
+            //         complete: function() {
+            //             $submitBtn.prop('disabled', false).text('Simpan');
+            //         }
+            //     });
+            // });
 
-            // Remove validation errors on input
             $('input, select, textarea').on('input change', function() {
                 $(this).removeClass('is-invalid');
                 $(this).next('.invalid-feedback').text('');
             });
-
-            // Initialize Select2 for medicine selection
-            @if(auth()->user()->role === 'doctor')
-            $('#medicine_id').select2({
-                placeholder: 'Pilih obat...',
-                allowClear: true
-            });
-            @endif
         });
     </script>
 @endpush
