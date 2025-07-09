@@ -33,7 +33,7 @@
                             @method('PUT')
 
                             <div class="card-body">
-                                @if ($user->role == 'admin')
+                                @if ($user->role == 'admin' || $user->role == 'farmasi' || $user->role == 'kasir')
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -87,6 +87,14 @@
                                                     @elseif ($user->role == 'pasien')
                                                         <option value="pasien"
                                                             {{ $user->role === 'pasien' ? 'selected' : '' }}>Pasien
+                                                        </option>
+                                                    @elseif ($user->role == 'farmasi')
+                                                        <option value="farmasi"
+                                                            {{ $user->role === 'farmasi' ? 'selected' : '' }}>Farmasi
+                                                        </option>
+                                                    @elseif ($user->role == 'kasir')
+                                                        <option value="kasir"
+                                                            {{ $user->role === 'kasir' ? 'selected' : '' }}>Kasir
                                                         </option>
                                                     @endif
                                                 </select>
