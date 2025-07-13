@@ -120,7 +120,7 @@ Route::group(['prefix' => 'history', 'as' => 'history.', 'middleware' => 'role:a
 });
 
 // 7. Route doctor
-Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dokter,admin'], function () {
+Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dokter,admin,farmasi'], function () {
     Route::get('dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/medical-record', [MedicalRecordController::class, 'index'])->name('medical-record.index');
