@@ -21,7 +21,10 @@ class MedicalRecordController extends Controller
         if ($user->role === 'admin') {
             // Jika user adalah admin, ambil semua data medical record
             $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
-        } else {
+        } elseif ($user->role === 'farmasi') {
+            $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
+        }
+        else {
             // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
             $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
                 $query->where('doctor_id', $user->doctor->id);
