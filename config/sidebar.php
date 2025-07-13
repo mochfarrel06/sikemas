@@ -59,7 +59,7 @@ return [
     [
         'text' => 'Rekam Medis',
         'url' => '/doctor/medical-record',
-        'role' => ['dokter', 'admin'],
+        'role' => ['dokter', 'admin', 'farmasi'],
         'icon' => 'iconoir-book',
     ],
 
