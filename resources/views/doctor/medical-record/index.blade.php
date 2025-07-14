@@ -43,7 +43,25 @@
                         </div>
 
                         <div class="card-body">
+                        {{-- Ganti script notifikasi dengan alert biasa yang sudah terbukti bekerja --}}
+                            @if (auth()->user()->role === 'farmasi')
+                                @php
+                                    $hasNewMedicalRecordWithMedicines = \App\Models\MedicalRecord::whereHas('medicines')->exists();
+                                @endphp
 
+                                @if ($hasNewMedicalRecordWithMedicines)
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                <strong>Ada rekam medis baru!</strong> Terdapat rekam medis baru yang perlu diproses farmasi.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
