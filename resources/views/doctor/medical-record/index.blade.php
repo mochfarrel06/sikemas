@@ -43,13 +43,6 @@
                         </div>
 
                         <div class="card-body">
-                            {{-- Notifikasi UI --}}
-                            @if (auth()->user()->role === 'farmasi' && session('notif'))
-                                <div class="alert alert-info d-flex align-items-center" role="alert">
-                                    <i class="iconoir-bell mr-2" style="font-size: 20px;"></i>
-                                    <span>{{ session('notif') }}</span>
-                                </div>
-                            @endif
 
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
