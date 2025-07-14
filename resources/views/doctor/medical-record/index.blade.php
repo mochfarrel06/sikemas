@@ -90,44 +90,37 @@
 
 @push('scripts')
     {{-- Notifikasi Browser --}}
-    @if (auth()->user()->role === 'farmasi' && session('notif'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                console.log('Session notif:', "{{ session('notif') }}"); // Debug
-                console.log('User role:', "{{ auth()->user()->role }}"); // Debug
-                console.log('Notification support:', "Notification" in window); // Debug
-                console.log('Current permission:', Notification.permission); // Debug
+    @if (auth()->user()->role === 'farmasi')
+        @php
+            $hasNewMedicalRecordWithMedicines = \App\Models\MedicalRecord::whereHas('medicines')->exists();
+        @endphp
 
-                if ("Notification" in window) {
-                    if (Notification.permission !== "granted") {
-                        console.log('Requesting permission...'); // Debug
-                        Notification.requestPermission().then(function (permission) {
-                            console.log('Permission result:', permission); // Debug
-                            if (permission === "granted") {
-                                showNotif();
-                            }
-                        });
+        @if ($hasNewMedicalRecordWithMedicines)
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    if ("Notification" in window) {
+                        if (Notification.permission !== "granted") {
+                            Notification.requestPermission().then(function (permission) {
+                                if (permission === "granted") {
+                                    showNotif();
+                                }
+                            });
+                        } else {
+                            showNotif();
+                        }
                     } else {
-                        console.log('Permission already granted, showing notification'); // Debug
-                        showNotif();
+                        // Fallback jika browser tidak support notifikasi
+                        alert("Terdapat rekam medis baru yang perlu diproses farmasi.");
                     }
-                } else {
-                    console.log('Notification not supported'); // Debug
-                }
 
-                function showNotif() {
-                    console.log('Creating notification...'); // Debug
-                    try {
+                    function showNotif() {
                         new Notification("Notifikasi Farmasi", {
-                            body: "{{ session('notif') }}",
+                            body: "Terdapat rekam medis baru yang perlu diproses farmasi.",
                             icon: "/logo.png" // Ganti ini dengan path ikon/logo aplikasi kamu
                         });
-                        console.log('Notification created successfully'); // Debug
-                    } catch (error) {
-                        console.error('Error creating notification:', error); // Debug
                     }
-                }
-            });
-        </script>
+                });
+            </script>
+        @endif
     @endif
 @endpush
