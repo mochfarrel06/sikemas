@@ -23,8 +23,13 @@ class MedicalRecordController extends Controller
             $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
         } elseif ($user->role === 'farmasi') {
             $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
-        }
-        else {
+
+            $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')->exists();
+
+            if ($hasNewMedicalRecordWithMedicines) {
+                session()->flash('notif', 'Terdapat rekam medis baru yang perlu diproses farmasi.');
+            }
+        }else {
             // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
             $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
                 $query->where('doctor_id', $user->doctor->id);

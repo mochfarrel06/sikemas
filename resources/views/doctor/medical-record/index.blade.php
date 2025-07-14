@@ -40,9 +40,17 @@
                                     </a>
                                 </div>
                             @endif
-
                         </div>
+
                         <div class="card-body">
+                            {{-- Notifikasi UI --}}
+                            @if (auth()->user()->role === 'farmasi' && session('notif'))
+                                <div class="alert alert-info d-flex align-items-center" role="alert">
+                                    <i class="iconoir-bell mr-2" style="font-size: 20px;"></i>
+                                    <span>{{ session('notif') }}</span>
+                                </div>
+                            @endif
+
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -69,26 +77,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                {{-- <div class="btn-group">
-                                                    <a data-toggle="dropdown">
-                                                        <i class="iconoir-more-vert"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a class="dropdown-item"
-                                                                href="{{ route('doctor.medical-record.show', $record->id) }}"><i class="iconoir-eye-solid mr-2"></i>
-                                                                Detail</a>
-                                                        </li>
-                                                        <li><a class="dropdown-item"
-                                                                href="{{ route('doctor.medical-record.pdf', $record->id) }}"
-                                                                target="_blank"><i class="iconoir-download mr-2"></i>
-                                                                Download</a>
-                                                        </li>
-                                                    </ul>
-                                                </div> --}}
                                                 <div class="d-flex align-items-center" style="gap: 10px">
                                                     <a href="{{ route('doctor.medical-record.show', $record->id) }}" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-eye-solid" style="font-size: 15px"></i>Detail</a>
                                                     <a href="{{ route('doctor.medical-record.pdf', $record->id) }}" target="_blank" class="btn btn-sm btn-info d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-download" style="font-size: 15px"></i> Download</a>
-
                                                     <a href="{{ route('doctor.medical-record.nota', $record->id) }}" target="_blank" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-printer" style="font-size: 15px"></i> Nota</a>
                                                 </div>
                                             </td>
@@ -103,3 +94,31 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    {{-- Notifikasi Browser --}}
+    @if (auth()->user()->role === 'farmasi' && session('notif'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if ("Notification" in window) {
+                    if (Notification.permission !== "granted") {
+                        Notification.requestPermission().then(function (permission) {
+                            if (permission === "granted") {
+                                showNotif();
+                            }
+                        });
+                    } else {
+                        showNotif();
+                    }
+                }
+
+                function showNotif() {
+                    new Notification("Notifikasi Farmasi", {
+                        body: "{{ session('notif') }}",
+                        icon: "/logo.png" // Ganti ini dengan path ikon/logo aplikasi kamu
+                    });
+                }
+            });
+        </script>
+    @endif
+@endpush
