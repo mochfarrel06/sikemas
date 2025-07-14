@@ -93,23 +93,39 @@
     @if (auth()->user()->role === 'farmasi' && session('notif'))
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                console.log('Session notif:', "{{ session('notif') }}"); // Debug
+                console.log('User role:', "{{ auth()->user()->role }}"); // Debug
+                console.log('Notification support:', "Notification" in window); // Debug
+                console.log('Current permission:', Notification.permission); // Debug
+
                 if ("Notification" in window) {
                     if (Notification.permission !== "granted") {
+                        console.log('Requesting permission...'); // Debug
                         Notification.requestPermission().then(function (permission) {
+                            console.log('Permission result:', permission); // Debug
                             if (permission === "granted") {
                                 showNotif();
                             }
                         });
                     } else {
+                        console.log('Permission already granted, showing notification'); // Debug
                         showNotif();
                     }
+                } else {
+                    console.log('Notification not supported'); // Debug
                 }
 
                 function showNotif() {
-                    new Notification("Notifikasi Farmasi", {
-                        body: "{{ session('notif') }}",
-                        icon: "/logo.png" // Ganti ini dengan path ikon/logo aplikasi kamu
-                    });
+                    console.log('Creating notification...'); // Debug
+                    try {
+                        new Notification("Notifikasi Farmasi", {
+                            body: "{{ session('notif') }}",
+                            icon: "/logo.png" // Ganti ini dengan path ikon/logo aplikasi kamu
+                        });
+                        console.log('Notification created successfully'); // Debug
+                    } catch (error) {
+                        console.error('Error creating notification:', error); // Debug
+                    }
                 }
             });
         </script>

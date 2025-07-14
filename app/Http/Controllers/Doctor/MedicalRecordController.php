@@ -24,11 +24,19 @@ class MedicalRecordController extends Controller
         } elseif ($user->role === 'farmasi') {
             $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
 
-            $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')->exists();
+        // Cek rekam medis yang dibuat dalam 24 jam terakhir dan memiliki obat
+        $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')
+            ->where('created_at', '>=', now()->subHours(24))
+            ->exists();
 
-            if ($hasNewMedicalRecordWithMedicines) {
-                session()->flash('notif', 'Terdapat rekam medis baru yang perlu diproses farmasi.');
-            }
+        // Alternatif: cek berdasarkan status atau flag tertentu
+        // $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')
+        //     ->where('status_farmasi', 'pending') // jika ada field status
+        //     ->exists();
+
+        if ($hasNewMedicalRecordWithMedicines) {
+            session()->flash('notif', 'Terdapat rekam medis baru yang perlu diproses farmasi.');
+        }
         }else {
             // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
             $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
