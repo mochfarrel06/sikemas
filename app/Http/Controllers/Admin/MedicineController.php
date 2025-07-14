@@ -12,7 +12,9 @@ class MedicineController extends Controller
     {
         $medicines = Medicine::all();
 
-        return view('admin.medicine.index', compact('medicines'));
+        $hasNewMedicalRecordWithMedicines = \App\Models\MedicalRecord::whereHas('medicines')->exists();
+
+        return view('admin.medicine.index', compact('medicines', 'hasNewMedicalRecordWithMedicines'));
     }
 
     public function create()

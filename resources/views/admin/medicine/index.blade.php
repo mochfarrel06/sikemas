@@ -13,11 +13,25 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" style="color: #38A6B1">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"
+                                style="color: #38A6B1">Dashboard</a></li>
                         <li class="breadcrumb-item active">Obat</li>
                     </ol>
                 </div>
             </div>
+
+            @if ($hasNewMedicalRecordWithMedicines)
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Ada rekam medis baru!</strong> Silakan diproses pada bagian farmasi.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -76,8 +90,14 @@
                                                     </ul>
                                                 </div> --}}
                                                 <div class="d-flex align-items-center" style="gap: 10px">
-                                                    <a href="{{ route('admin.medicines.edit', $medicine->id) }}" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-edit-pencil" style="font-size: 15px"></i> Edit</a>
-                                                    <buttton type="button" data-id="{{ $medicine->id }}" class="btn btn-sm btn-danger d-flex align-items-center justify-content-center btn-delete" style="gap: 5px"><i class="iconoir-trash-solid" style="font-size: 15px"></i> Hapus</buttton>
+                                                    <a href="{{ route('admin.medicines.edit', $medicine->id) }}"
+                                                        class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
+                                                        style="gap: 5px"><i class="iconoir-edit-pencil"
+                                                            style="font-size: 15px"></i> Edit</a>
+                                                    <buttton type="button" data-id="{{ $medicine->id }}"
+                                                        class="btn btn-sm btn-danger d-flex align-items-center justify-content-center btn-delete"
+                                                        style="gap: 5px"><i class="iconoir-trash-solid"
+                                                            style="font-size: 15px"></i> Hapus</buttton>
                                                 </div>
                                             </td>
                                         </tr>
@@ -101,29 +121,29 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".btn-delete").forEach(function(button) {
-            button.addEventListener("click", function() {
-                let id = this.getAttribute("data-id");
-                Swal.fire({
-                    title: "Apakah Anda yakin?",
-                    text: "Data ini akan dihapus secara permanen!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Ya, hapus!",
-                    cancelButtonText: "Batal"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let form = document.getElementById("delete-form");
-                        form.action = `/admin/medicines/${id}`;
-                        form.submit();
-                    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".btn-delete").forEach(function(button) {
+                button.addEventListener("click", function() {
+                    let id = this.getAttribute("data-id");
+                    Swal.fire({
+                        title: "Apakah Anda yakin?",
+                        text: "Data ini akan dihapus secara permanen!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Ya, hapus!",
+                        cancelButtonText: "Batal"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let form = document.getElementById("delete-form");
+                            form.action = `/admin/medicines/${id}`;
+                            form.submit();
+                        }
+                    });
                 });
             });
         });
-    });
-</script>
+    </script>
 @endpush
