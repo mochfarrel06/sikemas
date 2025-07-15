@@ -101,8 +101,10 @@
                                     </div>
                                 </div>
                                 
-                                <button type="button" id="add-medicine-btn" class="btn btn-sm btn-success mb-3">+ Tambah Obat</button>
-                                
+                                <button type="button" id="add-medicine-btn" class="btn btn-success btn-sm ms-2 px-2 py-1 mb-3" style="font-size: 0.75rem;">
+                                    + Tambah Obat
+                                </button>
+                                                                
 
                                 </div>
 
