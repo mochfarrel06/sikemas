@@ -11,6 +11,7 @@ use App\Models\QueueHistory;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class MedicalRecordController extends Controller
 {
