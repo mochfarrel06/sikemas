@@ -103,7 +103,7 @@ class CancelExpiredQueues extends Command
             try {
                 // Update status menjadi cancelled
                 $queue->update([
-                    'status' => 'cancelled',
+                    'status' => 'batal',
                     'is_booked' => false,
                     'keterangan' => ($queue->keterangan ?? '') . ' [Auto-cancelled: Expired on ' . Carbon::now()->toDateTimeString() . ']'
                 ]);
