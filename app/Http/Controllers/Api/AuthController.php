@@ -86,6 +86,7 @@ class AuthController extends Controller
                 'kodepos' => $request->kodepos,
                 'no_nik' => $request->no_nik,
                 'no_bpjs' => $request->no_bpjs,
+                'alergi' => $request->alergi, // Tambahan ini
             ]);
 
             $patient = new Patient([
@@ -105,6 +106,7 @@ class AuthController extends Controller
                 'kodepos' => $request->kodepos,
                 'no_nik' => $request->no_nik,
                 'no_bpjs' => $request->no_bpjs,
+                'alergi' => $request->alergi, // Tambahan ini
             ]);
 
             $patient->save();

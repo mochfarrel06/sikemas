@@ -33,7 +33,9 @@ class User extends Authenticatable
         'kota',
         'kodepos',
         'no_nik',
-        'no_bpjs'
+        'no_bpjs',
+        'alergi' // Tambahkan ini
+
     ];
 
     /**

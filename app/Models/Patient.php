@@ -26,7 +26,8 @@ class Patient extends Model
         'kota',
         'kodepos',
         'no_nik',
-        'no_bpjs'
+        'no_bpjs',
+        'alergi' // Tambahkan ini
     ];
 
     public static function generateKodePasien()
