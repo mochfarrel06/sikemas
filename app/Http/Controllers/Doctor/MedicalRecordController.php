@@ -41,25 +41,32 @@ class MedicalRecordController extends Controller
 
 
     public function create()
-    {
-        $user = auth()->user();
-        if ($user->role === 'admin') {
-            // Admin bisa melihat semua antrean yang statusnya 'periksa'
-            $queues = Queue::where('status', 'periksa')->get();
-        } else {
-            // Dokter hanya bisa melihat antrean yang sesuai dengan dirinya
-            $queues = Queue::where('status', 'periksa')
-                ->where('doctor_id', $user->doctor->id)
-                ->get();
-        }
-        $medicines = Medicine::all();
-        $diagnoses = MedicalRecord::select('diagnosis')
-            ->distinct()
-            ->pluck('diagnosis')
-            ->filter() // Buang null/empty
-            ->values();
-        return view('doctor.medical-record.create', compact('queues', 'medicines', 'diagnoses'));
+{
+    $user = auth()->user();
+    $today = Carbon::today();
+
+    if ($user->role === 'admin') {
+        // Admin melihat antrean 'periksa' untuk hari ini
+        $queues = Queue::where('status', 'periksa')
+            ->whereDate('tgl_periksa', $today)
+            ->get();
+    } else {
+        // Dokter hanya melihat antrean 'periksa' hari ini miliknya
+        $queues = Queue::where('status', 'periksa')
+            ->where('doctor_id', $user->doctor->id)
+            ->whereDate('tgl_periksa', $today)
+            ->get();
     }
+
+    $medicines = Medicine::all();
+    $diagnoses = MedicalRecord::select('diagnosis')
+        ->distinct()
+        ->pluck('diagnosis')
+        ->filter()
+        ->values();
+
+    return view('doctor.medical-record.create', compact('queues', 'medicines', 'diagnoses'));
+}
 
     public function store(MedicalRecordStoreRequest $request)
     {
