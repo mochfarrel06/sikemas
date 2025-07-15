@@ -157,7 +157,7 @@
 
 
                                 <div class="form-group">
-                                    <label for="catatan_medis">Catatan Medis</label>
+                                    <label for="catatan_medis">Riwayat Penyakit</label>
                                     <textarea name="catatan_medis" class="form-control @error('catatan_medis') is-invalid @enderror"></textarea>
                                     @error('catatan_medis')
                                         <span class="text-danger">{{ $message }}</span>
