@@ -121,6 +121,8 @@ class PatientController extends Controller
                 'kodepos' => 'nullable|string|max:20',
                 'no_nik' => 'nullable|string|max:50|unique:users,no_nik,' . $user->id,
                 'no_bpjs' => 'nullable|string|max:50|unique:users,no_bpjs,' . $user->id,
+                'alergi' => 'nullable|string|max:255',
+
             ]);
     
             $data = $request->only([
@@ -136,6 +138,7 @@ class PatientController extends Controller
                 'kodepos',
                 'no_nik',
                 'no_bpjs',
+                'alergi'                
             ]);
     
             $user->update($data);
