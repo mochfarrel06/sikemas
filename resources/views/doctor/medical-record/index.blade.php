@@ -32,8 +32,8 @@
                                 <h3 class="card-title">Rekam Medis</h3>
                             </div>
 
-                            @if (auth()->user() && auth()->user()->role != 'admin')
-                                <div class="ml-auto">
+                            @if (auth()->user() && !in_array(auth()->user()->role, ['admin', 'farmasi']))
+                            <div class="ml-auto">
                                     <a href="{{ route('doctor.medical-record.create') }}"
                                         class="btn btn-primary2 d-flex align-items-center">
                                         <i class="iconoir-plus-circle mr-2"></i> Tambah
