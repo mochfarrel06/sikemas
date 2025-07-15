@@ -83,29 +83,25 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="medicine_id">Pilih Obat</label>
-                                        <select name="medicine_id[]" id="medicine_id"
-                                            class="form-control select2 @error('medicine_id') is-invalid @enderror"
-                                            multiple>
-                                            @foreach ($medicines as $medicine)
-                                                <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('medicine_id')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                
-                                    <div class="form-group mt-2">
-                                        <label for="usage_instruction[]">Aturan Konsumsi</label>
-                                        <div id="usage-instruction-container">
-                                            <small class="text-muted">Isi sesuai urutan obat yang dipilih</small>
-                                            <input type="text" name="usage_instruction[]" class="form-control mb-2" placeholder="Contoh: 3x sehari setelah makan">
+                                <div id="medicine-wrapper">
+                                    <div class="medicine-group mb-3 row">
+                                        <div class="col-md-6">
+                                            <label>Obat</label>
+                                            <select name="medicine_id[]" class="form-control">
+                                                <option value="">-- Pilih Obat --</option>
+                                                @foreach ($medicines as $medicine)
+                                                    <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Aturan Pakai</label>
+                                            <input type="text" name="usage_instruction[]" class="form-control" placeholder="Contoh: 3x1 setelah makan">
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <button type="button" id="add-medicine-btn" class="btn btn-sm btn-success mb-3">+ Tambah Obat</button>
                                 
 
                                 </div>
@@ -189,4 +185,34 @@
             });
         });
     </script>
+
+<script>
+    $(document).ready(function () {
+        $('#add-medicine-btn').click(function () {
+            const html = `
+            <div class="medicine-group mb-3 row">
+                <div class="col-md-6">
+                    <select name="medicine_id[]" class="form-control">
+                        <option value="">-- Pilih Obat --</option>
+                        @foreach ($medicines as $medicine)
+                            <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="usage_instruction[]" class="form-control" placeholder="Contoh: 3x1 setelah makan">
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger btn-sm remove-medicine-btn">×</button>
+                </div>
+            </div>
+            `;
+            $('#medicine-wrapper').append(html);
+        });
+
+        $(document).on('click', '.remove-medicine-btn', function () {
+            $(this).closest('.medicine-group').remove();
+        });
+    });
+</script>
 @endpush
