@@ -15,7 +15,8 @@ class CancelExpiredQueues extends Command
      */
     protected $signature = 'queue:cancel-expired 
                             {--dry-run : Show what would be cancelled without actually cancelling}
-                            {--days=0 : Number of days past the scheduled date to cancel (default: 0 = same day)}';
+                            {--days=0 : Number of days past the scheduled date to cancel (default: 0 = expired today)}
+                            {--silent : Run silently without output}';
 
     /**
      * The console command description.
@@ -33,11 +34,14 @@ class CancelExpiredQueues extends Command
     {
         $dryRun = $this->option('dry-run');
         $daysOffset = (int) $this->option('days');
+        $silent = $this->option('silent');
         
         // Tanggal batas (hari ini dikurangi offset hari)
         $cutoffDate = Carbon::now()->subDays($daysOffset)->toDateString();
         
-        $this->info("Checking for expired queues before date: {$cutoffDate}");
+        if (!$silent) {
+            $this->info("Checking for expired queues before date: {$cutoffDate}");
+        }
         
         // Ambil antrian yang sudah lewat tanggal dan masih dalam status aktif
         $expiredQueues = Queue::where('tgl_periksa', '<', $cutoffDate)
@@ -46,45 +50,54 @@ class CancelExpiredQueues extends Command
             ->get();
 
         if ($expiredQueues->isEmpty()) {
-            $this->info('No expired queues found.');
+            if (!$silent) {
+                $this->info('No expired queues found.');
+            }
             return Command::SUCCESS;
         }
 
-        $this->info("Found {$expiredQueues->count()} expired queue(s)");
+        if (!$silent) {
+            $this->info("Found {$expiredQueues->count()} expired queue(s)");
 
-        // Show table of expired queues
-        $headers = ['ID', 'Patient', 'Doctor', 'Date', 'Time', 'Status', 'Queue Number'];
-        $rows = [];
+            // Show table of expired queues
+            $headers = ['ID', 'Patient', 'Doctor', 'Date', 'Time', 'Status', 'Queue Number'];
+            $rows = [];
 
-        foreach ($expiredQueues as $queue) {
-            $rows[] = [
-                $queue->id,
-                $queue->patient->name ?? 'N/A',
-                $queue->doctor->name ?? 'N/A',
-                $queue->tgl_periksa,
-                $queue->start_time . ' - ' . $queue->end_time,
-                $queue->status,
-                $queue->nomer_antrian ?? 'N/A'
-            ];
+            foreach ($expiredQueues as $queue) {
+                $rows[] = [
+                    $queue->id,
+                    $queue->patient->name ?? 'N/A',
+                    $queue->doctor->name ?? 'N/A',
+                    $queue->tgl_periksa,
+                    $queue->start_time . ' - ' . $queue->end_time,
+                    $queue->status,
+                    $queue->nomer_antrian ?? 'N/A'
+                ];
+            }
+
+            $this->table($headers, $rows);
         }
-
-        $this->table($headers, $rows);
 
         if ($dryRun) {
-            $this->warn('DRY RUN: No queues were actually cancelled.');
+            if (!$silent) {
+                $this->warn('DRY RUN: No queues were actually cancelled.');
+            }
             return Command::SUCCESS;
         }
 
-        // Konfirmasi sebelum melakukan pembatalan
-        if (!$this->confirm('Do you want to cancel these expired queues?')) {
-            $this->info('Operation cancelled.');
-            return Command::SUCCESS;
+        // Langsung proses pembatalan tanpa konfirmasi
+        if (!$silent) {
+            $this->info('Processing automatic cancellation of expired queues...');
         }
 
         // Proses pembatalan
         $cancelledCount = 0;
-        $bar = $this->output->createProgressBar($expiredQueues->count());
-        $bar->start();
+        $bar = null;
+        
+        if (!$silent) {
+            $bar = $this->output->createProgressBar($expiredQueues->count());
+            $bar->start();
+        }
 
         foreach ($expiredQueues as $queue) {
             try {
@@ -96,7 +109,10 @@ class CancelExpiredQueues extends Command
                 ]);
 
                 $cancelledCount++;
-                $bar->advance();
+                
+                if ($bar) {
+                    $bar->advance();
+                }
 
                 // Log untuk debugging (optional)
                 \Log::info("Queue ID {$queue->id} auto-cancelled due to expiration", [
@@ -108,7 +124,9 @@ class CancelExpiredQueues extends Command
                 ]);
 
             } catch (\Exception $e) {
-                $this->error("Failed to cancel queue ID {$queue->id}: " . $e->getMessage());
+                if (!$silent) {
+                    $this->error("Failed to cancel queue ID {$queue->id}: " . $e->getMessage());
+                }
                 \Log::error("Failed to cancel expired queue", [
                     'queue_id' => $queue->id,
                     'error' => $e->getMessage()
@@ -116,9 +134,22 @@ class CancelExpiredQueues extends Command
             }
         }
 
-        $bar->finish();
-        $this->newLine();
-        $this->info("Successfully cancelled {$cancelledCount} expired queue(s).");
+        if ($bar) {
+            $bar->finish();
+            $this->newLine();
+        }
+        
+        if (!$silent) {
+            $this->info("Successfully cancelled {$cancelledCount} expired queue(s).");
+        }
+
+        // Log summary untuk monitoring
+        \Log::info("Auto-cancellation completed", [
+            'total_found' => $expiredQueues->count(),
+            'successfully_cancelled' => $cancelledCount,
+            'cutoff_date' => $cutoffDate,
+            'executed_at' => Carbon::now()->toDateTimeString()
+        ]);
 
         return Command::SUCCESS;
     }
