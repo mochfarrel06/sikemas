@@ -101,10 +101,8 @@
                                     </div>
                                 </div>
                                 
-                                <button type="button" id="add-medicine-btn" class="btn btn-success btn-sm ms-2 px-2 py-1 mb-3" style="font-size: 0.75rem;">
-                                    + Tambah Obat
-                                </button>
-                                                                
+                                <button type="button" id="add-medicine-btn" class="btn btn-sm btn-success mb-3">+ Tambah Obat</button>
+                                
 
                                 </div>
 
@@ -130,15 +128,18 @@
                                             <label for="tindakan">Tindakan</label>
                                             <select name="tindakan" id="tindakan" class="form-control @error('tindakan') is-invalid @enderror">
                                                 <option value="">-- Pilih Tindakan --</option>
-                                                <option value="Tes Lab" {{ old('tindakan') == 'Tes Lab' ? 'selected' : '' }}>Tes Lab</option>
+                                                <option value="Suntik + Obat" {{ old('tindakan') == 'Suntik + Obat' ? 'selected' : '' }}>Suntik + Obat</option>
+                                                <option value="Suntik" {{ old('tindakan') == 'Suntik' ? 'selected' : '' }}>Suntik</option>
+                                                <option value="Obat" {{ old('tindakan') == 'Obat' ? 'selected' : '' }}>Obat</option>
                                                 <option value="Rujukan" {{ old('tindakan') == 'Rujukan' ? 'selected' : '' }}>Rujukan</option>
-                                                <option value="Penanganan oleh Puskesmas" {{ old('tindakan') == 'Penanganan oleh Puskesmas' ? 'selected' : '' }}>Penanganan oleh Puskesmas</option>
+                                                <option value="Tes Lab" {{ old('tindakan') == 'Tes Lab' ? 'selected' : '' }}>Tes Lab</option>
                                             </select>
                                             @error('tindakan')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
+                                    
                                     
 
                                     <div class="col-md-6">
