@@ -46,6 +46,11 @@
                                                         {{ $queue->tgl_periksa }}</option>
                                                 @endforeach
                                             </select>
+                                            <div class="form-group mt-2">
+                                                <label for="alergi_pasien">Alergi Pasien</label>
+                                                <input type="text" id="alergi_pasien" class="form-control" readonly placeholder="Data alergi akan muncul di sini">
+                                            </div>
+                                            
                                             @error('queue_id')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -218,4 +223,17 @@
         });
     });
 </script>
+
+<script>
+    const queueData = @json($queues->mapWithKeys(function($queue) {
+        return [$queue->id => $queue->patient->alergi];
+    }));
+
+    $('#queue_id').on('change', function () {
+        const selectedId = $(this).val();
+        const alergi = queueData[selectedId] || 'Tidak ada data alergi';
+        $('#alergi_pasien').val(alergi);
+    });
+</script>
+
 @endpush
