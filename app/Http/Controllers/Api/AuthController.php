@@ -53,6 +53,8 @@ class AuthController extends Controller
                 'kodepos' => $user->kodepos,
                 'no_nik' => $user->no_nik,
                 'no_bpjs' => $user->no_bpjs,
+                'alergi' => $user->alergi,
+
             ]
         ]);
     }
