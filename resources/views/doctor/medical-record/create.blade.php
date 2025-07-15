@@ -120,6 +120,22 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
+                                            <label for="tindakan">Tindakan</label>
+                                            <select name="tindakan" id="tindakan" class="form-control @error('tindakan') is-invalid @enderror">
+                                                <option value="">-- Pilih Tindakan --</option>
+                                                <option value="Tes Lab" {{ old('tindakan') == 'Tes Lab' ? 'selected' : '' }}>Tes Lab</option>
+                                                <option value="Rujukan" {{ old('tindakan') == 'Rujukan' ? 'selected' : '' }}>Rujukan</option>
+                                                <option value="Penanganan oleh Puskesmas" {{ old('tindakan') == 'Penanganan oleh Puskesmas' ? 'selected' : '' }}>Penanganan oleh Puskesmas</option>
+                                            </select>
+                                            @error('tindakan')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
                                             <label for="resep">Perawatan</label>
                                             <input type="text" class="form-control" name="resep"
                                                 @error('resep') is-invalid @enderror">
@@ -157,52 +173,6 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // const $submitBtn = $('#submit-btn');
-            // $('#main-form').on('submit', function(event) {
-            //     event.preventDefault();
-
-            //     const form = $(this)[0];
-            //     const formData = new FormData(form);
-
-            //     $submitBtn.prop('disabled', true).text('Loading...');
-
-            //     $.ajax({
-            //         url: form.action,
-            //         method: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function(response) {
-            //             if (response.success && response.redirect) {
-            //                 sessionStorage.setItem('success',
-            //                     'Data Rekam Medis berhasil disubmit.');
-            //                 window.location.href = response
-            //                 .redirect; // arahkan ke halaman transaksi create
-            //             } else {
-            //                 $('#flash-messages').html('<div class="alert alert-danger">' +
-            //                     (response.error || 'Terjadi kesalahan.') + '</div>');
-            //             }
-            //         }
-            //         error: function(response) {
-            //             const errors = response.responseJSON.errors;
-            //             for (let field in errors) {
-            //                 let input = $('[name=' + field + ']');
-            //                 let error = errors[field][0];
-            //                 input.addClass('is-invalid');
-            //                 input.next('.invalid-feedback').remove();
-            //                 input.after('<div class="invalid-feedback">' + error + '</div>');
-            //             }
-
-            //             const message = response.responseJSON.message ||
-            //                 'Terdapat kesalahan pada proses rekam medis';
-            //             $('#flash-messages').html('<div class="alert alert-danger">' + message +
-            //                 '</div>');
-            //         },
-            //         complete: function() {
-            //             $submitBtn.prop('disabled', false).text('Simpan');
-            //         }
-            //     });
-            // });
 
             $('input, select, textarea').on('input change', function() {
                 $(this).removeClass('is-invalid');

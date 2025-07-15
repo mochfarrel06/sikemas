@@ -71,6 +71,7 @@ class MedicalRecordController extends Controller
                 'queue_id' => $queue->id,
                 'tgl_periksa' => now(),
                 'diagnosis' => $request->diagnosis,
+                'tindakan' => $request->tindakan, // Tambahkan ini
                 'resep' => $request->resep,
                 'catatan_medis' => $request->catatan_medis,
                 'tinggi_badan' => $request->tinggi_badan,

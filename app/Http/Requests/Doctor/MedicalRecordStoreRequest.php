@@ -31,6 +31,7 @@ class MedicalRecordStoreRequest extends FormRequest
             'tinggi_badan' => ['required', 'string', 'max:10'],
             'berat_badan' => ['required', 'string', 'max:10'],
             'tekanan_darah' => ['required', 'string', 'max:15'],
+            'tindakan' => ['nullable', 'in:Tes Lab,Rujukan,Penanganan oleh Puskesmas'],
         ];
     }
 
@@ -48,6 +49,8 @@ class MedicalRecordStoreRequest extends FormRequest
             'berat_badan.max' => 'Berat badan maksimal 10 karakter',
             'tekanan_darah.required' => 'Tekanan darah tidak boleh kosong',
             'tekanan_darah.max' => 'Tekanan darah maksimal 15 karakter',
+            'tindakan.in' => 'Pilihan tindakan tidak valid.',
+
         ];
     }
 }

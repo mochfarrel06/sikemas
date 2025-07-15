@@ -69,6 +69,7 @@
                                         <th>Tanggal Periksa</th>
                                         <th>Pasien</th>
                                         <th>Diagnosis</th>
+                                        <th>Tindakan</th>
                                         <th>Pembayaran</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -80,6 +81,7 @@
                                             <td>{{ $record->tgl_periksa }}</td>
                                             <td>{{ $record->user->nama_depan }} {{ $record->user->nama_belakang }}</td>
                                             <td>{{ Str::limit($record->diagnosis, 30) }}</td>
+                                            <td>{{ $record->tindakan ?? '-' }}</td>
                                             <td>
                                                 @if(!empty($record->queue->patient->no_bpjs))
                                                     BAYAR BPJS
