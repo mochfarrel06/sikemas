@@ -161,13 +161,18 @@
 
 
 
-                                <div class="form-group">
-                                    <label for="catatan_medis">Riwayat Penyakit</label>
-                                    <textarea name="catatan_medis" class="form-control @error('catatan_medis') is-invalid @enderror"></textarea>
-                                    @error('catatan_medis')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="catatan_medis">Riwayat Penyakit</label>
+                                        <textarea name="catatan_medis"
+                                                  class="form-control @error('catatan_medis') is-invalid @enderror"
+                                                  rows="3">{{ old('catatan_medis') }}</textarea>
+                                        @error('catatan_medis')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
+                                
                             </div>
 
                             <div class="card-footer">
