@@ -11,7 +11,6 @@ use App\Models\QueueHistory;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class MedicalRecordController extends Controller
 {
@@ -65,8 +64,15 @@ class MedicalRecordController extends Controller
         ->pluck('diagnosis')
         ->filter()
         ->values();
-
-    return view('doctor.medical-record.create', compact('queues', 'medicines', 'diagnoses'));
+    $catatanList = MedicalRecord::select('catatan_medis')
+        ->whereNotNull('catatan_medis')
+        ->distinct()
+        ->pluck('catatan_medis')
+        ->filter()
+        ->values();
+    
+    return view('doctor.medical-record.create', compact('queues', 'medicines', 'diagnoses', 'catatanList'));
+    
 }
 
     public function store(MedicalRecordStoreRequest $request)
