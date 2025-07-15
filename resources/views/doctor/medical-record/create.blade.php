@@ -83,21 +83,30 @@
                                     </div>
                                 </div>
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="medicine_id">Pilih Obat</label>
-                                            <select name="medicine_id[]" id="medicine_id"
-                                                class="form-control select2 @error('medicine_id') is-invalid @enderror"
-                                                multiple>
-                                                @foreach ($medicines as $medicine)
-                                                    <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('medicine_id')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="medicine_id">Pilih Obat</label>
+                                        <select name="medicine_id[]" id="medicine_id"
+                                            class="form-control select2 @error('medicine_id') is-invalid @enderror"
+                                            multiple>
+                                            @foreach ($medicines as $medicine)
+                                                <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('medicine_id')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                
+                                    <div class="form-group mt-2">
+                                        <label for="usage_instruction[]">Aturan Konsumsi</label>
+                                        <div id="usage-instruction-container">
+                                            <small class="text-muted">Isi sesuai urutan obat yang dipilih</small>
+                                            <input type="text" name="usage_instruction[]" class="form-control mb-2" placeholder="Contoh: 3x sehari setelah makan">
                                         </div>
                                     </div>
+                                </div>
+                                
 
                                 </div>
 

@@ -65,40 +65,41 @@ class MedicalRecordController extends Controller
     {
         try {
             $queue = Queue::findOrFail($request->queue_id);
-
+    
             $medicalRecord = MedicalRecord::create([
                 'user_id' => $queue->user_id,
                 'queue_id' => $queue->id,
                 'tgl_periksa' => now(),
                 'diagnosis' => $request->diagnosis,
-                'tindakan' => $request->tindakan, // Tambahkan ini
+                'tindakan' => $request->tindakan,
                 'resep' => $request->resep,
                 'catatan_medis' => $request->catatan_medis,
                 'tinggi_badan' => $request->tinggi_badan,
                 'berat_badan' => $request->berat_badan,
                 'tekanan_darah' => $request->tekanan_darah,
             ]);
-
-
+    
             if ($request->has('medicine_id')) {
-                $medicalRecord->medicines()->attach($request->medicine_id);
+                foreach ($request->medicine_id as $index => $medicineId) {
+                    $medicalRecord->medicines()->attach($medicineId, [
+                        'usage_instruction' => $request->usage_instruction[$index] ?? null,
+                    ]);
+                }
             }
-
-
+    
             $queue->update([
                 'status' => 'selesai',
                 'medical_id' => $medicalRecord->id,
             ]);
-
-
+    
             session()->flash('success', 'Berhasil menambahkan data rekam medis');
-            // return redirect()->route('transaction.transaction.create', $medicalRecord->id);
             return redirect()->route('doctor.medical-record.index');
         } catch (\Exception $e) {
             session()->flash('error', 'Terdapat kesalahan pada proses data dokter: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
+    
 
     public function generatePDF($id)
     {

@@ -14,6 +14,8 @@ class MedicalRecordMedicine extends Model
     protected $fillable = [
         'medical_record_id',
         'medicine_id',
+        'usage_instruction', // <= ini ditambahkan
+
     ];
 
     public function medicalRecord()
