@@ -38,100 +38,113 @@ class QueueController extends Controller
 }
 
 
-    public function store(Request $request)
-    {
-        $userId = Auth::id();
-        $userEmail = Auth::user()->email;
-    
-        $patient = Patient::where('email', $userEmail)->first();
-    
-        if (!$patient) {
+public function store(Request $request)
+{
+    $userId = Auth::id();
+    $userEmail = Auth::user()->email;
+
+    $patient = Patient::where('email', $userEmail)->first();
+
+    if (!$patient) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data pasien tidak ditemukan untuk pengguna ini.'
+        ], 404);
+    }
+
+    // Cek apakah user sudah membuat antrian untuk tanggal yang sama
+    $existingDailyQueue = Queue::where('user_id', $userId)
+        ->where('tgl_periksa', $request->tgl_periksa)
+        ->whereIn('status', ['booking', 'confirmed', 'in_progress']) // Hanya cek status yang aktif
+        ->exists();
+
+    if ($existingDailyQueue) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Anda sudah membuat antrian untuk tanggal ini. Setiap pengguna hanya dapat membuat 1 antrian per hari.'
+        ], 409);
+    }
+
+    // Jika user mengirim start_time dan end_time (manual booking)
+    if ($request->start_time && $request->end_time) {
+        $existingQueue = Queue::where('doctor_id', $request->doctor_id)
+            ->where('tgl_periksa', $request->tgl_periksa)
+            ->where('start_time', $request->start_time)
+            ->exists();
+
+        if ($existingQueue) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data pasien tidak ditemukan untuk pengguna ini.'
-            ], 404);
-        }
-    
-        // Jika user mengirim start_time dan end_time (manual booking)
-        if ($request->start_time && $request->end_time) {
-            $existingQueue = Queue::where('doctor_id', $request->doctor_id)
-                ->where('tgl_periksa', $request->tgl_periksa)
-                ->where('start_time', $request->start_time)
-                ->exists();
-    
-            if ($existingQueue) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Slot waktu ini sudah dipesan.'
-                ], 409);
-            }
-    
-            // Generate nomor antrian
-            $nomorAntrian = $this->generateNomorAntrian($request->doctor_id, $request->tgl_periksa);
-    
-            // Simpan dengan slot manual
-            $queue = Queue::create([
-                'user_id' => $userId,
-                'doctor_id' => $request->doctor_id,
-                'patient_id' => $patient->id,
-                'tgl_periksa' => $request->tgl_periksa,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
-                'waktu_mulai' => $request->start_time,
-                'waktu_selesai' => $request->end_time,
-                'keterangan' => $request->keterangan,
-                'status' => 'booking',
-                'is_booked' => true,
-                'nomor_antrian' => $nomorAntrian
-            ]);
-    
-            return response()->json([
-                'success' => true,
-                'message' => 'Antrean berhasil ditambahkan.',
-                'data' => $queue
-            ], 201);
-        }
-    
-        // AUTO SLOT ASSIGNMENT - Cari slot pertama yang tersedia
-        $availableSlot = $this->findFirstAvailableSlot($request->doctor_id, $request->tgl_periksa);
-    
-        if (!$availableSlot) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tidak ada slot yang tersedia untuk tanggal tersebut.'
+                'message' => 'Slot waktu ini sudah dipesan.'
             ], 409);
         }
-    
+
         // Generate nomor antrian
         $nomorAntrian = $this->generateNomorAntrian($request->doctor_id, $request->tgl_periksa);
-    
-        // Simpan dengan slot otomatis
+
+        // Simpan dengan slot manual
         $queue = Queue::create([
             'user_id' => $userId,
             'doctor_id' => $request->doctor_id,
             'patient_id' => $patient->id,
             'tgl_periksa' => $request->tgl_periksa,
-            'start_time' => $availableSlot['start_time'],
-            'end_time' => $availableSlot['end_time'],
-            'waktu_mulai' => $availableSlot['start_time'],
-            'waktu_selesai' => $availableSlot['end_time'],
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'waktu_mulai' => $request->start_time,
+            'waktu_selesai' => $request->end_time,
             'keterangan' => $request->keterangan,
             'status' => 'booking',
             'is_booked' => true,
-            'nomer_antrian' => $nomorAntrian
+            'nomor_antrian' => $nomorAntrian
         ]);
-    
+
         return response()->json([
             'success' => true,
-            'message' => 'Antrean berhasil ditambahkan dengan slot otomatis.',
-            'data' => $queue,
-            'slot_info' => [
-                'start_time' => $availableSlot['start_time'],
-                'end_time' => $availableSlot['end_time'],
-                'nomer_antrian' => $nomorAntrian
-            ]
+            'message' => 'Antrean berhasil ditambahkan.',
+            'data' => $queue
         ], 201);
     }
+
+    // AUTO SLOT ASSIGNMENT - Cari slot pertama yang tersedia
+    $availableSlot = $this->findFirstAvailableSlot($request->doctor_id, $request->tgl_periksa);
+
+    if (!$availableSlot) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Tidak ada slot yang tersedia untuk tanggal tersebut.'
+        ], 409);
+    }
+
+    // Generate nomor antrian
+    $nomorAntrian = $this->generateNomorAntrian($request->doctor_id, $request->tgl_periksa);
+
+    // Simpan dengan slot otomatis
+    $queue = Queue::create([
+        'user_id' => $userId,
+        'doctor_id' => $request->doctor_id,
+        'patient_id' => $patient->id,
+        'tgl_periksa' => $request->tgl_periksa,
+        'start_time' => $availableSlot['start_time'],
+        'end_time' => $availableSlot['end_time'],
+        'waktu_mulai' => $availableSlot['start_time'],
+        'waktu_selesai' => $availableSlot['end_time'],
+        'keterangan' => $request->keterangan,
+        'status' => 'booking',
+        'is_booked' => true,
+        'nomor_antrian' => $nomorAntrian // Fixed typo dari 'nomer_antrian'
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Antrean berhasil ditambahkan dengan slot otomatis.',
+        'data' => $queue,
+        'slot_info' => [
+            'start_time' => $availableSlot['start_time'],
+            'end_time' => $availableSlot['end_time'],
+            'nomor_antrian' => $nomorAntrian // Fixed typo dari 'nomer_antrian'
+        ]
+    ], 201);
+}
     
     /**
      * Mencari slot pertama yang tersedia untuk dokter dan tanggal tertentu
