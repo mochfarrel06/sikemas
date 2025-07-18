@@ -80,7 +80,7 @@ return [
     [
         'text' => 'Jadwal Temu',
         'url' => ['/data-patient/queue', '/data-patient/create-antrean-admin'],
-        'role' => ['pasien', 'dokter', 'admin'],
+        'role' => ['pasien', 'admin'],
         'icon' => 'iconoir-task-list',
     ],
 
