@@ -128,8 +128,9 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dok
     Route::get('/medical-record/create', [MedicalRecordController::class, 'create'])->name('medical-record.create');
     Route::post('/medical-record/store', [MedicalRecordController::class, 'store'])->name('medical-record.store');
     Route::get('/medical-record/{id}', [MedicalRecordController::class, 'show'])->name('medical-record.show');
-Route::get('/medical-record/patient/{userId}/history', [MedicalRecordController::class, 'patientHistory'])
-    ->name('doctor.medical-record.patient-history');
+    // PERBAIKAN: Route name harus sesuai dengan struktur group
+    Route::get('/medical-record/patient/{userId}/history', [MedicalRecordController::class, 'patientHistory'])
+        ->name('medical-record.patient-history');
     Route::get('/medical-record/{id}/pdf', [MedicalRecordController::class, 'generatePDF'])->name('medical-record.pdf');
     Route::get('/medical-record/{id}/nota', [MedicalRecordController::class, 'generateNota'])->name('medical-record.nota');
 });
