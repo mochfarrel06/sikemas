@@ -115,7 +115,6 @@ Route::group(['prefix' => 'history', 'as' => 'history.', 'middleware' => 'role:a
 
     Route::get('queue/{id}', [QueueHistoryController::class, 'show'])->name('queue-history.show');
     Route::get('/queue/medical-record/{id}/pdf', [QueueHistoryController::class, 'generatePDF'])->name('history-medical.pdf');
-    
     Route::get('/doctor/medical-record/get-existing/{queueId}', [MedicalRecordController::class, 'getExistingData'])
     ->name('doctor.medical-record.get-existing');
 });
@@ -126,13 +125,10 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => 'role:dok
 
     Route::get('/medical-record', [MedicalRecordController::class, 'index'])->name('medical-record.index');
     Route::get('/medical-record/create', [MedicalRecordController::class, 'create'])->name('medical-record.create');
-    
-    // PENTING: Route dengan parameter spesifik harus di atas route dengan wildcard {id}
-    Route::get('/medical-record/patient/{userId}/history', [MedicalRecordController::class, 'patientHistory'])
-        ->name('medical-record.patient-history');
-    
     Route::post('/medical-record/store', [MedicalRecordController::class, 'store'])->name('medical-record.store');
     Route::get('/medical-record/{id}', [MedicalRecordController::class, 'show'])->name('medical-record.show');
+    Route::get('/medical-record/{patientId}/history', [MedicalRecordController::class, 'show'])->name('doctor.medical-record.show');
+
     Route::get('/medical-record/{id}/pdf', [MedicalRecordController::class, 'generatePDF'])->name('medical-record.pdf');
     Route::get('/medical-record/{id}/nota', [MedicalRecordController::class, 'generateNota'])->name('medical-record.nota');
 });

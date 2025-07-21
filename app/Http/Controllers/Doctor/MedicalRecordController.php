@@ -15,15 +15,36 @@ use Carbon\Carbon;
 
 class MedicalRecordController extends Controller
 {
-   public function index()
+    public function index()
 {
     $user = auth()->user();
 
     if ($user->role === 'admin') {
-        // Jika user adalah admin, ambil semua data medical record
-        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines', 'user'])->get();
+        // Jika user adalah admin, ambil semua data medical record yang dikelompokkan per pasien
+        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])
+            ->get()
+            ->groupBy('queue.patient.id')
+            ->map(function ($records) {
+                // Ambil record terbaru untuk ditampilkan di index
+                $latestRecord = $records->sortByDesc('tgl_periksa')->first();
+                $latestRecord->total_visits = $records->count();
+                $latestRecord->first_visit = $records->sortBy('tgl_periksa')->first()->tgl_periksa;
+                $latestRecord->last_visit = $records->sortByDesc('tgl_periksa')->first()->tgl_periksa;
+                return $latestRecord;
+            })
+            ->values();
     } elseif ($user->role === 'farmasi') {
-        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines', 'user'])->get();
+        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])
+            ->get()
+            ->groupBy('queue.patient.id')
+            ->map(function ($records) {
+                $latestRecord = $records->sortByDesc('tgl_periksa')->first();
+                $latestRecord->total_visits = $records->count();
+                $latestRecord->first_visit = $records->sortBy('tgl_periksa')->first()->tgl_periksa;
+                $latestRecord->last_visit = $records->sortByDesc('tgl_periksa')->first()->tgl_periksa;
+                return $latestRecord;
+            })
+            ->values();
 
         $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')->exists();
 
@@ -34,21 +55,21 @@ class MedicalRecordController extends Controller
         // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
         $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
             $query->where('doctor_id', $user->doctor->id);
-        })->with(['queue.patient', 'medicines', 'user'])->get();
+        })
+            ->with(['queue.patient', 'medicines'])
+            ->get()
+            ->groupBy('queue.patient.id')
+            ->map(function ($records) {
+                $latestRecord = $records->sortByDesc('tgl_periksa')->first();
+                $latestRecord->total_visits = $records->count();
+                $latestRecord->first_visit = $records->sortBy('tgl_periksa')->first()->tgl_periksa;
+                $latestRecord->last_visit = $records->sortByDesc('tgl_periksa')->first()->tgl_periksa;
+                return $latestRecord;
+            })
+            ->values();
     }
 
-    // Kelompokkan berdasarkan user_id dan ambil data terbaru untuk setiap pasien
-    $groupedRecords = $medicalRecords->groupBy('user_id')->map(function ($records) {
-        // Urutkan berdasarkan tanggal terbaru dan ambil record pertama sebagai representasi
-        $latestRecord = $records->sortByDesc('tgl_periksa')->first();
-        
-        // Tambahkan informasi jumlah total rekam medis untuk pasien ini
-        $latestRecord->total_records = $records->count();
-        
-        return $latestRecord;
-    })->values();
-
-    return view('doctor.medical-record.index', compact('groupedRecords'));
+    return view('doctor.medical-record.index', compact('medicalRecords'));
 }
 
 
@@ -137,11 +158,34 @@ class MedicalRecordController extends Controller
         return $pdf->stream('rekam_medis.pdf');
     }
 
-    public function show(string $id)
-    {
-        $medicalRecord = MedicalRecord::with('medicines')->findOrFail($id);
-        return view('doctor.medical-record.show', compact('medicalRecord'));
+   public function show(string $patientId)
+{
+    $user = auth()->user();
+    
+    // Ambil data pasien
+    $patient = User::findOrFail($patientId);
+    
+    // Ambil semua medical records untuk pasien ini
+    if ($user->role === 'admin' || $user->role === 'farmasi') {
+        $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($patientId) {
+            $query->where('patient_id', $patientId);
+        })
+        ->with(['queue.patient', 'medicines'])
+        ->orderBy('tgl_periksa', 'desc')
+        ->get();
+    } else {
+        // Untuk dokter, hanya tampilkan record yang mereka tangani
+        $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user, $patientId) {
+            $query->where('doctor_id', $user->doctor->id)
+                  ->where('patient_id', $patientId);
+        })
+        ->with(['queue.patient', 'medicines'])
+        ->orderBy('tgl_periksa', 'desc')
+        ->get();
     }
+    
+    return view('doctor.medical-record.show', compact('medicalRecords', 'patient'));
+}
 
     public function generateNota($id)
     {
@@ -152,35 +196,4 @@ class MedicalRecordController extends Controller
 
         return $pdf->stream('nota.pdf');
     }
-
-    public function patientHistory($userId)
-{
-    $user = auth()->user();
-    
-    // Ambil semua rekam medis untuk pasien tertentu
-    if ($user->role === 'admin' || $user->role === 'farmasi') {
-        $medicalRecords = MedicalRecord::where('user_id', $userId)
-            ->with(['queue.patient', 'medicines', 'user'])
-            ->orderBy('tgl_periksa', 'desc')
-            ->get();
-    } else {
-        // Dokter hanya bisa melihat rekam medis yang dia tangani
-        $medicalRecords = MedicalRecord::where('user_id', $userId)
-            ->whereHas('queue', function ($query) use ($user) {
-                $query->where('doctor_id', $user->doctor->id);
-            })
-            ->with(['queue.patient', 'medicines', 'user'])
-            ->orderBy('tgl_periksa', 'desc')
-            ->get();
-    }
-    
-    if ($medicalRecords->isEmpty()) {
-        return redirect()->route('doctor.medical-record.index')
-            ->with('error', 'Data rekam medis tidak ditemukan atau Anda tidak memiliki akses.');
-    }
-    
-    $patient = $medicalRecords->first()->user;
-    
-    return view('doctor.medical-record.patient-history', compact('medicalRecords', 'patient'));
-}
 }
