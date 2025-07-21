@@ -85,7 +85,7 @@
                                             <td>{{ Str::limit($record->diagnosis, 30) }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center" style="gap: 10px">
-                                                    <a href="{{ route('doctor.medical-record.patient-history', $record->user_id) }}" 
+                                                    <a href="{{ route('history.medical-record.patient-history', $record->user_id) }}" 
                                                        class="btn btn-sm btn-primary d-flex align-items-center justify-content-center" 
                                                        style="gap: 5px">
                                                         <i class="iconoir-list" style="font-size: 15px"></i>Riwayat
