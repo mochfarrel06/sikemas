@@ -73,7 +73,6 @@
                                             <th>Diagnosis</th>
                                             <th>Tindakan</th>
                                             <th>Obat</th>
-                                            <th>Total Biaya Obat</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -95,13 +94,7 @@
                                                         <span class="text-muted">-</span>
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    @if ($record->medicines->isNotEmpty())
-                                                        <strong>Rp {{ number_format($record->medicines->sum('price'), 0, ',', '.') }}</strong>
-                                                    @else
-                                                        <span class="text-muted">-</span>
-                                                    @endif
-                                                </td>
+                                               
                                                 <td>
                                                     <div class="d-flex align-items-center" style="gap: 5px">
                                                         <a href="{{ route('doctor.medical-record.show', $record->id) }}" 
@@ -126,13 +119,7 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="5" class="text-right"><strong>Total Keseluruhan Biaya Obat:</strong></td>
-                                            <td><strong>Rp {{ number_format($medicalRecords->sum(function($record) { return $record->medicines->sum('price'); }), 0, ',', '.') }}</strong></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
+                                   
                                 </table>
                             </div>
                         </div>
