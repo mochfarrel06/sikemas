@@ -15,30 +15,41 @@ use Carbon\Carbon;
 
 class MedicalRecordController extends Controller
 {
-    public function index()
-    {
-        $user = auth()->user();
+   public function index()
+{
+    $user = auth()->user();
 
-        if ($user->role === 'admin') {
-            // Jika user adalah admin, ambil semua data medical record
-            $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
-        } elseif ($user->role === 'farmasi') {
-            $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines'])->get();
+    if ($user->role === 'admin') {
+        // Jika user adalah admin, ambil semua data medical record
+        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines', 'user'])->get();
+    } elseif ($user->role === 'farmasi') {
+        $medicalRecords = MedicalRecord::with(['queue.patient', 'medicines', 'user'])->get();
 
-            $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')->exists();
+        $hasNewMedicalRecordWithMedicines = MedicalRecord::whereHas('medicines')->exists();
 
-            if ($hasNewMedicalRecordWithMedicines) {
-                session()->flash('notif', 'Terdapat rekam medis baru yang perlu diproses farmasi.');
-            }
-        }else {
-            // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
-            $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
-                $query->where('doctor_id', $user->doctor->id);
-            })->with(['queue.patient', 'medicines'])->get();
+        if ($hasNewMedicalRecordWithMedicines) {
+            session()->flash('notif', 'Terdapat rekam medis baru yang perlu diproses farmasi.');
         }
-
-        return view('doctor.medical-record.index', compact('medicalRecords'));
+    } else {
+        // Jika bukan admin (misalnya dokter), ambil hanya yang sesuai dengan dokter
+        $medicalRecords = MedicalRecord::whereHas('queue', function ($query) use ($user) {
+            $query->where('doctor_id', $user->doctor->id);
+        })->with(['queue.patient', 'medicines', 'user'])->get();
     }
+
+    // Kelompokkan berdasarkan user_id dan ambil data terbaru untuk setiap pasien
+    $groupedRecords = $medicalRecords->groupBy('user_id')->map(function ($records) {
+        // Urutkan berdasarkan tanggal terbaru dan ambil record pertama sebagai representasi
+        $latestRecord = $records->sortByDesc('tgl_periksa')->first();
+        
+        // Tambahkan informasi jumlah total rekam medis untuk pasien ini
+        $latestRecord->total_records = $records->count();
+        
+        return $latestRecord;
+    })->values();
+
+    return view('doctor.medical-record.index', compact('groupedRecords'));
+}
 
 
     public function create()
@@ -141,4 +152,35 @@ class MedicalRecordController extends Controller
 
         return $pdf->stream('nota.pdf');
     }
+
+    public function patientHistory($userId)
+{
+    $user = auth()->user();
+    
+    // Ambil semua rekam medis untuk pasien tertentu
+    if ($user->role === 'admin' || $user->role === 'farmasi') {
+        $medicalRecords = MedicalRecord::where('user_id', $userId)
+            ->with(['queue.patient', 'medicines', 'user'])
+            ->orderBy('tgl_periksa', 'desc')
+            ->get();
+    } else {
+        // Dokter hanya bisa melihat rekam medis yang dia tangani
+        $medicalRecords = MedicalRecord::where('user_id', $userId)
+            ->whereHas('queue', function ($query) use ($user) {
+                $query->where('doctor_id', $user->doctor->id);
+            })
+            ->with(['queue.patient', 'medicines', 'user'])
+            ->orderBy('tgl_periksa', 'desc')
+            ->get();
+    }
+    
+    if ($medicalRecords->isEmpty()) {
+        return redirect()->route('doctor.medical-record.index')
+            ->with('error', 'Data rekam medis tidak ditemukan atau Anda tidak memiliki akses.');
+    }
+    
+    $patient = $medicalRecords->first()->user;
+    
+    return view('doctor.medical-record.patient-history', compact('medicalRecords', 'patient'));
+}
 }

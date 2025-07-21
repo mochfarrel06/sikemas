@@ -29,7 +29,7 @@
                         <div class="card-header d-flex">
                             <div class="d-flex align-items-center">
                                 <i class="iconoir-table mr-2"></i>
-                                <h3 class="card-title">Rekam Medis</h3>
+                                <h3 class="card-title">Rekam Medis (Dikelompokkan per Pasien)</h3>
                             </div>
 
                             @if (auth()->user() && !in_array(auth()->user()->role, ['admin', 'farmasi']))
@@ -43,7 +43,6 @@
                         </div>
 
                         <div class="card-body">
-                        {{-- Ganti script notifikasi dengan alert biasa yang sudah terbukti bekerja --}}
                             @if (auth()->user()->role === 'farmasi')
                                 @php
                                     $hasNewMedicalRecordWithMedicines = \App\Models\MedicalRecord::whereHas('medicines')->exists();
@@ -62,38 +61,40 @@
                                     </div>
                                 @endif
                             @endif
+                            
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tanggal Periksa</th>
                                         <th>Pasien</th>
-                                        <th>Diagnosis</th>
-                                        <th>Tindakan</th>
-                                        <th>Pembayaran</th>
+                                        <th>Total Rekam Medis</th>
+                                        <th>Kunjungan Terakhir</th>
+                                        <th>Diagnosis Terakhir</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($medicalRecords as $record)
+                                    @foreach ($groupedRecords as $record)
                                         <tr>
                                             <td class="index">{{ $loop->index + 1 }}</td>
-                                            <td>{{ $record->tgl_periksa }}</td>
                                             <td>{{ $record->user->nama_depan }} {{ $record->user->nama_belakang }}</td>
-                                            <td>{{ Str::limit($record->diagnosis, 30) }}</td>
-                                            <td>{{ $record->tindakan ?? '-' }}</td>
                                             <td>
-                                                @if(!empty($record->queue->patient->no_bpjs))
-                                                    BAYAR BPJS
-                                                @else
-                                                    BAYAR TUNAI
-                                                @endif
+                                                <span class="badge badge-info">{{ $record->total_records }} kali</span>
                                             </td>
+                                            <td>{{ \Carbon\Carbon::parse($record->tgl_periksa)->format('d/m/Y') }}</td>
+                                            <td>{{ Str::limit($record->diagnosis, 30) }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center" style="gap: 10px">
-                                                    <a href="{{ route('doctor.medical-record.show', $record->id) }}" class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-eye-solid" style="font-size: 15px"></i>Detail</a>
-                                                    <a href="{{ route('doctor.medical-record.pdf', $record->id) }}" target="_blank" class="btn btn-sm btn-info d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-download" style="font-size: 15px"></i> Download</a>
-                                                    <a href="{{ route('doctor.medical-record.nota', $record->id) }}" target="_blank" class="btn btn-sm btn-success d-flex align-items-center justify-content-center" style="gap: 5px"><i class="iconoir-printer" style="font-size: 15px"></i> Nota</a>
+                                                    <a href="{{ route('doctor.medical-record.patient-history', $record->user_id) }}" 
+                                                       class="btn btn-sm btn-primary d-flex align-items-center justify-content-center" 
+                                                       style="gap: 5px">
+                                                        <i class="iconoir-list" style="font-size: 15px"></i>Riwayat
+                                                    </a>
+                                                    <a href="{{ route('doctor.medical-record.show', $record->id) }}" 
+                                                       class="btn btn-sm btn-warning d-flex align-items-center justify-content-center" 
+                                                       style="gap: 5px">
+                                                        <i class="iconoir-eye-solid" style="font-size: 15px"></i>Detail Terakhir
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
